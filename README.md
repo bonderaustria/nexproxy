@@ -40,6 +40,25 @@ NexProxy builds on the well-loved [Nginx Proxy Manager](https://github.com/Nginx
 - User management, permissions and audit log
 - SQLite, MySQL/MariaDB **or PostgreSQL** backends
 
+## Editions
+
+The core is free and open source (MIT). Enterprise features live in
+[`enterprise/`](enterprise/) and are free for private, non-commercial use — commercial
+use requires a license.
+
+| Feature | Core (free) | Enterprise |
+| --- | :---: | :---: |
+| Reverse-proxy hosts, redirects, streams, 404 hosts | ✅ | ✅ |
+| Free SSL (Let's Encrypt) + custom certificates | ✅ | ✅ |
+| Access lists & HTTP authentication | ✅ | ✅ |
+| Advanced Nginx configuration | ✅ | ✅ |
+| User management, permissions & audit log | ✅ | ✅ |
+| SQLite / MySQL / MariaDB / PostgreSQL backends | ✅ | ✅ |
+| Fast backports of upstream fixes (e.g. UDP #5000) | ✅ | ✅ |
+| **High Availability** — floating-IP failover across nodes | — | ✅ |
+| **True multi-tenancy** — per-user host isolation | — | ✅ |
+| Priority support & SLA | — | ✅ |
+
 ## Quick Setup
 
 1. [Install Docker](https://docs.docker.com/install/)
