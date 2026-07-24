@@ -50,20 +50,22 @@ export async function copySqliteToPostgres({ sqliteFile, pg }) {
 				copied.push(`${t}:${rows.length}`);
 			}
 
-			// Reset sequences so new inserts don't collide with copied ids.
-			for (const t of tables) {
-				try {
-					await trx.raw(
-						"SELECT setval(pg_get_serial_sequence(?, 'id'), COALESCE((SELECT MAX(id) FROM ??), 1), true)",
-						[t, t],
-					);
-				} catch (_e) {
-					// table has no id column / no sequence — ignore
-				}
-			}
-
 			await trx.raw("SET session_replication_role = DEFAULT");
 		});
+
+		// Reset sequences AFTER the copy transaction — a failing setval (e.g. a
+		// table without an id sequence) must not abort the data copy.
+		for (const c of copied) {
+			const t = c.split(":")[0];
+			try {
+				await tgt.raw(
+					"SELECT setval(pg_get_serial_sequence(?, 'id'), COALESCE((SELECT MAX(id) FROM ??), 1), true)",
+					[t, t],
+				);
+			} catch (_e) {
+				// table has no id column / no sequence — ignore
+			}
+		}
 
 		logger.info(`[DataMigrate] Copied ${copied.length} tables from SQLite to PostgreSQL`);
 		return copied;

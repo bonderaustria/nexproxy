@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+import fs from "node:fs";
 import os from "node:os";
 import db from "../db.js";
 import { configGet } from "../lib/config.js";
@@ -16,7 +18,23 @@ let localHasVip = false;
  * per node via the compose environment. Without NODE_NAME the instance is a
  * standalone node named after its hostname.
  */
-const selfName = () => process.env.NODE_NAME || os.hostname();
+// Stable node id persisted in /data so container restarts reuse the same row
+// instead of registering a new one under a random container hostname.
+const NODE_ID_FILE = `${process.env.NODE_ID_DIR || "/data"}/.nexproxy-node-id`;
+const stableId = () => {
+	try {
+		if (fs.existsSync(NODE_ID_FILE)) {
+			return fs.readFileSync(NODE_ID_FILE, "utf8").trim();
+		}
+		const id = `node-${crypto.randomBytes(4).toString("hex")}`;
+		fs.writeFileSync(NODE_ID_FILE, id);
+		return id;
+	} catch (_e) {
+		return os.hostname();
+	}
+};
+
+const selfName = () => process.env.NODE_NAME || stableId();
 
 const selfAddress = () => {
 	if (process.env.NODE_ADDRESS) {
@@ -60,6 +78,10 @@ const internalHa = {
 					last_seen: now,
 					has_vip: localHasVip ? 1 : 0,
 				});
+			// Prune dead nodes (replaced/removed containers offline for over an hour).
+			await db()("ha_node")
+				.where("last_seen", "<", now - 60 * 60 * 1000)
+				.del();
 		} catch (err) {
 			logger.error(`[HA] heartbeat failed: ${err.message}`);
 		}
