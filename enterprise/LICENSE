@@ -1,0 +1,20 @@
+Enterprise-Modul — Kommerzielle Lizenz (PLATZHALTER)
+====================================================
+
+WICHTIG: Dies ist ein Platzhalter. Vor Veroeffentlichung durch einen echten,
+juristisch geprueften Lizenztext ersetzen (z. B. PolyForm Noncommercial 1.0.0
+oder eine eigene kommerzielle EULA). Lizenztext NICHT selbst erfinden.
+
+Der Inhalt dieses Ordners (`enterprise/`) ist NICHT Teil des unter der
+MIT-Lizenz stehenden Kerns dieses Projekts. Es gelten gesonderte Bedingungen:
+
+- Private, nicht-kommerzielle Nutzung: kostenfrei.
+- Jede kommerzielle Nutzung (Einsatz in oder fuer Unternehmen, gewerbliches
+  Hosting, Weiterverkauf) erfordert eine kostenpflichtige Lizenz des
+  Rechteinhabers.
+
+Der uebrige Quellcode dieses Repositorys (ausserhalb von `enterprise/`) bleibt
+unveraendert unter der MIT-Lizenz des urspruenglichen Nginx Proxy Manager,
+einschliesslich des dort geforderten Copyright-Hinweises.
+
+Kontakt fuer kommerzielle Lizenzen: <noch festzulegen>
