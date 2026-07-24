@@ -11,22 +11,38 @@ const DEFAULT_IMAGE = process.env.NEXPROXY_IMAGE || "ghcr.io/bonderaustria/nexpr
 const CERT_EXPORT = "/srv/nexproxy-certs";
 
 /**
- * The host-side keepalived health-check script. Beyond the usual health probe,
- * it writes ground truth of who holds the VIP (checked directly via `ip addr`)
- * into the shared /data volume every 2s, so the containerized backend can read
- * it locally each heartbeat instead of depending on a fragile HTTP push.
- * Exported so ha-update.js can redeploy it on an existing node during "Update".
+ * The host-side keepalived health-check script — pure health probe only. VIP
+ * ground truth must NOT be written here: this script only runs while
+ * keepalived is running, but Force Failover deliberately STOPS keepalived on
+ * a node, which would freeze any state written here at its last value
+ * forever (exactly the bug where a stopped node keeps reporting "master").
+ * See buildVipWatchUnit for the independent watcher that fixes this.
  */
-export const buildCheckScript = (vip, iface) => `#!/bin/sh
-if ip addr show ${iface} 2>/dev/null | grep -q "${vip}"; then
-  echo master > /opt/nexproxy/data/.ha-vip-state 2>/dev/null || true
-else
-  echo backup > /opt/nexproxy/data/.ha-vip-state 2>/dev/null || true
-fi
-
+export const buildCheckScript = () => `#!/bin/sh
 curl -sf -m2 -o /dev/null http://127.0.0.1:80/ || exit 1
 curl -s -m2 -o /dev/null -w "%{http_code}" http://127.0.0.1:81/api/ | grep -qE "^(200|401)$" || exit 1
 exit 0
+`;
+
+/**
+ * VIP ground-truth watcher: a systemd service, INDEPENDENT of keepalived, that
+ * checks `ip addr` every 2s and writes the result into the shared /data
+ * volume. Runs regardless of whether keepalived is up, stopped, or crashed —
+ * so a node that was deliberately failed over correctly reports "backup"
+ * instead of freezing at its last state.
+ */
+export const buildVipWatchUnit = (vip, iface) => `[Unit]
+Description=NexProxy VIP ground-truth watcher (independent of keepalived)
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=2
+ExecStart=/bin/sh -c 'while true; do if ip addr show ${iface} 2>/dev/null | grep -q "${vip}"; then echo master > /opt/nexproxy/data/.ha-vip-state; else echo backup > /opt/nexproxy/data/.ha-vip-state; fi; sleep 2; done'
+
+[Install]
+WantedBy=multi-user.target
 `;
 
 // Singleton job state the GUI polls via GET /api/ha/provision-status
@@ -326,7 +342,8 @@ const internalHaProvision = {
       - ./letsencrypt:/etc/letsencrypt
       - ./data:/data
 `;
-		const check = buildCheckScript(c.vip, c.iface);
+		const check = buildCheckScript();
+		const vipWatchUnit = buildVipWatchUnit(c.vip, c.iface);
 		// keepalived notify -> tells NexProxy which node really holds the VIP
 		const notify = `#!/bin/sh
 curl -s -m2 "http://127.0.0.1:81/api/ha/vip-notify?state=$1" >/dev/null 2>&1 || true
@@ -364,7 +381,9 @@ vrrp_instance NEXPROXY_VIP {
 			`mkdir -p /opt/nexproxy; cat > /opt/nexproxy/docker-compose.yml <<'COMPOSE'\n${compose}COMPOSE\n` +
 				`cat > /etc/keepalived/check_nexproxy.sh <<'CHK'\n${check}CHK\nchmod +x /etc/keepalived/check_nexproxy.sh; ` +
 				`cat > /etc/keepalived/nexproxy-notify.sh <<'NOTE'\n${notify}NOTE\nchmod +x /etc/keepalived/nexproxy-notify.sh; ` +
-				`cat > /etc/keepalived/keepalived.conf <<'KA'\n${keepalived}KA\nsystemctl enable keepalived`,
+				`cat > /etc/keepalived/keepalived.conf <<'KA'\n${keepalived}KA\nsystemctl enable keepalived; ` +
+				`cat > /etc/systemd/system/nexproxy-vip-watch.service <<'UNIT'\n${vipWatchUnit}UNIT\n` +
+				"systemctl daemon-reload && systemctl enable --now nexproxy-vip-watch",
 		);
 
 		// 4) Apply: start container + (re)start keepalived

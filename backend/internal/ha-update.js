@@ -2,7 +2,7 @@ import db from "../db.js";
 import { decryptSecret } from "../lib/secret-store.js";
 import { sshExec } from "../lib/ssh.js";
 import { global as logger } from "../logger.js";
-import { buildCheckScript } from "./ha-provision.js";
+import { buildCheckScript, buildVipWatchUnit } from "./ha-provision.js";
 import internalHa from "./ha.js";
 
 const IMAGE = process.env.NEXPROXY_IMAGE || "ghcr.io/bonderaustria/nexproxy:latest";
@@ -91,16 +91,24 @@ const internalHaUpdate = {
 		}
 		const target = await getNodeSsh(nodeName);
 
-		// Redeploy the health-check script so older nodes pick up the current
-		// VIP-detection logic on every update, without needing a full re-provision.
+		// Redeploy the health-check script + the independent VIP watcher so older
+		// nodes pick up the current detection logic on every update, without
+		// needing a full re-provision. The watcher runs regardless of keepalived's
+		// own state — it's what fixes a stopped node freezing at a stale "master".
 		try {
 			const { vip, iface } = await getHaConfig();
 			if (vip) {
-				const check = buildCheckScript(vip, iface);
-				await run(target, `cat > /etc/keepalived/check_nexproxy.sh <<'CHK'\n${check}CHK\nchmod +x /etc/keepalived/check_nexproxy.sh`);
+				const check = buildCheckScript();
+				const watchUnit = buildVipWatchUnit(vip, iface);
+				await run(
+					target,
+					`cat > /etc/keepalived/check_nexproxy.sh <<'CHK'\n${check}CHK\nchmod +x /etc/keepalived/check_nexproxy.sh; ` +
+						`cat > /etc/systemd/system/nexproxy-vip-watch.service <<'UNIT'\n${watchUnit}UNIT\n` +
+						"systemctl daemon-reload && systemctl enable --now nexproxy-vip-watch && systemctl restart nexproxy-vip-watch",
+				);
 			}
 		} catch (err) {
-			logger.error(`[HA-Update] Could not redeploy check script on ${nodeName}: ${err.message}`);
+			logger.error(`[HA-Update] Could not redeploy check script/watcher on ${nodeName}: ${err.message}`);
 		}
 
 		const regUser = process.env.NEXPROXY_REGISTRY_USER;
