@@ -49,6 +49,18 @@ export const isEnterprise = () => cache.enterprise;
 export const getLicenseInfo = () => cache;
 
 /**
+ * Periodically reload the license from the (shared) database so that activating
+ * a license on any cluster node propagates to all nodes within ~30s.
+ */
+export function startLicenseRefresh() {
+	setInterval(() => {
+		loadLicense().catch(() => {
+			/* keep last known state */
+		});
+	}, 30 * 1000);
+}
+
+/**
  * Store and activate a license key (validates first).
  */
 export async function setLicense(key) {

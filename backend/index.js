@@ -5,7 +5,7 @@ import internalCertificate from "./internal/certificate.js";
 import internalHa from "./internal/ha.js";
 import internalHostMonitor from "./internal/host-monitor.js";
 import internalIpRanges from "./internal/ip_ranges.js";
-import { loadLicense } from "./lib/license.js";
+import { loadLicense, startLicenseRefresh } from "./lib/license.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
 import { getCompiledSchema } from "./schema/index.js";
@@ -33,6 +33,7 @@ async function appStart() {
 			internalIpRanges.initTimer();
 			internalHa.startHeartbeat();
 			internalHostMonitor.initTimer();
+			startLicenseRefresh();
 
 			const server = app.listen(3000, () => {
 				logger.info(`Backend PID ${process.pid} listening on port 3000 ...`);
