@@ -40,11 +40,6 @@ COPY backend       /app
 COPY frontend/dist /app/frontend
 COPY docker/rootfs /
 
-# Copy test CA cert for use in container and add to trusted certs from a self-signed CA
-COPY --from=testca /home/step/certs/root_ca.crt /etc/ssl/certs/NginxProxyManager.crt
-WORKDIR /etc/ssl/certs
-RUN ln -s NginxProxyManager.crt 1d0e3f10.0 && update-ca-certificates
-
 WORKDIR /app
 RUN yarn install \
 	&& yarn cache clean
