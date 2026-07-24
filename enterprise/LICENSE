@@ -1,20 +1,22 @@
-Enterprise-Modul — Kommerzielle Lizenz (PLATZHALTER)
-====================================================
+NexProxy Enterprise License
+===========================
 
-WICHTIG: Dies ist ein Platzhalter. Vor Veroeffentlichung durch einen echten,
-juristisch geprueften Lizenztext ersetzen (z. B. PolyForm Noncommercial 1.0.0
-oder eine eigene kommerzielle EULA). Lizenztext NICHT selbst erfinden.
+Copyright (c) NexProxy. All rights reserved.
 
-Der Inhalt dieses Ordners (`enterprise/`) ist NICHT Teil des unter der
-MIT-Lizenz stehenden Kerns dieses Projekts. Es gelten gesonderte Bedingungen:
+This license applies to the contents of the `enterprise/` directory only. The
+rest of this repository is licensed under the MIT License (see /LICENSE).
 
-- Private, nicht-kommerzielle Nutzung: kostenfrei.
-- Jede kommerzielle Nutzung (Einsatz in oder fuer Unternehmen, gewerbliches
-  Hosting, Weiterverkauf) erfordert eine kostenpflichtige Lizenz des
-  Rechteinhabers.
+1. Private use
+   Use for private, non-commercial purposes is granted free of charge,
+   including running, modifying and self-hosting for personal use.
 
-Der uebrige Quellcode dieses Repositorys (ausserhalb von `enterprise/`) bleibt
-unveraendert unter der MIT-Lizenz des urspruenglichen Nginx Proxy Manager,
-einschliesslich des dort geforderten Copyright-Hinweises.
+2. Commercial use
+   Any commercial use — including use within or on behalf of a company,
+   commercial hosting, or resale — requires a paid commercial license.
 
-Kontakt fuer kommerzielle Lizenzen: <noch festzulegen>
+3. Conditions
+   This copyright notice and license text must be retained in all copies of
+   the `enterprise/` contents.
+
+For commercial licensing, open an issue or contact us via
+https://github.com/bonderaustria/nexproxy
