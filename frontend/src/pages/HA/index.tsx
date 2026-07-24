@@ -237,17 +237,26 @@ const HA = () => {
 						Trage die Zugänge der drei LXCs ein. NexProxy verbindet sich per SSH und richtet alles
 						automatisch ein. SSH-Key wird bevorzugt, Passwort ist möglich.
 					</p>
-					<div className="alert alert-info">
-						<strong>Warum SSH-Zugang?</strong> NexProxy installiert die Bausteine direkt auf den Hosts —
-						das geht nur per SSH. Besonders der <strong>Primär-Host (dieser Server)</strong> wird gebraucht,
-						weil das Failover (<span className="mono">keepalived</span>) und der Umstieg auf die gemeinsame
-						Datenbank <strong>außerhalb</strong> des NexProxy-Containers laufen. Nur per SSH kann NexProxy die
-						Floating-IP einrichten und diese Instanz auf die geteilte DB umstellen und neu starten.
-						<br />
-						<span className="text-muted">
-							Optional: Lässt du den Primär-Host leer, richtet NexProxy nur DB + zweiten Node ein — die
-							Master-keepalived-Konfiguration machst du dann selbst.
-						</span>
+					<div
+						style={{
+							background: "rgba(0,95,246,.08)",
+							border: "1px solid rgba(0,95,246,.25)",
+							borderRadius: "10px",
+							padding: "14px 16px",
+							marginBottom: "16px",
+						}}
+					>
+						<div className="fw-bold mb-1">Warum braucht NexProxy SSH-Zugang?</div>
+						<p className="mb-2 text-secondary">
+							NexProxy installiert die Bausteine direkt auf den Hosts — das ist nur per SSH möglich. Den
+							Primär-Host (diesen Server) braucht es, weil das Failover (keepalived) und der Umstieg auf die
+							gemeinsame Datenbank außerhalb des Containers laufen; nur per SSH kann NexProxy die Floating-IP
+							einrichten und diese Instanz umstellen und neu starten.
+						</p>
+						<p className="mb-0 text-muted small">
+							Optional: Lässt du den Primär-Host leer, richtet NexProxy nur Datenbank und zweiten Node ein —
+							die Master-Konfiguration machst du dann selbst.
+						</p>
 					</div>
 					<div className="row g-3">
 						{sshFields("db", "1. Datenbank-Host", "Hier installiert NexProxy PostgreSQL + die NFS-Freigabe für gemeinsame Zertifikate.")}
@@ -318,12 +327,23 @@ const HA = () => {
 						Beim automatischen Einrichten werden sie hier gespeichert (Passwort verschlüsselt). Du kannst sie
 						einsehen (Passwort mit dem Auge aufdecken) und anpassen — nur für Administratoren.
 					</p>
-					<div className="alert alert-info">
-						<strong>Wie das Speichern wirkt:</strong> Dieses Feld ist zum <strong>Einsehen und Festhalten</strong>{" "}
-						gedacht (Referenz, Backups, Doku). Die laufenden Nodes verbinden sich zur Datenbank über ihre
-						Container-Einstellungen — änderst du hier etwas, wird der <strong>gespeicherte Datensatz</strong>{" "}
-						aktualisiert. Damit eine <em>geänderte</em> Datenbank auf den Nodes tatsächlich greift, müssen die
-						Nodes mit den neuen Werten neu gestartet werden. Ein echter Live-DB-Wechsel ist ein eigener Schritt.
+					<div
+						style={{
+							background: "rgba(0,95,246,.08)",
+							border: "1px solid rgba(0,95,246,.25)",
+							borderRadius: "10px",
+							padding: "14px 16px",
+							marginBottom: "16px",
+						}}
+					>
+						<div className="fw-bold mb-1">Wie das Speichern wirkt</div>
+						<p className="mb-0 text-secondary">
+							Dieses Feld ist zum Einsehen und Festhalten gedacht (Referenz, Backups, Doku). Die laufenden
+							Nodes verbinden sich zur Datenbank über ihre Container-Einstellungen — änderst du hier etwas,
+							wird der gespeicherte Datensatz aktualisiert. Damit eine geänderte Datenbank auf den Nodes
+							greift, müssen sie mit den neuen Werten neu gestartet werden; ein echter Live-DB-Wechsel ist ein
+							eigener Schritt.
+						</p>
 					</div>
 					<div className="row g-2">
 						<div className="col-md-4">
