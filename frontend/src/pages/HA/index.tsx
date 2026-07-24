@@ -118,9 +118,10 @@ const HA = () => {
 		refetchDb();
 	};
 
-	const sshFields = (prefix: "db" | "node" | "primary", label: string) => (
+	const sshFields = (prefix: "db" | "node" | "primary", label: string, hint: string) => (
 		<div className="col-md-4">
-			<div className="fw-bold mb-2">{label}</div>
+			<div className="fw-bold">{label}</div>
+			<div className="text-muted small mb-2">{hint}</div>
 			<label className="form-label">IP-Adresse</label>
 			<input className="form-control mb-2" value={(prov as any)[`${prefix}Host`]} onChange={setP(`${prefix}Host`)} placeholder="192.168.20.x" />
 			<label className="form-label">SSH-Benutzer</label>
@@ -233,13 +234,25 @@ const HA = () => {
 				</div>
 				<div className="card-body">
 					<p className="text-muted">
-						Trage die Zugänge der drei LXCs ein. NexProxy richtet die Datenbank ein, setzt den zweiten Node auf
-						und konfiguriert das automatische Failover. SSH-Key wird bevorzugt, Passwort ist möglich.
+						Trage die Zugänge der drei LXCs ein. NexProxy verbindet sich per SSH und richtet alles
+						automatisch ein. SSH-Key wird bevorzugt, Passwort ist möglich.
 					</p>
+					<div className="alert alert-info">
+						<strong>Warum SSH-Zugang?</strong> NexProxy installiert die Bausteine direkt auf den Hosts —
+						das geht nur per SSH. Besonders der <strong>Primär-Host (dieser Server)</strong> wird gebraucht,
+						weil das Failover (<span className="mono">keepalived</span>) und der Umstieg auf die gemeinsame
+						Datenbank <strong>außerhalb</strong> des NexProxy-Containers laufen. Nur per SSH kann NexProxy die
+						Floating-IP einrichten und diese Instanz auf die geteilte DB umstellen und neu starten.
+						<br />
+						<span className="text-muted">
+							Optional: Lässt du den Primär-Host leer, richtet NexProxy nur DB + zweiten Node ein — die
+							Master-keepalived-Konfiguration machst du dann selbst.
+						</span>
+					</div>
 					<div className="row g-3">
-						{sshFields("db", "1. Datenbank-Host")}
-						{sshFields("node", "2. Zweiter Node")}
-						{sshFields("primary", "3. Primär-Host (dieser Server)")}
+						{sshFields("db", "1. Datenbank-Host", "Hier installiert NexProxy PostgreSQL + die NFS-Freigabe für gemeinsame Zertifikate.")}
+						{sshFields("node", "2. Zweiter Node", "Hier wird die zweite NexProxy-Instanz + keepalived (Standby) aufgesetzt.")}
+						{sshFields("primary", "3. Primär-Host (dieser Server)", "Dieser Server wird Master: keepalived + Umstieg auf die gemeinsame DB.")}
 					</div>
 					<div className="row g-2 mt-2">
 						<div className="col-md-4">
@@ -300,7 +313,18 @@ const HA = () => {
 					)}
 				</div>
 				<div className="card-body">
-					<p className="text-muted">Zugangsdaten der gemeinsamen Datenbank — nur für Administratoren.</p>
+					<p className="text-muted mb-2">
+						Die Zugangsdaten der <strong>gemeinsamen PostgreSQL</strong>, die beide Nodes im HA-Betrieb nutzen.
+						Beim automatischen Einrichten werden sie hier gespeichert (Passwort verschlüsselt). Du kannst sie
+						einsehen (Passwort mit dem Auge aufdecken) und anpassen — nur für Administratoren.
+					</p>
+					<div className="alert alert-info">
+						<strong>Wie das Speichern wirkt:</strong> Dieses Feld ist zum <strong>Einsehen und Festhalten</strong>{" "}
+						gedacht (Referenz, Backups, Doku). Die laufenden Nodes verbinden sich zur Datenbank über ihre
+						Container-Einstellungen — änderst du hier etwas, wird der <strong>gespeicherte Datensatz</strong>{" "}
+						aktualisiert. Damit eine <em>geänderte</em> Datenbank auf den Nodes tatsächlich greift, müssen die
+						Nodes mit den neuen Werten neu gestartet werden. Ein echter Live-DB-Wechsel ist ein eigener Schritt.
+					</div>
 					<div className="row g-2">
 						<div className="col-md-4">
 							<label className="form-label">DB-Host</label>
