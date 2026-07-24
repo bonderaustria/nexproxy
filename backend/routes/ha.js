@@ -4,6 +4,7 @@ import internalHa from "../internal/ha.js";
 import internalHaProvision from "../internal/ha-provision.js";
 import internalHaUpdate from "../internal/ha-update.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
+import { isEnterprise } from "../lib/license.js";
 import { decryptSecret, encryptSecret } from "../lib/secret-store.js";
 import { debug, express as logger } from "../logger.js";
 
@@ -24,6 +25,21 @@ const router = express.Router({
 	caseSensitive: true,
 	strict: true,
 	mergeParams: true,
+});
+
+// HA management actions are Enterprise-only. Reads (status) and the keepalived
+// vip-notify callback stay open so the cluster keeps working and displaying.
+router.use((req, res, next) => {
+	const method = req.method.toUpperCase();
+	if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
+		return next();
+	}
+	if (!isEnterprise()) {
+		return res.status(403).send({
+			error: { code: 403, message: "Enterprise-Lizenz erforderlich — HA ist eine Enterprise-Funktion." },
+		});
+	}
+	next();
 });
 
 /**

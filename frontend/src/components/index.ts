@@ -1,5 +1,6 @@
 export * from "./Button";
 export * from "./EmptyData";
+export * from "./EnterpriseGate";
 export * from "./ErrorNotFound";
 export * from "./Flag";
 export * from "./Form";

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
+	EnterpriseGate,
 	ErrorNotFound,
 	LoadingPage,
 	Page,
@@ -68,7 +69,14 @@ function Router() {
 							<Route path="/audit-log" element={<AuditLog />} />
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/users" element={<Users />} />
-							<Route path="/ha" element={<HA />} />
+							<Route
+								path="/ha"
+								element={
+									<EnterpriseGate feature="HA-Cluster">
+										<HA />
+									</EnterpriseGate>
+								}
+							/>
 							<Route path="/license" element={<License />} />
 							<Route path="/nginx/proxy" element={<ProxyHosts />} />
 							<Route path="/nginx/redirection" element={<RedirectionHosts />} />
