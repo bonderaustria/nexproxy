@@ -141,12 +141,16 @@ const internalAccessLog = {
 		const limit = Math.min(Number(f.limit) || 50, 200);
 		const offset = Number(f.offset) || 0;
 
-		const rows = await applyFilters(base.clone())
+		const rawRows = await applyFilters(base.clone())
 			.select("id", "node_name", "ts", "ip", "method", "host", "path", "status")
 			.orderBy("ts", "desc")
 			.orderBy("id", "desc")
 			.limit(limit)
 			.offset(offset);
+
+		// pg returns BIGINT columns (id, ts) as strings to avoid precision loss —
+		// convert them back to numbers for the frontend (new Date(ts) needs a number).
+		const rows = rawRows.map((r) => ({ ...r, id: Number(r.id), ts: Number(r.ts) }));
 
 		const totalRow = await applyFilters(base.clone()).count("* as c").first();
 
