@@ -1,6 +1,6 @@
 {
 	"name": "nginx-proxy-manager",
-	"version": "1.0.15",
+	"version": "1.0.16",
 	"description": "A beautiful interface for creating Nginx endpoints",
 	"author": "Jamie Curnow <jc@jc21.com>",
 	"license": "MIT",

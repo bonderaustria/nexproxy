@@ -16,7 +16,7 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useProxyHost, useSetProxyHost, useUser } from "src/hooks";
+import { useProxyHost, useSetProxyHost, useUpstreams, useUser } from "src/hooks";
 import { T } from "src/locale";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { validateNumber, validateString } from "src/modules/Validations";
@@ -33,6 +33,9 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { data: currentUser, isLoading: userIsLoading, error: userError } = useUser("me");
 	const { data, isLoading, error } = useProxyHost(id);
 	const { mutate: setProxyHost } = useSetProxyHost();
+	// Only shown/used when Enterprise-licensed with at least one load balancer configured;
+	// on a free instance the request 403s and `upstreams` simply stays empty (no error UI).
+	const { data: upstreams } = useUpstreams();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,9 +44,16 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
+		const upstreamId = values.upstreamId ? Number(values.upstreamId) : null;
 		const { ...payload } = {
 			id: id === "new" ? undefined : id,
 			...values,
+			upstreamId,
+			// The backend ignores forwardHost/Port when upstreamId is set, but the
+			// fields are still required by validation — fill in a harmless placeholder.
+			...(upstreamId
+				? { forwardHost: values.forwardHost || "load-balanced", forwardPort: values.forwardPort || 1 }
+				: {}),
 		};
 
 		setProxyHost(payload, {
@@ -76,6 +86,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							forwardScheme: data?.forwardScheme || "http",
 							forwardHost: data?.forwardHost || "",
 							forwardPort: data?.forwardPort || undefined,
+							upstreamId: data?.upstreamId || "",
 							accessListId: data?.accessListId || 0,
 							cachingEnabled: data?.cachingEnabled || false,
 							blockExploits: data?.blockExploits || false,
@@ -96,7 +107,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					}
 					onSubmit={onSubmit}
 				>
-					{() => (
+					{({ values }: any) => (
 						<Form>
 							<Modal.Header closeButton>
 								<Modal.Title>
@@ -164,6 +175,22 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
+												{!!upstreams?.length && (
+													<Field name="upstreamId">
+														{({ field }: any) => (
+															<div className="mb-3">
+																<label className="form-label" htmlFor="upstreamId">Ziel</label>
+																<select id="upstreamId" className="form-control" {...field}>
+																	<option value="">Einzelnes Ziel</option>
+																	{upstreams.map((u: any) => (
+																		<option key={u.id} value={u.id}>Load Balancer: {u.name}</option>
+																	))}
+																</select>
+															</div>
+														)}
+													</Field>
+												)}
+												{!values.upstreamId && (
 												<div className="row">
 													<div className="col-md-3">
 														<Field name="forwardScheme">
@@ -253,6 +280,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 														</Field>
 													</div>
 												</div>
+											)}
 												<AccessField />
 												<div className="my-3">
 													<h4 className="py-2">

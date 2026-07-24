@@ -53,6 +53,11 @@
 			"maximum": 65535,
 			"example": 8080
 		},
+		"upstream_id": {
+			"type": ["integer", "null"],
+			"minimum": 1,
+			"example": null
+		},
 		"access_list_id": {
 			"$ref": "../common.json#/properties/access_list_id"
 		},

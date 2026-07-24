@@ -21,6 +21,7 @@ import reportsRoutes from "./reports.js";
 import schemaRoutes from "./schema.js";
 import settingsRoutes from "./settings.js";
 import tokensRoutes from "./tokens.js";
+import upstreamRoutes from "./upstream.js";
 import usersRoutes from "./users.js";
 import versionRoutes from "./version.js";
 
@@ -83,6 +84,7 @@ router.use("/ha", haRoutes);
 router.use("/hosts-health", hostsHealthRoutes);
 router.use("/license", licenseRoutes);
 router.use("/access-log", accessLogRoutes);
+router.use("/upstreams", upstreamRoutes);
 router.use("/nginx/proxy-hosts", proxyHostsRoutes);
 router.use("/nginx/redirection-hosts", redirectionHostsRoutes);
 router.use("/nginx/dead-hosts", deadHostsRoutes);

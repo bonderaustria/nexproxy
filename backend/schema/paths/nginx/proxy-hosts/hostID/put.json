@@ -44,6 +44,9 @@
 						"forward_port": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/forward_port"
 						},
+						"upstream_id": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/upstream_id"
+						},
 						"certificate_id": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/certificate_id"
 						},

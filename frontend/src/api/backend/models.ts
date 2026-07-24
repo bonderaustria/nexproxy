@@ -114,6 +114,7 @@ export interface ProxyHost {
 	forwardScheme: string;
 	forwardHost: string;
 	forwardPort: number;
+	upstreamId?: number | null;
 	accessListId: number;
 	certificateId: number;
 	sslForced: boolean;
