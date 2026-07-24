@@ -42,7 +42,7 @@ const CodeBlock = ({ title, code }: { title: string; code: string }) => {
 };
 
 const HA = () => {
-	const { data: status } = useHAStatus();
+	const { data: status, isLoading, isError } = useHAStatus();
 
 	const [form, setForm] = useState({
 		nodeName: "nexproxy-b",
@@ -159,7 +159,19 @@ const HA = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{status?.nodes?.length ? (
+							{isLoading && !status ? (
+								<tr>
+									<td colSpan={6} className="text-muted">
+										Lade Cluster-Status…
+									</td>
+								</tr>
+							) : isError && !status ? (
+								<tr>
+									<td colSpan={6} className="text-danger">
+										Cluster-Status konnte nicht geladen werden (Failover im Gange?).
+									</td>
+								</tr>
+							) : status?.nodes?.length ? (
 								status.nodes.map((n) => (
 									<tr key={n.name}>
 										<td>

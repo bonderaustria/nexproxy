@@ -1,7 +1,23 @@
 import express from "express";
+import db from "../db.js";
 import internalHa from "../internal/ha.js";
+import internalHaProvision from "../internal/ha-provision.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
+import { decryptSecret, encryptSecret } from "../lib/secret-store.js";
 import { debug, express as logger } from "../logger.js";
+
+// The API client decamelizes request bodies; nested SSH targets arrive snake_case.
+const mapTarget = (t) =>
+	t && t.host
+		? {
+				host: t.host,
+				port: t.port,
+				username: t.username,
+				password: t.password,
+				privateKey: t.private_key,
+				passphrase: t.passphrase,
+			}
+		: undefined;
 
 const router = express.Router({
 	caseSensitive: true,
@@ -55,6 +71,92 @@ router
 			res.status(200).send(data);
 		} catch (error) {
 			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${error}`);
+			next(error);
+		}
+	});
+
+/**
+ * POST /api/ha/provision  — start automatic HA setup (fire and forget)
+ * GET  /api/ha/provision-status — poll progress
+ */
+router
+	.route("/provision")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.post(async (req, res, next) => {
+		try {
+			const b = req.body || {};
+			if (internalHaProvision.getJob().running) {
+				return res.status(409).send({ error: "Provisionierung läuft bereits" });
+			}
+			// Fire and forget; the GUI polls /provision-status.
+			internalHaProvision.provision({
+				dbTarget: mapTarget(b.db_target),
+				nodeTarget: mapTarget(b.node_target),
+				primaryTarget: mapTarget(b.primary_target),
+				dbAddress: b.db_address,
+				primaryAddress: b.primary_address,
+				nodeAddress: b.node_address,
+				vip: b.vip,
+				iface: b.iface,
+				vrid: b.vrid,
+			});
+			res.status(202).send({ started: true });
+		} catch (error) {
+			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${error}`);
+			next(error);
+		}
+	});
+
+router
+	.route("/provision-status")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.get(async (_req, res) => {
+		res.status(200).send(internalHaProvision.getJob());
+	});
+
+/**
+ * GET/PUT /api/ha/db-config — view / edit the shared database credentials (admin)
+ */
+router
+	.route("/db-config")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.get(async (_req, res, next) => {
+		try {
+			const row = await db()("ha_config").where({ id: 1 }).first();
+			res.status(200).send({
+				db_host: row?.db_host || "",
+				db_port: row?.db_port || 5432,
+				db_name: row?.db_name || "npm",
+				db_user: row?.db_user || "npm",
+				db_password: decryptSecret(row?.db_password_enc),
+				vip: row?.vip || "",
+				provisioned: !!row?.provisioned,
+			});
+		} catch (error) {
+			next(error);
+		}
+	})
+	.put(async (req, res, next) => {
+		try {
+			const b = req.body || {};
+			const update = {
+				db_host: b.db_host,
+				db_port: b.db_port,
+				db_name: b.db_name,
+				db_user: b.db_user,
+				vip: b.vip,
+				modified_on: Date.now(),
+			};
+			if (typeof b.db_password === "string" && b.db_password !== "") {
+				update.db_password_enc = encryptSecret(b.db_password);
+			}
+			Object.keys(update).forEach((k) => update[k] === undefined && delete update[k]);
+			await db()("ha_config").where({ id: 1 }).update(update);
+			res.status(200).send({ saved: true });
+		} catch (error) {
 			next(error);
 		}
 	});
