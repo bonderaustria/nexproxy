@@ -3,7 +3,6 @@ import {
 	IconCrown,
 	IconDeviceDesktop,
 	IconFileText,
-	IconScale,
 	IconHome,
 	IconLock,
 	IconServer,
@@ -103,12 +102,6 @@ const menuItems: MenuItem[] = [
 		to: "/access-log",
 		icon: IconFileText,
 		label: "access-log",
-		permissionSection: ADMIN,
-	},
-	{
-		to: "/load-balancing",
-		icon: IconScale,
-		label: "load-balancing",
 		permissionSection: ADMIN,
 	},
 	{

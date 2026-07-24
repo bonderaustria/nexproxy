@@ -3,6 +3,8 @@ import errs from "../lib/error.js";
 import { castJsonIfNeed } from "../lib/helpers.js";
 import utils from "../lib/utils.js";
 import proxyHostModel from "../models/proxy_host.js";
+import UpstreamModel from "../models/upstream.js";
+import UpstreamServerModel from "../models/upstream_server.js";
 import internalAuditLog from "./audit-log.js";
 import internalCertificate from "./certificate.js";
 import internalHost from "./host.js";
@@ -288,6 +290,18 @@ const internalProxyHost = {
 					.where("id", row.id)
 					.patch({
 						is_deleted: 1,
+					})
+					.then(() => {
+						// Cascade: a load balancer created for this host is no longer usable
+						// by anyone else once the host is gone — clean it up too.
+						if (!row.upstream_id) {
+							return null;
+						}
+						return UpstreamServerModel.query()
+							.where("upstream_id", row.upstream_id)
+							.del()
+							.then(() => UpstreamModel.query().where("id", row.upstream_id).patch({ is_deleted: 1 }))
+							.then(() => internalNginx.deleteConfig("upstream", { id: row.upstream_id }));
 					})
 					.then(() => {
 						// Delete Nginx Config

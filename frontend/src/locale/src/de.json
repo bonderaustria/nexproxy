@@ -257,9 +257,6 @@
 	"access-log": {
 		"defaultMessage": "Zugriffsprotokoll"
 	},
-	"load-balancing": {
-		"defaultMessage": "Load Balancing"
-	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},

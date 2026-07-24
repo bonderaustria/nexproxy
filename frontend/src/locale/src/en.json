@@ -329,9 +329,6 @@
 	"access-log": {
 		"defaultMessage": "Access Log"
 	},
-	"load-balancing": {
-		"defaultMessage": "Load Balancing"
-	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},
