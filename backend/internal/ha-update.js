@@ -24,7 +24,51 @@ async function getNodeSsh(nodeName) {
 
 const run = (target, cmd) => sshExec(target, `export PATH=/usr/sbin:/usr/bin:/sbin:/bin; ${cmd}`);
 
+const cmpSemver = (a, b) => {
+	const pa = String(a).split(".").map(Number);
+	const pb = String(b).split(".").map(Number);
+	for (let i = 0; i < 3; i++) {
+		if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+	}
+	return 0;
+};
+
+let versionCache = { value: null, ts: 0 };
+
+/**
+ * Query the container registry for the newest available version tag (the one a
+ * node would receive on "Update"). Cached for 5 minutes.
+ */
+async function getLatestVersion() {
+	if (versionCache.value && Date.now() - versionCache.ts < 5 * 60 * 1000) {
+		return versionCache.value;
+	}
+	try {
+		const user = process.env.NEXPROXY_REGISTRY_USER || "";
+		const token = process.env.NEXPROXY_REGISTRY_TOKEN || "";
+		const repo = IMAGE.split("/").slice(1).join("/").split(":")[0]; // e.g. bonderaustria/nexproxy
+		const auth = Buffer.from(`${user}:${token}`).toString("base64");
+		const tokRes = await fetch(`https://ghcr.io/token?scope=repository:${repo}:pull`, {
+			headers: token ? { Authorization: `Basic ${auth}` } : {},
+			signal: AbortSignal.timeout(6000),
+		});
+		const bearer = (await tokRes.json()).token;
+		const tagsRes = await fetch(`https://ghcr.io/v2/${repo}/tags/list`, {
+			headers: { Authorization: `Bearer ${bearer}` },
+			signal: AbortSignal.timeout(6000),
+		});
+		const tags = (await tagsRes.json()).tags || [];
+		const semvers = tags.filter((t) => /^\d+\.\d+\.\d+$/.test(t)).sort(cmpSemver);
+		versionCache = { value: semvers[semvers.length - 1] || null, ts: Date.now() };
+	} catch (err) {
+		logger.error(`[HA-Update] latest-version check failed: ${err.message}`);
+	}
+	return versionCache.value;
+}
+
 const internalHaUpdate = {
+	getLatestVersion,
+
 	/**
 	 * Pull the latest image and restart a node's container + keepalived. Runs
 	 * detached so it survives restarting the very node it targets. The active

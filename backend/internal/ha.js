@@ -86,6 +86,11 @@ const internalHa = {
 			await db()("ha_node")
 				.where("last_seen", "<", now - 60 * 60 * 1000)
 				.del();
+			// The floating IP is exclusive — if we currently hold it, clear any stale
+			// has_vip flag left on other nodes (e.g. after an unclean keepalived stop).
+			if (localHasVip) {
+				await db()("ha_node").whereNot("name", selfName()).update({ has_vip: 0 });
+			}
 		} catch (err) {
 			logger.error(`[HA] heartbeat failed: ${err.message}`);
 		}

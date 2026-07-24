@@ -194,6 +194,14 @@ router
 	});
 
 router
+	.route("/latest-version")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.get(async (_req, res) => {
+		res.status(200).send({ latest: await internalHaUpdate.getLatestVersion() });
+	});
+
+router
 	.route("/force-failover")
 	.options((_, res) => res.sendStatus(204))
 	.all(jwtdecode())

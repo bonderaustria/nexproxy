@@ -9,6 +9,7 @@ export * from "./useDeadHost";
 export * from "./useDeadHosts";
 export * from "./useDnsProviders";
 export * from "./useHADbConfig";
+export * from "./useHALatestVersion";
 export * from "./useHAProvisionStatus";
 export * from "./useHAStatus";
 export * from "./useHealth";

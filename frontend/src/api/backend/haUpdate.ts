@@ -12,3 +12,7 @@ export async function forceHAFailover(): Promise<{ failedOverFrom: string }> {
 		url: "/ha/force-failover",
 	});
 }
+
+export async function getHALatestVersion(): Promise<{ latest: string | null }> {
+	return await api.get({ url: "/ha/latest-version" });
+}

@@ -1,7 +1,16 @@
 import { IconCheck, IconEye, IconEyeOff, IconServer, IconX } from "@tabler/icons-react";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { forceHAFailover, startHAProvision, updateHADbConfig, updateHANode } from "src/api/backend";
-import { useHADbConfig, useHAProvisionStatus, useHAStatus } from "src/hooks";
+import { useHADbConfig, useHALatestVersion, useHAProvisionStatus, useHAStatus } from "src/hooks";
+
+const cmpVersion = (a: string, b: string): number => {
+	const pa = a.split(".").map(Number);
+	const pb = b.split(".").map(Number);
+	for (let i = 0; i < 3; i++) {
+		if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+	}
+	return 0;
+};
 
 const relativeSeen = (ts: number): string => {
 	if (!ts) return "—";
@@ -19,6 +28,8 @@ const roleBadge = (role: string) => {
 
 const HA = () => {
 	const { data: status, isLoading, isError } = useHAStatus();
+	const { data: latestData } = useHALatestVersion();
+	const latest = latestData?.latest || null;
 
 	// ---- Rolling update / failover ----
 	const [actionMsg, setActionMsg] = useState<string | null>(null);
@@ -200,6 +211,11 @@ const HA = () => {
 				<div className="card-header">
 					<h3 className="card-title">Cluster-Status</h3>
 					<div className="card-actions">
+						{latest && (
+							<span className="me-3">
+								Neueste Version: <span className="badge bg-green-lt ms-1">{latest}</span>
+							</span>
+						)}
 						{status?.vip && (
 							<span className="me-3">
 								Floating-IP: <span className="badge bg-blue-lt ms-1">{status.vip}</span>
@@ -268,19 +284,29 @@ const HA = () => {
 										<td>{n.version || "—"}</td>
 										<td>{relativeSeen(n.lastSeen)}</td>
 										<td>
-											<button
-												type="button"
-												className="btn btn-sm"
-												disabled={busy || n.name === status.activeNode}
-												onClick={() => doUpdate(n.name)}
-												title={
-													n.name === status.activeNode
-														? "Aktiver Node — mach zuerst Force Failover"
-														: "Auf den neuesten Stand aktualisieren"
-												}
-											>
-												Update
-											</button>
+											{latest && n.version === latest ? (
+												<span className="text-green small">✓ aktuell ({latest})</span>
+											) : (
+												<button
+													type="button"
+													className={
+														latest && n.version && cmpVersion(n.version, latest) < 0
+															? "btn btn-sm btn-primary"
+															: "btn btn-sm"
+													}
+													disabled={busy || n.name === status.activeNode}
+													onClick={() => doUpdate(n.name)}
+													title={
+														n.name === status.activeNode
+															? "Aktiver Node — mach zuerst Force Failover"
+															: "Auf den neuesten Stand aktualisieren"
+													}
+												>
+													{latest && n.version && cmpVersion(n.version, latest) < 0
+														? `Update → ${latest}`
+														: "Update"}
+												</button>
+											)}
 										</td>
 									</tr>
 								))
