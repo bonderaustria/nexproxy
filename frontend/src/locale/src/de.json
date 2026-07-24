@@ -251,6 +251,9 @@
 	"ha-cluster": {
 		"defaultMessage": "HA-Cluster"
 	},
+	"license": {
+		"defaultMessage": "Lizenz"
+	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},

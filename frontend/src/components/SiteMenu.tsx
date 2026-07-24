@@ -1,5 +1,6 @@
 import {
 	IconBook,
+	IconCrown,
 	IconDeviceDesktop,
 	IconHome,
 	IconLock,
@@ -106,6 +107,12 @@ const menuItems: MenuItem[] = [
 		to: "/ha",
 		icon: IconServer,
 		label: "ha-cluster",
+		permissionSection: ADMIN,
+	},
+	{
+		to: "/license",
+		icon: IconCrown,
+		label: "license",
 		permissionSection: ADMIN,
 	},
 ];

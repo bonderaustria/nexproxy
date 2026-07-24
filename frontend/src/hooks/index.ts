@@ -12,6 +12,7 @@ export * from "./useHADbConfig";
 export * from "./useHAProvisionStatus";
 export * from "./useHAStatus";
 export * from "./useHealth";
+export * from "./useLicense";
 export * from "./useHostReport";
 export * from "./useProxyHost";
 export * from "./useProxyHosts";

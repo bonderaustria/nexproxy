@@ -28,6 +28,7 @@ export * from "./generateHAConfig";
 export * from "./haDbConfig";
 export * from "./haProvision";
 export * from "./haUpdate";
+export * from "./license";
 export * from "./getHAStatus";
 export * from "./getHealth";
 export * from "./getHostsReport";

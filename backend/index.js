@@ -5,6 +5,7 @@ import internalCertificate from "./internal/certificate.js";
 import internalHa from "./internal/ha.js";
 import internalHostMonitor from "./internal/host-monitor.js";
 import internalIpRanges from "./internal/ip_ranges.js";
+import { loadLicense } from "./lib/license.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
 import { getCompiledSchema } from "./schema/index.js";
@@ -15,6 +16,7 @@ const IP_RANGES_FETCH_ENABLED = process.env.IP_RANGES_FETCH_ENABLED !== "false";
 async function appStart() {
 	return migrateUp()
 		.then(setup)
+		.then(loadLicense)
 		.then(getCompiledSchema)
 		.then(() => {
 			if (!IP_RANGES_FETCH_ENABLED) {
