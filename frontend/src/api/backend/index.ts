@@ -25,6 +25,8 @@ export * from "./getCertificates";
 export * from "./getDeadHost";
 export * from "./getDeadHosts";
 export * from "./generateHAConfig";
+export * from "./haDbConfig";
+export * from "./haProvision";
 export * from "./getHAStatus";
 export * from "./getHealth";
 export * from "./getHostsReport";
