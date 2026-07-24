@@ -11,3 +11,8 @@ docker/dev/resolv.conf
 .claude
 
 /BRANDING-HANDOFF.md
+
+# License records contain customer names/emails/keys — never commit them.
+/nexproxy-licenses.csv
+*-license-private-key.pem
+/enterprise/tools/
