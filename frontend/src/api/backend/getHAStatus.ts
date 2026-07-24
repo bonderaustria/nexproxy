@@ -11,6 +11,7 @@ export interface HANode {
 }
 
 export interface HAStatusResponse {
+	standalone?: boolean;
 	enabled: boolean;
 	vip: string | null;
 	activeNode: string | null;

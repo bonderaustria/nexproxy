@@ -59,6 +59,10 @@ const internalHa = {
 	 * role change (e.g. via env) only applies on first registration.
 	 */
 	heartbeat: async () => {
+		// A standalone instance is not part of a cluster — don't register it.
+		if (selfRole() === "standalone") {
+			return;
+		}
 		try {
 			const now = Date.now();
 			await db()("ha_node")
@@ -109,9 +113,35 @@ const internalHa = {
 	 * "add node" wizard.
 	 */
 	getStatus: async () => {
+		let dbCfg = {};
+		try {
+			dbCfg = configGet("database") || {};
+		} catch (_e) {
+			dbCfg = {};
+		}
+		const defaults = {
+			dbHost: dbCfg.host || "",
+			dbPort: dbCfg.port || 5432,
+			dbName: dbCfg.name || "npm",
+			dbUser: dbCfg.user || "npm",
+			vip: process.env.HA_VIP || "",
+		};
+
+		// Standalone (not part of an HA cluster): no meaningful cluster to show.
+		if (selfRole() === "standalone") {
+			return {
+				standalone: true,
+				enabled: false,
+				vip: null,
+				activeNode: null,
+				self: selfName(),
+				nodes: [],
+				defaults,
+			};
+		}
+
 		const rows = await db()("ha_node").select();
 		const now = Date.now();
-
 		const nodes = rows.map((n) => ({
 			name: n.name,
 			address: n.address,
@@ -133,26 +163,14 @@ const internalHa = {
 			online[0]?.name ||
 			null;
 
-		let dbCfg = {};
-		try {
-			dbCfg = configGet("database") || {};
-		} catch (_e) {
-			dbCfg = {};
-		}
-
 		return {
-			enabled: nodes.length > 1 || selfRole() !== "standalone",
+			standalone: false,
+			enabled: true,
 			vip: process.env.HA_VIP || null,
 			activeNode,
 			self: selfName(),
 			nodes,
-			defaults: {
-				dbHost: dbCfg.host || "",
-				dbPort: dbCfg.port || 5432,
-				dbName: dbCfg.name || "npm",
-				dbUser: dbCfg.user || "npm",
-				vip: process.env.HA_VIP || "",
-			},
+			defaults,
 		};
 	},
 

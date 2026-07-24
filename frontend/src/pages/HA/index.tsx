@@ -179,7 +179,14 @@ const HA = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{isLoading && !status ? (
+							{status?.standalone ? (
+								<tr>
+									<td colSpan={6} className="text-muted">
+										Diese Instanz läuft <strong>standalone</strong> — noch kein HA-Cluster. Richte unten
+										„HA automatisch einrichten" aus, um ein Cluster zu bilden.
+									</td>
+								</tr>
+							) : isLoading && !status ? (
 								<tr>
 									<td colSpan={6} className="text-muted">
 										Lade Cluster-Status…
