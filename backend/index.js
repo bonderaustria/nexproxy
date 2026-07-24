@@ -6,6 +6,7 @@ import internalHa from "./internal/ha.js";
 import internalAccessLog from "./internal/access-log.js";
 import internalHostMonitor from "./internal/host-monitor.js";
 import internalIpRanges from "./internal/ip_ranges.js";
+import { syncJwtKeys } from "./internal/jwt-sync.js";
 import { loadLicense, startLicenseRefresh } from "./lib/license.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
@@ -16,6 +17,7 @@ const IP_RANGES_FETCH_ENABLED = process.env.IP_RANGES_FETCH_ENABLED !== "false";
 
 async function appStart() {
 	return migrateUp()
+		.then(syncJwtKeys)
 		.then(setup)
 		.then(loadLicense)
 		.then(getCompiledSchema)

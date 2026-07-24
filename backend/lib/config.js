@@ -245,6 +245,22 @@ const getPrivateKey = () => {
 };
 
 /**
+ * Overwrite the in-memory + persisted JWT signing keys (used to adopt a
+ * cluster-shared key so a session stays valid across HA nodes).
+ *
+ * @param {{key: string, pub: string}} keys
+ */
+const setKeys = (keys) => {
+	instance === null && configure();
+	instance.keys = keys;
+	try {
+		fs.writeFileSync(keysFile, JSON.stringify(keys, null, 2));
+	} catch (err) {
+		logger.error(`Could not persist JWT key pair to ${keysFile}: ${err.message}`);
+	}
+};
+
+/**
  * @returns {boolean}
  */
 const useLetsencryptStaging = () => !!process.env.LE_STAGING;
@@ -259,4 +275,4 @@ const useLetsencryptServer = () => {
 	return null;
 };
 
-export { isCI, configHas, configGet, isSqlite, isMysql, isPostgres, isDebugMode, getPrivateKey, getPublicKey, useLetsencryptStaging, useLetsencryptServer };
+export { isCI, configHas, configGet, isSqlite, isMysql, isPostgres, isDebugMode, getPrivateKey, getPublicKey, setKeys, useLetsencryptStaging, useLetsencryptServer };
