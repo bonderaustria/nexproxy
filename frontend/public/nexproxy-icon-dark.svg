@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NexProxy">
+  <defs>
+    <linearGradient id="npBlueD" x1="120" y1="70" x2="430" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5A9BFF"/>
+      <stop offset="0.55" stop-color="#2A7BFF"/>
+      <stop offset="1" stop-color="#005FF6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shield: light outer outline so it reads on dark/navy backgrounds -->
+  <path d="M256 44 L436 104 V244 C436 356 360 430 256 468 C152 430 76 356 76 244 V104 Z"
+        fill="none" stroke="#F5F7FB" stroke-width="26" stroke-linejoin="round"/>
+  <path d="M256 60 L420 115 V244 C420 346 352 414 256 450 C160 414 92 346 92 244 V115 Z"
+        fill="none" stroke="url(#npBlueD)" stroke-width="14" stroke-linejoin="round" opacity="0.95"/>
+
+  <!-- Speed lines -->
+  <g stroke="url(#npBlueD)" stroke-width="22" stroke-linecap="round">
+    <line x1="40" y1="212" x2="150" y2="212"/>
+    <line x1="70" y1="262" x2="150" y2="262"/>
+    <line x1="40" y1="312" x2="150" y2="312"/>
+  </g>
+  <g fill="#5A9BFF">
+    <circle cx="24" cy="212" r="12"/>
+    <circle cx="54" cy="262" r="12"/>
+    <circle cx="24" cy="312" r="12"/>
+  </g>
+
+  <!-- N letterform: light so it pops on dark -->
+  <path d="M170 356 V196 H214 L316 316 V196 H354 V356 H312 L208 234 V356 Z" fill="url(#npBlueD)"/>
+  <path d="M300 196 H354 V300 Z" fill="#0B1220"/>
+</svg>

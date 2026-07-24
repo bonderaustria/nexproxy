@@ -1,0 +1,70 @@
+# Simple-HA Proof-of-Concept auf EINEM Host.
+#
+# Zweck: beweist den GETEILTEN ZUSTAND (beide NPM-Nodes lesen dieselbe MariaDB
+# und teilen Certs). Das eigentliche IP-Takeover (keepalived/VRRP) laesst sich
+# auf einem einzelnen Docker-Host NICHT testen -- dafuer zwei getrennte Hosts
+# im selben LAN, siehe README.md.
+#
+# Start:  docker compose -f docker-compose.ha-poc.yml up -d
+# Test:   Aendere einen Proxy-Host auf node-a (Port 8181) -> er erscheint auch
+#         auf node-b (Port 8281), weil beide dieselbe DB nutzen.
+
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: npm
+      MYSQL_USER: npm
+      MYSQL_PASSWORD: npmpw
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 10
+
+  node-a:
+    image: jc21/nginx-proxy-manager:latest   # spaeter: dein eigenes Fork-Image
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_MYSQL_HOST: db
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: npm
+      DB_MYSQL_PASSWORD: npmpw
+      DB_MYSQL_NAME: npm
+    ports:
+      - "8080:80"     # oeffentlich (Node A)
+      - "8181:81"     # Admin-UI (Node A)
+    volumes:
+      - certs:/etc/letsencrypt        # GETEILT: beide Nodes, selbe Certs
+      - node_a_data:/data
+
+  node-b:
+    image: jc21/nginx-proxy-manager:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_MYSQL_HOST: db
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: npm
+      DB_MYSQL_PASSWORD: npmpw
+      DB_MYSQL_NAME: npm
+    ports:
+      - "8280:80"     # oeffentlich (Node B)
+      - "8281:81"     # Admin-UI (Node B)
+    volumes:
+      - certs:/etc/letsencrypt        # dasselbe Cert-Volume wie Node A
+      - node_b_data:/data
+
+# Hinweis: node_a_data / node_b_data sind pro Node lokal -- die generierten
+# Nginx-Configs unter /data/nginx erzeugt jeder Node selbst aus der gemeinsamen
+# DB. Nur die Certs (/etc/letsencrypt) muessen geteilt werden.
+volumes:
+  db_data:
+  certs:
+  node_a_data:
+  node_b_data:
