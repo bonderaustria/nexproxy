@@ -1,4 +1,4 @@
-import { IconSettings } from "@tabler/icons-react";
+import { IconSettings, IconTrash } from "@tabler/icons-react";
 import cn from "classnames";
 import EasyModal, { type InnerModalProps } from "ez-modal-react";
 import { Field, Form, Formik } from "formik";
@@ -16,6 +16,7 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
+import { createUpstream, updateUpstream } from "src/api/backend";
 import { useProxyHost, useSetProxyHost, useUpstreams, useUser } from "src/hooks";
 import { T } from "src/locale";
 import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
@@ -44,29 +45,59 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const upstreamId = values.upstreamId ? Number(values.upstreamId) : null;
-		const { ...payload } = {
-			id: id === "new" ? undefined : id,
-			...values,
-			upstreamId,
-			// The backend ignores forwardHost/Port when upstreamId is set, but the
-			// fields are still required by validation — fill in a harmless placeholder.
-			...(upstreamId
-				? { forwardHost: values.forwardHost || "load-balanced", forwardPort: values.forwardPort || 1 }
-				: {}),
-		};
+		try {
+			let upstreamId: number | null = null;
 
-		setProxyHost(payload, {
-			onError: (err: any) => setErrorMsg(<T id={err.message} />),
-			onSuccess: () => {
-				showObjectSuccess("proxy-host", "saved");
-				remove();
-			},
-			onSettled: () => {
-				setIsSubmitting(false);
-				setSubmitting(false);
-			},
-		});
+			if (values.loadBalancingEnabled) {
+				const validServers = (values.lbServers || []).filter((s: any) => s.host?.trim() && s.port);
+				if (!validServers.length) {
+					setErrorMsg("Mindestens ein Backend-Ziel ist erforderlich");
+					setIsSubmitting(false);
+					setSubmitting(false);
+					return;
+				}
+				const lbPayload = {
+					name: `${values.domainNames?.[0] || "host"}-lb`,
+					method: values.lbMethod || "round_robin",
+					servers: validServers,
+				};
+				const existingUpstreamId: number | null = data?.upstreamId || null;
+				const upstream = existingUpstreamId
+					? await updateUpstream(existingUpstreamId, lbPayload)
+					: await createUpstream(lbPayload);
+				upstreamId = upstream.id;
+			}
+
+			const payload: any = {
+				id: id === "new" ? undefined : id,
+				...values,
+				upstreamId,
+				// The backend ignores forwardHost/Port when upstreamId is set, but the
+				// fields are still required by validation — fill in a harmless placeholder.
+				...(upstreamId
+					? { forwardHost: values.forwardHost || "load-balanced", forwardPort: values.forwardPort || 1 }
+					: {}),
+			};
+			delete payload.loadBalancingEnabled;
+			delete payload.lbMethod;
+			delete payload.lbServers;
+
+			setProxyHost(payload, {
+				onError: (err: any) => setErrorMsg(<T id={err.message} />),
+				onSuccess: () => {
+					showObjectSuccess("proxy-host", "saved");
+					remove();
+				},
+				onSettled: () => {
+					setIsSubmitting(false);
+					setSubmitting(false);
+				},
+			});
+		} catch (e: any) {
+			setErrorMsg(e?.message || "Load Balancer konnte nicht gespeichert werden");
+			setIsSubmitting(false);
+			setSubmitting(false);
+		}
 	};
 
 	return (
@@ -86,7 +117,13 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							forwardScheme: data?.forwardScheme || "http",
 							forwardHost: data?.forwardHost || "",
 							forwardPort: data?.forwardPort || undefined,
-							upstreamId: data?.upstreamId || "",
+							loadBalancingEnabled: !!data?.upstreamId,
+							lbMethod: upstreams?.find((u) => u.id === data?.upstreamId)?.method || "round_robin",
+							lbServers: upstreams?.find((u) => u.id === data?.upstreamId)?.servers?.length
+								? upstreams
+										.find((u) => u.id === data?.upstreamId)!
+										.servers.map((s) => ({ host: s.host, port: s.port, weight: s.weight }))
+								: [{ host: "", port: 80, weight: 1 }],
 							accessListId: data?.accessListId || 0,
 							cachingEnabled: data?.cachingEnabled || false,
 							blockExploits: data?.blockExploits || false,
@@ -107,7 +144,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					}
 					onSubmit={onSubmit}
 				>
-					{({ values }: any) => (
+					{({ values, setFieldValue }: any) => (
 						<Form>
 							<Modal.Header closeButton>
 								<Modal.Title>
@@ -175,112 +212,102 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
 												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
-												{!!upstreams?.length && (
-													<Field name="upstreamId">
-														{({ field }: any) => (
+													<div className="row">
+														<div className="col-md-3">
+															<Field name="forwardScheme">
+																{({ field, form }: any) => (
+																	<div className="mb-3">
+																		<label className="form-label" htmlFor="forwardScheme"><T id="host.forward-scheme" /></label>
+																		<select id="forwardScheme" className={`form-control ${form.errors.forwardScheme && form.touched.forwardScheme ? "is-invalid" : ""}`} required {...field}>
+																			<option value="http">http</option>
+																			<option value="https">https</option>
+																		</select>
+																		<div className="form-text">Schema, mit dem NexProxy die Ziele anspricht (gilt auch für Load Balancing).</div>
+																	</div>
+																)}
+															</Field>
+														</div>
+														<div className="col-md-9">
 															<div className="mb-3">
-																<label className="form-label" htmlFor="upstreamId">Ziel</label>
-																<select id="upstreamId" className="form-control" {...field}>
-																	<option value="">Einzelnes Ziel</option>
-																	{upstreams.map((u: any) => (
-																		<option key={u.id} value={u.id}>Load Balancer: {u.name}</option>
-																	))}
-																</select>
+																<label className="form-label">Ziel</label>
+																<label className="form-check form-switch">
+																	<Field name="loadBalancingEnabled" type="checkbox" className="form-check-input" />
+																	<span className="form-check-label">Load Balancing aktivieren (mehrere Backend-Ziele statt einem)</span>
+																</label>
 															</div>
-														)}
-													</Field>
-												)}
-												{!values.upstreamId && (
-												<div className="row">
-													<div className="col-md-3">
-														<Field name="forwardScheme">
-															{({ field, form }: any) => (
-																<div className="mb-3">
-																	<label
-																		className="form-label"
-																		htmlFor="forwardScheme"
-																	>
-																		<T id="host.forward-scheme" />
-																	</label>
-																	<select
-																		id="forwardScheme"
-																		className={`form-control ${form.errors.forwardScheme && form.touched.forwardScheme ? "is-invalid" : ""}`}
-																		required
-																		{...field}
-																	>
-																		<option value="http">http</option>
-																		<option value="https">https</option>
-																	</select>
-																	{form.errors.forwardScheme ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardScheme &&
-																			form.touched.forwardScheme
-																				? form.errors.forwardScheme
-																				: null}
-																		</div>
-																	) : null}
-																</div>
-															)}
-														</Field>
+														</div>
 													</div>
-													<div className="col-md-6">
-														<Field name="forwardHost" validate={validateString(1, 255)}>
-															{({ field, form }: any) => (
-																<div className="mb-3">
-																	<label className="form-label" htmlFor="forwardHost">
-																		<T id="proxy-host.forward-host" />
-																	</label>
-																	<input
-																		id="forwardHost"
-																		type="text"
-																		className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`}
-																		required
-																		placeholder="example.com"
-																		{...field}
-																	/>
-																	{form.errors.forwardHost ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardHost &&
-																			form.touched.forwardHost
-																				? form.errors.forwardHost
-																				: null}
+
+													{!values.loadBalancingEnabled && (
+														<div className="row">
+															<div className="col-md-6">
+																<Field name="forwardHost" validate={validateString(1, 255)}>
+																	{({ field, form }: any) => (
+																		<div className="mb-3">
+																			<label className="form-label" htmlFor="forwardHost"><T id="proxy-host.forward-host" /></label>
+																			<input id="forwardHost" type="text" className={`form-control ${form.errors.forwardHost && form.touched.forwardHost ? "is-invalid" : ""}`} required placeholder="example.com" {...field} />
+																			{form.errors.forwardHost && form.touched.forwardHost ? <div className="invalid-feedback">{form.errors.forwardHost}</div> : null}
 																		</div>
-																	) : null}
-																</div>
-															)}
-														</Field>
-													</div>
-													<div className="col-md-3">
-														<Field name="forwardPort" validate={validateNumber(1, 65535)}>
-															{({ field, form }: any) => (
-																<div className="mb-3">
-																	<label className="form-label" htmlFor="forwardPort">
-																		<T id="host.forward-port" />
-																	</label>
-																	<input
-																		id="forwardPort"
-																		type="number"
-																		min={1}
-																		max={65535}
-																		className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`}
-																		required
-																		placeholder="eg: 8081"
-																		{...field}
-																	/>
-																	{form.errors.forwardPort ? (
-																		<div className="invalid-feedback">
-																			{form.errors.forwardPort &&
-																			form.touched.forwardPort
-																				? form.errors.forwardPort
-																				: null}
+																	)}
+																</Field>
+															</div>
+															<div className="col-md-6">
+																<Field name="forwardPort" validate={validateNumber(1, 65535)}>
+																	{({ field, form }: any) => (
+																		<div className="mb-3">
+																			<label className="form-label" htmlFor="forwardPort"><T id="host.forward-port" /></label>
+																			<input id="forwardPort" type="number" min={1} max={65535} className={`form-control ${form.errors.forwardPort && form.touched.forwardPort ? "is-invalid" : ""}`} required placeholder="eg: 8081" {...field} />
+																			{form.errors.forwardPort && form.touched.forwardPort ? <div className="invalid-feedback">{form.errors.forwardPort}</div> : null}
 																		</div>
-																	) : null}
+																	)}
+																</Field>
+															</div>
+														</div>
+													)}
+
+													{values.loadBalancingEnabled && (
+														<div className="card card-sm mb-3 bg-secondary-lt">
+															<div className="card-body">
+																<div className="row g-2 mb-2">
+																	<div className="col-md-4">
+																		<label className="form-label">Balancing-Methode</label>
+																		<Field as="select" name="lbMethod" className="form-control">
+																			<option value="round_robin">Round Robin</option>
+																			<option value="least_conn">Least Connections</option>
+																		</Field>
+																	</div>
 																</div>
-															)}
-														</Field>
-													</div>
-												</div>
-											)}
+																<div className="text-muted small mb-2">
+																	Jedes Ziel wird automatisch per Health-Check überwacht (TCP-Verbindungstest alle 45s) — fällt eines aus, nimmt NexProxy es sofort aus der Rotation und holt es zurück, sobald es wieder erreichbar ist. Zertifikate werden nicht pro Ziel benötigt: SSL läuft am Proxy-Host (siehe Schema-Feld oben und den SSL-Tab).
+																</div>
+																<label className="form-label">Backend-Ziele</label>
+																{(values.lbServers || []).map((s: any, idx: number) => (
+																	<div className="row g-2 mb-2 align-items-end" key={idx}>
+																		<div className="col-md-5">
+																			<label className="form-label small text-muted">Host</label>
+																			<input className="form-control" value={s.host} onChange={(e) => setFieldValue(`lbServers[${idx}].host`, e.target.value)} placeholder="IP oder Hostname" />
+																		</div>
+																		<div className="col-md-3">
+																			<label className="form-label small text-muted">Port</label>
+																			<input type="number" className="form-control" value={s.port} onChange={(e) => setFieldValue(`lbServers[${idx}].port`, Number(e.target.value))} placeholder="z. B. 8080" />
+																		</div>
+																		<div className="col-md-3">
+																			<label className="form-label small text-muted">Gewicht</label>
+																			<input type="number" min={1} className="form-control" value={s.weight} onChange={(e) => setFieldValue(`lbServers[${idx}].weight`, Number(e.target.value))} placeholder="1" />
+																		</div>
+																		<div className="col-md-1">
+																			<button type="button" className="btn btn-sm btn-outline-danger" disabled={(values.lbServers || []).length <= 1} onClick={() => setFieldValue("lbServers", values.lbServers.filter((_: any, i: number) => i !== idx))}>
+																				<IconTrash size={14} />
+																			</button>
+																		</div>
+																	</div>
+																))}
+																<button type="button" className="btn btn-sm" onClick={() => setFieldValue("lbServers", [...(values.lbServers || []), { host: "", port: 80, weight: 1 }])}>
+																	+ Ziel hinzufügen
+																</button>
+															</div>
+														</div>
+													)}
 												<AccessField />
 												<div className="my-3">
 													<h4 className="py-2">
