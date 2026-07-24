@@ -160,11 +160,21 @@ const internalHaProvision = {
 					const dbCfg = configGet("database");
 					const sqliteFile = dbCfg?.knex?.connection?.filename;
 					if (sqliteFile && fs.existsSync(sqliteFile)) {
-						const copied = await copySqliteToPostgres({
-							sqliteFile,
-							pg: { host: p.dbAddress, port: 5432, user: dbUser, password: dbPassword, database: dbName },
-						});
-						s4b.append(`Übernommen: ${copied.join(", ") || "keine Daten"}`);
+						// Temporarily elevate npm so the copy can disable FK triggers
+						// (SET session_replication_role is superuser-only), then revoke.
+						await run(p.dbTarget, `runuser -u postgres -- psql -c "ALTER USER ${dbUser} WITH SUPERUSER"`);
+						try {
+							const copied = await copySqliteToPostgres({
+								sqliteFile,
+								pg: { host: p.dbAddress, port: 5432, user: dbUser, password: dbPassword, database: dbName },
+							});
+							s4b.append(`Übernommen: ${copied.join(", ") || "keine Daten"}`);
+						} finally {
+							await run(
+								p.dbTarget,
+								`runuser -u postgres -- psql -c "ALTER USER ${dbUser} WITH NOSUPERUSER"`,
+							).catch(() => {});
+						}
 					} else {
 						s4b.append("Primär läuft nicht auf SQLite — kein Datenimport nötig.");
 					}
