@@ -87,6 +87,9 @@ const internalHaProvision = {
 		const vrid = p.vrid || 51;
 		const authPass = genPassword().slice(0, 12);
 		const dbPassword = genPassword();
+		// Encrypt everything in this run with the SHARED database password key so
+		// every cluster node can decrypt it later (see lib/secret-store.js).
+		process.env.DB_POSTGRES_PASSWORD = dbPassword;
 		const dbName = p.dbName || "npm";
 		const dbUser = p.dbUser || "npm";
 		const image = p.image || DEFAULT_IMAGE;
