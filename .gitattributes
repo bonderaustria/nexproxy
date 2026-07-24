@@ -1,0 +1,17 @@
+# Enforce LF line endings for all text files (this project targets Linux).
+* text=auto eol=lf
+
+# Binary assets must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text eol=lf
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.zst binary
+*.gz binary
+*.pdf binary
