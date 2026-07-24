@@ -28,6 +28,14 @@ const roleBadge = (role: string) => {
 
 const HA = () => {
 	const { data: status, isLoading, isError } = useHAStatus();
+
+	// Ticks every second so the failover-hold countdown updates smoothly
+	// (the underlying holdUntil is an absolute timestamp, so this is just for display).
+	const [now, setNow] = useState(Date.now());
+	useEffect(() => {
+		const t = setInterval(() => setNow(Date.now()), 1000);
+		return () => clearInterval(t);
+	}, []);
 	const { data: latestData } = useHALatestVersion();
 	const latest = latestData?.latest || null;
 
@@ -280,6 +288,13 @@ const HA = () => {
 											) : (
 												<span className="text-red">● offline</span>
 											)}
+											{n.holdUntil > now && (
+												<div className="text-orange small mt-1">
+													⏱ Auto-Rückkehr in {Math.max(0, Math.ceil((n.holdUntil - now) / 1000))}s
+													<br />
+													<span className="text-muted">jetzt „Update“ klicken, um es zu verhindern</span>
+												</div>
+											)}
 										</td>
 										<td>{n.version || "—"}</td>
 										<td>{relativeSeen(n.lastSeen)}</td>
@@ -324,8 +339,10 @@ const HA = () => {
 					<div className="card-body pt-2">
 						<div className="text-muted small">
 							<strong>Rolling-Update:</strong> erst den <strong>Standby</strong> updaten, dann{" "}
-							<strong>Force Failover</strong>, dann den alten Master updaten. Die VIP kehrt automatisch zum
-							Master zurück, sobald er wieder online ist.
+							<strong>Force Failover</strong>, dann den alten Master updaten. Nach Force Failover hast du{" "}
+							<strong>60 Sekunden</strong>, um „Update" am alten Master zu klicken — tust du das nicht, holt er
+							sich die Floating-IP nach Ablauf automatisch zurück (verhindert, dass die VIP versehentlich
+							nirgends aktiv ist).
 						</div>
 						{actionMsg && <div className="alert alert-info mt-2 mb-0">{actionMsg}</div>}
 					</div>

@@ -9,9 +9,18 @@ import pjson from "../package.json" with { type: "json" };
 const HEARTBEAT_INTERVAL = 10 * 1000; // 10s
 const ONLINE_WINDOW = 30 * 1000; // a node is "online" if seen within 30s
 
-// Whether THIS node currently holds the floating IP. Updated by keepalived via
-// the notify script hitting /api/ha/vip-notify.
-let localHasVip = false;
+// Ground-truth VIP state, written by the host-side keepalived health-check
+// script (every 2s, based on `ip addr`) into the shared /data volume. Read
+// locally on every heartbeat — no network call, no dependency on an HTTP
+// notify actually arriving.
+const VIP_STATE_FILE = `${process.env.NODE_ID_DIR || "/data"}/.ha-vip-state`;
+const detectLocalVip = () => {
+	try {
+		return fs.readFileSync(VIP_STATE_FILE, "utf8").trim() === "master";
+	} catch (_e) {
+		return false;
+	}
+};
 
 /**
  * This node's identity. Set NODE_NAME (and optionally NODE_ADDRESS / HA_ROLE)
@@ -65,6 +74,7 @@ const internalHa = {
 		}
 		try {
 			const now = Date.now();
+			const hasVip = detectLocalVip();
 			await db()("ha_node")
 				.insert({
 					name: selfName(),
@@ -72,7 +82,7 @@ const internalHa = {
 					role: selfRole(),
 					version: pjson.version,
 					last_seen: now,
-					has_vip: localHasVip ? 1 : 0,
+					has_vip: hasVip ? 1 : 0,
 				})
 				.onConflict("name")
 				.merge({
@@ -80,7 +90,7 @@ const internalHa = {
 					role: selfRole(),
 					version: pjson.version,
 					last_seen: now,
-					has_vip: localHasVip ? 1 : 0,
+					has_vip: hasVip ? 1 : 0,
 				});
 			// Prune dead nodes (replaced/removed containers offline for over an hour).
 			await db()("ha_node")
@@ -88,7 +98,7 @@ const internalHa = {
 				.del();
 			// The floating IP is exclusive — if we currently hold it, clear any stale
 			// has_vip flag left on other nodes (e.g. after an unclean keepalived stop).
-			if (localHasVip) {
+			if (hasVip) {
 				await db()("ha_node").whereNot("name", selfName()).update({ has_vip: 0 });
 			}
 		} catch (err) {
@@ -103,12 +113,12 @@ const internalHa = {
 	},
 
 	/**
-	 * Called by keepalived (via /api/ha/vip-notify) when this node enters
-	 * MASTER/BACKUP/FAULT state, so the cluster status shows the real VIP holder.
+	 * Called by keepalived's notify script on a MASTER/BACKUP/FAULT transition.
+	 * The state file (ground truth, see detectLocalVip) already reflects this by
+	 * the time it's called — this just triggers an immediate re-check instead of
+	 * waiting for the next 10s heartbeat, for a snappier UI update.
 	 */
-	setVipState: (isMaster) => {
-		localHasVip = !!isMaster;
-		// push immediately so the UI reflects the change without waiting a full interval
+	setVipState: () => {
 		internalHa.heartbeat();
 	},
 
@@ -117,7 +127,7 @@ const internalHa = {
 	 * (VIP-holding) node — configuration changes must be blocked here.
 	 * A standalone instance is never a standby.
 	 */
-	isStandby: () => selfRole() !== "standalone" && !localHasVip,
+	isStandby: () => selfRole() !== "standalone" && !detectLocalVip(),
 
 	/**
 	 * Cluster status: all known nodes with computed online state, plus the node
@@ -163,6 +173,7 @@ const internalHa = {
 			hasVip: !!n.has_vip,
 			online: now - Number(n.last_seen) < ONLINE_WINDOW,
 			isSelf: n.name === selfName(),
+			holdUntil: Number(n.hold_until) || 0,
 		}));
 
 		const online = nodes.filter((n) => n.online);

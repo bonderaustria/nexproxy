@@ -10,6 +10,25 @@ import { copySqliteToPostgres } from "./db-migrate-data.js";
 const DEFAULT_IMAGE = process.env.NEXPROXY_IMAGE || "ghcr.io/bonderaustria/nexproxy:latest";
 const CERT_EXPORT = "/srv/nexproxy-certs";
 
+/**
+ * The host-side keepalived health-check script. Beyond the usual health probe,
+ * it writes ground truth of who holds the VIP (checked directly via `ip addr`)
+ * into the shared /data volume every 2s, so the containerized backend can read
+ * it locally each heartbeat instead of depending on a fragile HTTP push.
+ * Exported so ha-update.js can redeploy it on an existing node during "Update".
+ */
+export const buildCheckScript = (vip, iface) => `#!/bin/sh
+if ip addr show ${iface} 2>/dev/null | grep -q "${vip}"; then
+  echo master > /opt/nexproxy/data/.ha-vip-state 2>/dev/null || true
+else
+  echo backup > /opt/nexproxy/data/.ha-vip-state 2>/dev/null || true
+fi
+
+curl -sf -m2 -o /dev/null http://127.0.0.1:80/ || exit 1
+curl -s -m2 -o /dev/null -w "%{http_code}" http://127.0.0.1:81/api/ | grep -qE "^(200|401)$" || exit 1
+exit 0
+`;
+
 // Singleton job state the GUI polls via GET /api/ha/provision-status
 let job = { running: false, done: false, error: null, steps: [] };
 
@@ -143,6 +162,7 @@ const internalHaProvision = {
 					db_user: dbUser,
 					db_password_enc: encryptSecret(dbPassword),
 					vip: p.vip,
+					iface,
 					provisioned: 1,
 					modified_on: Date.now(),
 				});
@@ -306,11 +326,7 @@ const internalHaProvision = {
       - ./letsencrypt:/etc/letsencrypt
       - ./data:/data
 `;
-		const check = `#!/bin/sh
-curl -sf -m2 -o /dev/null http://127.0.0.1:80/ || exit 1
-curl -s -m2 -o /dev/null -w "%{http_code}" http://127.0.0.1:81/api/ | grep -qE "^(200|401)$" || exit 1
-exit 0
-`;
+		const check = buildCheckScript(c.vip, c.iface);
 		// keepalived notify -> tells NexProxy which node really holds the VIP
 		const notify = `#!/bin/sh
 curl -s -m2 "http://127.0.0.1:81/api/ha/vip-notify?state=$1" >/dev/null 2>&1 || true

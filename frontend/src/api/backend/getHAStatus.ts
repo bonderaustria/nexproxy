@@ -8,6 +8,7 @@ export interface HANode {
 	lastSeen: number;
 	online: boolean;
 	isSelf: boolean;
+	holdUntil: number;
 }
 
 export interface HAStatusResponse {
