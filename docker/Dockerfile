@@ -30,9 +30,10 @@ RUN echo "fs.file-max = 65535" > /etc/sysctl.conf \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
-# s6 overlay
+# s6 overlay (tarballs bundled to avoid depending on GitHub during the build)
 COPY docker/scripts/install-s6 /tmp/install-s6
-RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -f /tmp/install-s6
+COPY docker/s6-cache /tmp/s6-cache
+RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -f /tmp/install-s6 && rm -rf /tmp/s6-cache
 
 EXPOSE 80 81 443
 

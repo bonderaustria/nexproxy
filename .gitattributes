@@ -14,4 +14,6 @@
 *.eot binary
 *.zst binary
 *.gz binary
+*.xz binary
+*.tar binary
 *.pdf binary

@@ -24,8 +24,18 @@ esac
 
 echo -e "${BLUE}❯ ${CYAN}Installing S6-overlay v${S6_OVERLAY_VERSION} for ${YELLOW}${TARGETPLATFORM} (${S6_ARCH})${RESET}"
 
-curl -fL --retry 5 --retry-delay 3 --retry-all-errors -o '/tmp/s6-overlay-noarch.tar.xz' "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz"
-curl -fL --retry 5 --retry-delay 3 --retry-all-errors -o "/tmp/s6-overlay-${S6_ARCH}.tar.xz" "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz"
+# Prefer tarballs bundled into the build context (docker/s6-cache) so the build
+# does not depend on GitHub being reachable; fall back to downloading.
+if [ -f "/tmp/s6-cache/s6-overlay-noarch.tar.xz" ]; then
+	cp "/tmp/s6-cache/s6-overlay-noarch.tar.xz" '/tmp/s6-overlay-noarch.tar.xz'
+else
+	curl -fL --retry 5 --retry-delay 3 --retry-all-errors -o '/tmp/s6-overlay-noarch.tar.xz' "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz"
+fi
+if [ -f "/tmp/s6-cache/s6-overlay-${S6_ARCH}.tar.xz" ]; then
+	cp "/tmp/s6-cache/s6-overlay-${S6_ARCH}.tar.xz" "/tmp/s6-overlay-${S6_ARCH}.tar.xz"
+else
+	curl -fL --retry 5 --retry-delay 3 --retry-all-errors -o "/tmp/s6-overlay-${S6_ARCH}.tar.xz" "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz"
+fi
 tar -C / -Jxpf '/tmp/s6-overlay-noarch.tar.xz'
 tar -C / -Jxpf "/tmp/s6-overlay-${S6_ARCH}.tar.xz"
 
