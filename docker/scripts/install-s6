@@ -24,8 +24,8 @@ esac
 
 echo -e "${BLUE}❯ ${CYAN}Installing S6-overlay v${S6_OVERLAY_VERSION} for ${YELLOW}${TARGETPLATFORM} (${S6_ARCH})${RESET}"
 
-curl -L -o '/tmp/s6-overlay-noarch.tar.xz' "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz"
-curl -L -o "/tmp/s6-overlay-${S6_ARCH}.tar.xz" "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz"
+curl -fL --retry 5 --retry-delay 3 --retry-all-errors -o '/tmp/s6-overlay-noarch.tar.xz' "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz"
+curl -fL --retry 5 --retry-delay 3 --retry-all-errors -o "/tmp/s6-overlay-${S6_ARCH}.tar.xz" "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz"
 tar -C / -Jxpf '/tmp/s6-overlay-noarch.tar.xz'
 tar -C / -Jxpf "/tmp/s6-overlay-${S6_ARCH}.tar.xz"
 
