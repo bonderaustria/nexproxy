@@ -24,6 +24,7 @@ const AuditLog = lazy(() => import("src/pages/AuditLog"));
 const Users = lazy(() => import("src/pages/Users"));
 const HA = lazy(() => import("src/pages/HA"));
 const License = lazy(() => import("src/pages/License"));
+const AccessLog = lazy(() => import("src/pages/AccessLog"));
 const ProxyHosts = lazy(() => import("src/pages/Nginx/ProxyHosts"));
 const RedirectionHosts = lazy(() => import("src/pages/Nginx/RedirectionHosts"));
 const DeadHosts = lazy(() => import("src/pages/Nginx/DeadHosts"));
@@ -78,6 +79,14 @@ function Router() {
 								}
 							/>
 							<Route path="/license" element={<License />} />
+							<Route
+								path="/access-log"
+								element={
+									<EnterpriseGate feature="Zugriffsprotokoll">
+										<AccessLog />
+									</EnterpriseGate>
+								}
+							/>
 							<Route path="/nginx/proxy" element={<ProxyHosts />} />
 							<Route path="/nginx/redirection" element={<RedirectionHosts />} />
 							<Route path="/nginx/404" element={<DeadHosts />} />

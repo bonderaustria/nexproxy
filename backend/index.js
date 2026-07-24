@@ -3,6 +3,7 @@
 import app from "./app.js";
 import internalCertificate from "./internal/certificate.js";
 import internalHa from "./internal/ha.js";
+import internalAccessLog from "./internal/access-log.js";
 import internalHostMonitor from "./internal/host-monitor.js";
 import internalIpRanges from "./internal/ip_ranges.js";
 import { loadLicense, startLicenseRefresh } from "./lib/license.js";
@@ -33,6 +34,7 @@ async function appStart() {
 			internalIpRanges.initTimer();
 			internalHa.startHeartbeat();
 			internalHostMonitor.initTimer();
+			internalAccessLog.initTimer();
 			startLicenseRefresh();
 
 			const server = app.listen(3000, () => {

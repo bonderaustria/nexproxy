@@ -326,6 +326,9 @@
 	"license": {
 		"defaultMessage": "License"
 	},
+	"access-log": {
+		"defaultMessage": "Access Log"
+	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},

@@ -254,6 +254,9 @@
 	"license": {
 		"defaultMessage": "Lizenz"
 	},
+	"access-log": {
+		"defaultMessage": "Zugriffsprotokoll"
+	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},
