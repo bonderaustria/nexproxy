@@ -7,6 +7,10 @@ import pjson from "../package.json" with { type: "json" };
 const HEARTBEAT_INTERVAL = 10 * 1000; // 10s
 const ONLINE_WINDOW = 30 * 1000; // a node is "online" if seen within 30s
 
+// Whether THIS node currently holds the floating IP. Updated by keepalived via
+// the notify script hitting /api/ha/vip-notify.
+let localHasVip = false;
+
 /**
  * This node's identity. Set NODE_NAME (and optionally NODE_ADDRESS / HA_ROLE)
  * per node via the compose environment. Without NODE_NAME the instance is a
@@ -46,6 +50,7 @@ const internalHa = {
 					role: selfRole(),
 					version: pjson.version,
 					last_seen: now,
+					has_vip: localHasVip ? 1 : 0,
 				})
 				.onConflict("name")
 				.merge({
@@ -53,6 +58,7 @@ const internalHa = {
 					role: selfRole(),
 					version: pjson.version,
 					last_seen: now,
+					has_vip: localHasVip ? 1 : 0,
 				});
 		} catch (err) {
 			logger.error(`[HA] heartbeat failed: ${err.message}`);
@@ -63,6 +69,16 @@ const internalHa = {
 		internalHa.heartbeat();
 		setInterval(internalHa.heartbeat, HEARTBEAT_INTERVAL);
 		logger.info(`[HA] Heartbeat started for node "${selfName()}"`);
+	},
+
+	/**
+	 * Called by keepalived (via /api/ha/vip-notify) when this node enters
+	 * MASTER/BACKUP/FAULT state, so the cluster status shows the real VIP holder.
+	 */
+	setVipState: (isMaster) => {
+		localHasVip = !!isMaster;
+		// push immediately so the UI reflects the change without waiting a full interval
+		internalHa.heartbeat();
 	},
 
 	/**
@@ -80,13 +96,16 @@ const internalHa = {
 			role: n.role,
 			version: n.version,
 			lastSeen: Number(n.last_seen),
+			hasVip: !!n.has_vip,
 			online: now - Number(n.last_seen) < ONLINE_WINDOW,
 			isSelf: n.name === selfName(),
 		}));
 
-		// Expected VIP holder: online master, else online backup, else any online node.
 		const online = nodes.filter((n) => n.online);
+		// Real VIP holder as reported by keepalived; fall back to a heuristic
+		// (online master, else online backup) only if nothing has been reported yet.
 		const activeNode =
+			online.find((n) => n.hasVip)?.name ||
 			online.find((n) => n.role === "master")?.name ||
 			online.find((n) => n.role === "backup")?.name ||
 			online[0]?.name ||

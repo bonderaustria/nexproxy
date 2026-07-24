@@ -108,6 +108,20 @@ router
 		}
 	});
 
+/**
+ * GET /api/ha/vip-notify?state=master|backup|fault
+ *
+ * Called locally by keepalived's notify script (no auth) so the cluster status
+ * reflects the real floating-IP holder.
+ */
+router
+	.route("/vip-notify")
+	.options((_, res) => res.sendStatus(204))
+	.get((req, res) => {
+		internalHa.setVipState((req.query.state || "").toLowerCase() === "master");
+		res.status(200).send({ ok: true });
+	});
+
 router
 	.route("/provision-status")
 	.options((_, res) => res.sendStatus(204))
