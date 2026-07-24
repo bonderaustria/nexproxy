@@ -69,7 +69,7 @@ export default function Setup() {
 					<img
 						className={styles.logo}
 						src="/images/logo-text-horizontal-grey.png"
-						alt="Nginx Proxy Manager"
+						alt="NexProxy"
 					/>
 				</div>
 				<div className="card card-md">

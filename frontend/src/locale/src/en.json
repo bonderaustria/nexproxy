@@ -204,7 +204,7 @@
 		"defaultMessage": "This section requires some knowledge about Certbot and its DNS plugins. Please consult the respective plugins documentation."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "There is a server found at this domain but it does not seem to be Nginx Proxy Manager. Please make sure your domain points to the IP where your NPM instance is running."
+		"defaultMessage": "There is a server found at this domain but it does not seem to be NexProxy. Please make sure your domain points to the IP where your NPM instance is running."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "Failed to check the reachability due to a communication error with site24x7.com."
