@@ -86,7 +86,7 @@ const internalHaProvision = {
 
 			// 2) PostgreSQL + NFS on the DB host
 			const s2 = step("Datenbank (PostgreSQL) einrichten");
-			await run(p.dbTarget, "apt-get update -qq && apt-get install -y -qq postgresql nfs-kernel-server");
+			await run(p.dbTarget, "apt-get update -qq && apt-get install -y -qq postgresql");
 			const pgver = (await run(p.dbTarget, "ls /etc/postgresql/")).trim().split(/\s+/)[0];
 			s2.append(`PostgreSQL ${pgver} installiert`);
 			await run(
@@ -107,14 +107,6 @@ const internalHaProvision = {
 			// Ensure password matches (in case user existed)
 			await run(p.dbTarget, `runuser -u postgres -- psql -c "ALTER USER ${dbUser} WITH PASSWORD '${dbPassword}';"`);
 			s2.append(`Datenbank "${dbName}" und Benutzer "${dbUser}" angelegt`);
-			// NFS export for shared certificates
-			await run(
-				p.dbTarget,
-				`mkdir -p ${CERT_EXPORT}/letsencrypt; chown -R 100000:100000 ${CERT_EXPORT}; ` +
-					`grep -q "${CERT_EXPORT}" /etc/exports || echo "${CERT_EXPORT} ${p.primaryAddress}(rw,sync,no_subtree_check,no_root_squash) ${p.nodeAddress}(rw,sync,no_subtree_check,no_root_squash)" >> /etc/exports; ` +
-					"exportfs -ra; systemctl enable --now nfs-kernel-server",
-			);
-			s2.append("NFS-Freigabe für gemeinsame Zertifikate erstellt");
 			s2.ok();
 
 			// 3) Persist DB config (password encrypted)
@@ -183,7 +175,10 @@ const internalHaProvision = {
 			logger.error(`[HA-Provision] failed: ${err.message}`);
 			job.error = err.message;
 			const last = job.steps[job.steps.length - 1];
-			if (last && last.status === "running") last.fail(err.message);
+			if (last && last.status === "running") {
+				last.status = "error";
+				last.log += `${err.message}\n`;
+			}
 		} finally {
 			job.running = false;
 		}
@@ -194,20 +189,19 @@ const internalHaProvision = {
 	 * keepalived on a single host.
 	 */
 	setupNode: async (target, c) => {
-		// Docker + NFS client
+		// Docker + keepalived
 		await run(
 			target,
-			"apt-get update -qq && apt-get install -y -qq curl ca-certificates nfs-common keepalived; " +
+			"apt-get update -qq && apt-get install -y -qq curl ca-certificates keepalived; " +
 				"command -v docker >/dev/null 2>&1 || { curl -fsSL https://get.docker.com | sh; }; " +
 				"systemctl enable --now docker",
 		);
-		// Mount shared certs
-		await run(
-			target,
-			`mkdir -p ${CERT_EXPORT}/letsencrypt; ` +
-				`grep -q "${c.nfsHost}:${CERT_EXPORT}" /etc/fstab || echo "${c.nfsHost}:${CERT_EXPORT} ${CERT_EXPORT} nfs defaults 0 0" >> /etc/fstab; ` +
-				`mountpoint -q ${CERT_EXPORT} || mount ${CERT_EXPORT}`,
-		);
+		// Registry login for private images (token provided via env on the primary)
+		const regUser = process.env.NEXPROXY_REGISTRY_USER;
+		const regToken = process.env.NEXPROXY_REGISTRY_TOKEN;
+		if (c.image.startsWith("ghcr.io") && regToken) {
+			await run(target, `echo '${regToken}' | docker login ghcr.io -u ${regUser || "x"} --password-stdin`);
+		}
 		// Deploy NexProxy
 		const compose = `services:
   app:
@@ -228,8 +222,8 @@ const internalHaProvision = {
       - "81:81"
       - "443:443"
     volumes:
-      - ${CERT_EXPORT}/letsencrypt:/etc/letsencrypt
-      - /opt/nexproxy/data:/data
+      - ./letsencrypt:/etc/letsencrypt
+      - ./data:/data
 `;
 		await run(
 			target,
