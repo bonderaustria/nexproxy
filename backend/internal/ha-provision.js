@@ -49,6 +49,23 @@ const internalHaProvision = {
 	getJob: () => job,
 
 	/**
+	 * Persist (encrypted) SSH access for a node so the cluster can later perform
+	 * one-click rolling updates and force-failover.
+	 */
+	saveNodeSsh: async (nodeName, target, address) => {
+		if (!target) return;
+		const row = {
+			node_name: nodeName,
+			host: address || target.host,
+			port: target.port || 22,
+			username: target.username || "root",
+			password_enc: encryptSecret(target.password || ""),
+			private_key_enc: encryptSecret(target.privateKey || ""),
+		};
+		await db()("ha_node_ssh").insert(row).onConflict("node_name").merge(row);
+	},
+
+	/**
 	 * Full auto-provision: set up PostgreSQL + shared cert NFS on the DB host,
 	 * deploy a backup NexProxy node, and configure keepalived on both.
 	 *
@@ -147,6 +164,7 @@ const internalHaProvision = {
 				image,
 				nfsHost: p.dbAddress,
 			});
+			await internalHaProvision.saveNodeSsh("nexproxy-b", p.nodeTarget, p.nodeAddress);
 			s4.append("Zweiter Node läuft als Backup");
 			s4.ok();
 
@@ -202,6 +220,7 @@ const internalHaProvision = {
 					image,
 					detach: true,
 				});
+				await internalHaProvision.saveNodeSsh("nexproxy-a", p.primaryTarget, p.primaryAddress);
 				s5.append("Umstellung auf gemeinsame DB + Master-keepalived eingeplant (läuft entkoppelt zu Ende).");
 				s5.ok();
 			}

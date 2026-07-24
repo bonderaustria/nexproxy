@@ -2,6 +2,7 @@ import express from "express";
 import db from "../db.js";
 import internalHa from "../internal/ha.js";
 import internalHaProvision from "../internal/ha-provision.js";
+import internalHaUpdate from "../internal/ha-update.js";
 import jwtdecode from "../lib/express/jwt-decode.js";
 import { decryptSecret, encryptSecret } from "../lib/secret-store.js";
 import { debug, express as logger } from "../logger.js";
@@ -172,6 +173,36 @@ router
 			res.status(200).send({ saved: true });
 		} catch (error) {
 			next(error);
+		}
+	});
+
+/**
+ * POST /api/ha/update-node { node_name } — rolling update a node (standby only)
+ * POST /api/ha/force-failover — move the VIP off the active node
+ */
+router
+	.route("/update-node")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.post(async (req, res, next) => {
+		try {
+			const data = await internalHaUpdate.updateNode((req.body || {}).node_name);
+			res.status(200).send(data);
+		} catch (error) {
+			res.status(400).send({ error: { code: 400, message: error.message } });
+		}
+	});
+
+router
+	.route("/force-failover")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.post(async (_req, res) => {
+		try {
+			const data = await internalHaUpdate.forceFailover();
+			res.status(200).send(data);
+		} catch (error) {
+			res.status(400).send({ error: { code: 400, message: error.message } });
 		}
 	});
 

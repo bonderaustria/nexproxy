@@ -1,6 +1,6 @@
 import { IconCheck, IconEye, IconEyeOff, IconServer, IconX } from "@tabler/icons-react";
 import { type ChangeEvent, useEffect, useState } from "react";
-import { startHAProvision, updateHADbConfig } from "src/api/backend";
+import { forceHAFailover, startHAProvision, updateHADbConfig, updateHANode } from "src/api/backend";
 import { useHADbConfig, useHAProvisionStatus, useHAStatus } from "src/hooks";
 
 const relativeSeen = (ts: number): string => {
@@ -19,6 +19,34 @@ const roleBadge = (role: string) => {
 
 const HA = () => {
 	const { data: status, isLoading, isError } = useHAStatus();
+
+	// ---- Rolling update / failover ----
+	const [actionMsg, setActionMsg] = useState<string | null>(null);
+	const [busy, setBusy] = useState(false);
+	const doUpdate = async (node: string) => {
+		setActionMsg(null);
+		setBusy(true);
+		try {
+			await updateHANode(node);
+			setActionMsg(`Update auf „${node}" gestartet — der Node startet gleich mit dem neuen Stand neu.`);
+		} catch (e) {
+			setActionMsg(e instanceof Error ? e.message : "Update fehlgeschlagen");
+		} finally {
+			setBusy(false);
+		}
+	};
+	const doFailover = async () => {
+		setActionMsg(null);
+		setBusy(true);
+		try {
+			const r = await forceHAFailover();
+			setActionMsg(`Failover ausgelöst — VIP wandert weg von „${r.failedOverFrom}".`);
+		} catch (e) {
+			setActionMsg(e instanceof Error ? e.message : "Failover fehlgeschlagen");
+		} finally {
+			setBusy(false);
+		}
+	};
 
 	// ---- Auto-provisioning ----
 	const [prov, setProv] = useState({
@@ -171,11 +199,18 @@ const HA = () => {
 			<div className="card mb-3">
 				<div className="card-header">
 					<h3 className="card-title">Cluster-Status</h3>
-					{status?.vip && (
-						<div className="card-actions">
-							Floating-IP: <span className="badge bg-blue-lt ms-1">{status.vip}</span>
-						</div>
-					)}
+					<div className="card-actions">
+						{status?.vip && (
+							<span className="me-3">
+								Floating-IP: <span className="badge bg-blue-lt ms-1">{status.vip}</span>
+							</span>
+						)}
+						{!status?.standalone && (status?.nodes?.length ?? 0) > 1 && (
+							<button type="button" className="btn btn-sm btn-warning" onClick={doFailover} disabled={busy}>
+								Force Failover
+							</button>
+						)}
+					</div>
 				</div>
 				<div className="table-responsive">
 					<table className="table card-table table-vcenter">
@@ -187,25 +222,26 @@ const HA = () => {
 								<th>Status</th>
 								<th>Version</th>
 								<th>Zuletzt gesehen</th>
+								<th>Aktion</th>
 							</tr>
 						</thead>
 						<tbody>
 							{status?.standalone ? (
 								<tr>
-									<td colSpan={6} className="text-muted">
+									<td colSpan={7} className="text-muted">
 										Diese Instanz läuft <strong>standalone</strong> — noch kein HA-Cluster. Richte unten
 										„HA automatisch einrichten" aus, um ein Cluster zu bilden.
 									</td>
 								</tr>
 							) : isLoading && !status ? (
 								<tr>
-									<td colSpan={6} className="text-muted">
+									<td colSpan={7} className="text-muted">
 										Lade Cluster-Status…
 									</td>
 								</tr>
 							) : isError && !status ? (
 								<tr>
-									<td colSpan={6} className="text-danger">
+									<td colSpan={7} className="text-danger">
 										Cluster-Status konnte nicht geladen werden (Failover im Gange?).
 									</td>
 								</tr>
@@ -231,11 +267,26 @@ const HA = () => {
 										</td>
 										<td>{n.version || "—"}</td>
 										<td>{relativeSeen(n.lastSeen)}</td>
+										<td>
+											<button
+												type="button"
+												className="btn btn-sm"
+												disabled={busy || n.name === status.activeNode}
+												onClick={() => doUpdate(n.name)}
+												title={
+													n.name === status.activeNode
+														? "Aktiver Node — mach zuerst Force Failover"
+														: "Auf den neuesten Stand aktualisieren"
+												}
+											>
+												Update
+											</button>
+										</td>
 									</tr>
 								))
 							) : (
 								<tr>
-									<td colSpan={6} className="text-muted">
+									<td colSpan={7} className="text-muted">
 										Noch kein Cluster — aktuell läuft nur diese Instanz.
 									</td>
 								</tr>
@@ -243,6 +294,16 @@ const HA = () => {
 						</tbody>
 					</table>
 				</div>
+				{!status?.standalone && (status?.nodes?.length ?? 0) > 1 && (
+					<div className="card-body pt-2">
+						<div className="text-muted small">
+							<strong>Rolling-Update:</strong> erst den <strong>Standby</strong> updaten, dann{" "}
+							<strong>Force Failover</strong>, dann den alten Master updaten. Die VIP kehrt automatisch zum
+							Master zurück, sobald er wieder online ist.
+						</div>
+						{actionMsg && <div className="alert alert-info mt-2 mb-0">{actionMsg}</div>}
+					</div>
+				)}
 			</div>
 
 			{/* Auto-provisioning wizard */}
