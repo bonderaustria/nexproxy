@@ -3,6 +3,7 @@ import {
 	IconDeviceDesktop,
 	IconHome,
 	IconLock,
+	IconServer,
 	IconSettings,
 	IconShield,
 	IconUser,
@@ -99,6 +100,12 @@ const menuItems: MenuItem[] = [
 		to: "/settings",
 		icon: IconSettings,
 		label: "settings",
+		permissionSection: ADMIN,
+	},
+	{
+		to: "/ha",
+		icon: IconServer,
+		label: "ha-cluster",
 		permissionSection: ADMIN,
 	},
 ];

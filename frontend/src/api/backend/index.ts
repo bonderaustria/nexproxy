@@ -24,6 +24,8 @@ export * from "./getCertificateDNSProviders";
 export * from "./getCertificates";
 export * from "./getDeadHost";
 export * from "./getDeadHosts";
+export * from "./generateHAConfig";
+export * from "./getHAStatus";
 export * from "./getHealth";
 export * from "./getHostsReport";
 export * from "./getProxyHost";

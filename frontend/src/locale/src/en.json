@@ -320,6 +320,9 @@
 	"dashboard": {
 		"defaultMessage": "Dashboard"
 	},
+	"ha-cluster": {
+		"defaultMessage": "HA Cluster"
+	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
 	},
