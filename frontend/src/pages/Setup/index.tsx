@@ -68,7 +68,7 @@ export default function Setup() {
 				<div className="text-center mb-4">
 					<img
 						className={styles.logo}
-						src="/images/logo-text-horizontal-grey.png"
+						src="/images/nexproxy-lockup-dark.svg"
 						alt="NexProxy"
 					/>
 				</div>

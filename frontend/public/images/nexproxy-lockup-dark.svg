@@ -1,0 +1,20 @@
+<svg width="560" height="150" viewBox="0 0 560 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NexProxy">
+  <defs>
+    <linearGradient id="lockBlueD" x1="30" y1="20" x2="120" y2="130" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5A9BFF"/><stop offset=".55" stop-color="#2A7BFF"/><stop offset="1" stop-color="#005FF6"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(6,11) scale(0.25)">
+    <path d="M256 44 L436 104 V244 C436 356 360 430 256 468 C152 430 76 356 76 244 V104 Z" fill="none" stroke="#F5F7FB" stroke-width="26" stroke-linejoin="round"/>
+    <path d="M256 60 L420 115 V244 C420 346 352 414 256 450 C160 414 92 346 92 244 V115 Z" fill="none" stroke="url(#lockBlueD)" stroke-width="14" stroke-linejoin="round" opacity=".95"/>
+    <g stroke="url(#lockBlueD)" stroke-width="22" stroke-linecap="round"><line x1="40" y1="212" x2="150" y2="212"/><line x1="70" y1="262" x2="150" y2="262"/><line x1="40" y1="312" x2="150" y2="312"/></g>
+    <g fill="#5A9BFF"><circle cx="24" cy="212" r="12"/><circle cx="54" cy="262" r="12"/><circle cx="24" cy="312" r="12"/></g>
+    <path d="M170 356 V196 H214 L316 316 V196 H354 V356 H312 L208 234 V356 Z" fill="url(#lockBlueD)"/>
+    <path d="M300 196 H354 V300 Z" fill="#0B1220"/>
+  </g>
+
+  <text x="152" y="97" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="700" letter-spacing="-1">
+    <tspan fill="#2A7BFF">Nex</tspan><tspan fill="#F5F7FB">Proxy</tspan>
+  </text>
+</svg>

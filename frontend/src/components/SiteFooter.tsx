@@ -16,29 +16,10 @@ export function SiteFooter() {
 	return (
 		<footer className="footer d-print-none py-3">
 			<div className="container-xl">
-				<div className="row text-center align-items-center flex-row-reverse">
-					<div className="col-lg-auto ms-lg-auto">
+				<div className="row text-center align-items-center">
+					<div className="col-12 col-lg-auto mt-3 mt-lg-0 ms-lg-auto">
 						<ul className="list-inline list-inline-dots mb-0">
-							<li className="list-inline-item">
-								<a
-									href="https://github.com/NginxProxyManager/nginx-proxy-manager"
-									target="_blank"
-									className="link-secondary"
-									rel="noopener"
-								>
-									<T id="footer.github-fork" />
-								</a>
-							</li>
-						</ul>
-					</div>
-					<div className="col-12 col-lg-auto mt-3 mt-lg-0">
-						<ul className="list-inline list-inline-dots mb-0">
-							<li className="list-inline-item">
-								© 2026{" "}
-								<a href="https://jc21.com" rel="noreferrer" target="_blank" className="link-secondary">
-									jc21.com
-								</a>
-							</li>
+							<li className="list-inline-item">© 2026 NexProxy</li>
 							<li className="list-inline-item">
 								Theme by{" "}
 								<a href="https://tabler.io" rel="noreferrer" target="_blank" className="link-secondary">
@@ -47,7 +28,7 @@ export function SiteFooter() {
 							</li>
 							<li className="list-inline-item">
 								<a
-									href={`https://github.com/NginxProxyManager/nginx-proxy-manager/releases/tag/${getVersion()}`}
+									href={`https://github.com/bonderaustria/nexproxy/releases/tag/${getVersion()}`}
 									className="link-secondary"
 									target="_blank"
 									rel="noopener"
@@ -59,7 +40,7 @@ export function SiteFooter() {
 							{versionData?.updateAvailable && versionData?.latest && (
 								<li className="list-inline-item">
 									<a
-										href={`https://github.com/NginxProxyManager/nginx-proxy-manager/releases/tag/${versionData.latest}`}
+										href={`https://github.com/bonderaustria/nexproxy/releases/tag/${versionData.latest}`}
 										className="link-warning fw-bold"
 										target="_blank"
 										rel="noopener"
