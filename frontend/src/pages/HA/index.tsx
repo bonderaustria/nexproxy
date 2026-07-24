@@ -54,6 +54,17 @@ const HA = () => {
 		}
 	}, [job]);
 
+	// After a successful setup, send the admin to the floating IP (the stable
+	// cluster entry point) so they always land on the active node.
+	useEffect(() => {
+		if (job?.done && prov.vip) {
+			const t = setTimeout(() => {
+				window.location.href = `http://${prov.vip}:81`;
+			}, 5000);
+			return () => clearTimeout(t);
+		}
+	}, [job?.done, prov.vip]);
+
 	const startProvision = async () => {
 		setStartError(null);
 		const target = (host: string, user: string, pass: string, key: string) => ({

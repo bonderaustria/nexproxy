@@ -2,6 +2,7 @@ import express from "express";
 import { isCI } from "../lib/config.js";
 import errs from "../lib/error.js";
 import logRequest from "../lib/express/log-request.js";
+import internalHa from "../internal/ha.js";
 import pjson from "../package.json" with { type: "json" };
 import { isSetup } from "../setup.js";
 import auditLogRoutes from "./audit-log.js";
@@ -28,6 +29,27 @@ const router = express.Router({
 });
 
 router.use(logRequest);
+
+// On a standby node, configuration changes are not allowed — only the active
+// (VIP-holding) node may write. Reads, login and HA endpoints stay available.
+router.use((req, res, next) => {
+	const method = req.method.toUpperCase();
+	if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
+		return next();
+	}
+	if (req.path.startsWith("/tokens") || req.path.startsWith("/ha")) {
+		return next();
+	}
+	if (internalHa.isStandby()) {
+		return res.status(423).send({
+			error: {
+				code: 423,
+				message: "Dieser Node ist im Standby — Änderungen sind nur auf der aktiven Instanz möglich.",
+			},
+		});
+	}
+	next();
+});
 
 /**
  * Health Check

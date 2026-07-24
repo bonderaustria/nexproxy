@@ -1,7 +1,7 @@
 import { IconLock, IconLogout, IconShieldLock, IconUser } from "@tabler/icons-react";
 import { LocalePicker, NavLink, ThemeSwitcher } from "src/components";
 import { useAuthState } from "src/context";
-import { useUser } from "src/hooks";
+import { useHAStatus, useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showChangePasswordModal, showTwoFactorModal, showUserModal } from "src/modals";
 import styles from "./SiteHeader.module.css";
@@ -11,8 +11,28 @@ export function SiteHeader() {
 	const isAdmin = currentUser?.roles.includes("admin");
 	const { logout } = useAuthState();
 
+	const { data: ha } = useHAStatus();
+	const selfNode = ha?.nodes?.find((n) => n.isSelf);
+	const isStandby = !ha?.standalone && !!selfNode && !!ha?.activeNode && selfNode.name !== ha.activeNode;
+
 	return (
-		<header className="navbar navbar-expand-md d-print-none">
+		<>
+			{isStandby && (
+				<div
+					style={{
+						background: "#8a4b00",
+						color: "#fff",
+						textAlign: "center",
+						padding: "7px 14px",
+						fontSize: "13px",
+						fontWeight: 500,
+					}}
+				>
+					⚠ Standby-Node — nur Lesezugriff. Änderungen bitte auf der aktiven Instanz (Floating-IP)
+					vornehmen.
+				</div>
+			)}
+			<header className="navbar navbar-expand-md d-print-none">
 			<div className="container-xl">
 				<button
 					className="navbar-toggler"
@@ -137,5 +157,6 @@ export function SiteHeader() {
 				</div>
 			</div>
 		</header>
+		</>
 	);
 }

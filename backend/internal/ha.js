@@ -108,6 +108,13 @@ const internalHa = {
 	},
 
 	/**
+	 * True when this node is part of an HA cluster but is NOT the active
+	 * (VIP-holding) node — configuration changes must be blocked here.
+	 * A standalone instance is never a standby.
+	 */
+	isStandby: () => selfRole() !== "standalone" && !localHasVip,
+
+	/**
 	 * Cluster status: all known nodes with computed online state, plus the node
 	 * currently expected to hold the floating IP, and defaults to pre-fill the
 	 * "add node" wizard.
