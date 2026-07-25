@@ -160,7 +160,7 @@ const NpmImport = () => {
 							</div>
 							<div className="mt-3">
 								<button type="button" className="btn me-2" onClick={doPreview} disabled={busy || running}>
-									Vorschau
+									1. Vorschau
 								</button>
 								<button
 									type="button"
@@ -169,8 +169,14 @@ const NpmImport = () => {
 									disabled={busy || running || !preview}
 									title={!preview ? "Erst Vorschau laden" : ""}
 								>
-									Import starten
+									2. Import starten
 								</button>
+								{!preview && !busy && (
+									<div className="text-muted small mt-2">
+										„Import starten" wird aktiv, sobald die Vorschau erfolgreich geladen wurde — klicke
+										zuerst auf „Vorschau".
+									</div>
+								)}
 							</div>
 						</>
 					) : (

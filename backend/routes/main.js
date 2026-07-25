@@ -44,6 +44,11 @@ router.use((req, res, next) => {
 	if (req.path.startsWith("/tokens") || req.path.startsWith("/ha")) {
 		return next();
 	}
+	// The migration preview is read-only against a REMOTE system — it doesn't
+	// write anything locally, so it must work from a standby node too.
+	if (req.path === "/npm-import/preview") {
+		return next();
+	}
 	if (internalHa.isStandby()) {
 		return res.status(423).send({
 			error: {
