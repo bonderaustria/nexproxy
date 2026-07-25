@@ -24,6 +24,7 @@ const AuditLog = lazy(() => import("src/pages/AuditLog"));
 const Users = lazy(() => import("src/pages/Users"));
 const HA = lazy(() => import("src/pages/HA"));
 const License = lazy(() => import("src/pages/License"));
+const NpmImport = lazy(() => import("src/pages/NpmImport"));
 const AccessLog = lazy(() => import("src/pages/AccessLog"));
 const ProxyHosts = lazy(() => import("src/pages/Nginx/ProxyHosts"));
 const RedirectionHosts = lazy(() => import("src/pages/Nginx/RedirectionHosts"));
@@ -79,6 +80,7 @@ function Router() {
 								}
 							/>
 							<Route path="/license" element={<License />} />
+							<Route path="/npm-import" element={<NpmImport />} />
 							<Route
 								path="/access-log"
 								element={

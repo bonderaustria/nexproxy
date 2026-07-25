@@ -254,6 +254,9 @@
 	"license": {
 		"defaultMessage": "Lizenz"
 	},
+	"npm-import": {
+		"defaultMessage": "Migration"
+	},
 	"access-log": {
 		"defaultMessage": "Zugriffsprotokoll"
 	},

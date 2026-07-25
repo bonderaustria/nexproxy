@@ -2,6 +2,7 @@ import {
 	IconBook,
 	IconCrown,
 	IconDeviceDesktop,
+	IconDownload,
 	IconFileText,
 	IconHome,
 	IconLock,
@@ -120,6 +121,12 @@ const menuItems: MenuItem[] = [
 		to: "/license",
 		icon: IconCrown,
 		label: "license",
+		permissionSection: ADMIN,
+	},
+	{
+		to: "/npm-import",
+		icon: IconDownload,
+		label: "npm-import",
 		permissionSection: ADMIN,
 	},
 ];

@@ -30,6 +30,7 @@ export * from "./haProvision";
 export * from "./accessLog";
 export * from "./haUpdate";
 export * from "./license";
+export * from "./npmImport";
 export * from "./upstream";
 export * from "./getHAStatus";
 export * from "./getHealth";

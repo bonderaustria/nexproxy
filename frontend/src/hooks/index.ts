@@ -14,6 +14,7 @@ export * from "./useHAProvisionStatus";
 export * from "./useHAStatus";
 export * from "./useHealth";
 export * from "./useLicense";
+export * from "./useNpmImportStatus";
 export * from "./useUpstreams";
 export * from "./useHostReport";
 export * from "./useProxyHost";
