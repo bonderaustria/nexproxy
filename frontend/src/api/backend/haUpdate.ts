@@ -16,3 +16,7 @@ export async function forceHAFailover(): Promise<{ failedOverFrom: string }> {
 export async function getHALatestVersion(): Promise<{ latest: string | null }> {
 	return await api.get({ url: "/ha/latest-version" });
 }
+
+export async function getHAUpdateLog(nodeName: string): Promise<{ log: string }> {
+	return await api.get({ url: "/ha/update-log", params: { nodeName } });
+}

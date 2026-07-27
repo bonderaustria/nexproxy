@@ -1,7 +1,14 @@
 import { IconCheck, IconEye, IconEyeOff, IconServer, IconX } from "@tabler/icons-react";
 import { type ChangeEvent, useEffect, useState } from "react";
-import { forceHAFailover, startHAProvision, updateHADbConfig, updateHANode } from "src/api/backend";
-import { useHADbConfig, useHALatestVersion, useHAProvisionStatus, useHAStatus } from "src/hooks";
+import { changeHAVip, forceHAFailover, startHAProvision, updateHADbConfig, updateHANode } from "src/api/backend";
+import {
+	useHADbConfig,
+	useHALatestVersion,
+	useHAProvisionStatus,
+	useHAStatus,
+	useHAUpdateLog,
+	useHAVipChangeStatus,
+} from "src/hooks";
 
 const cmpVersion = (a: string, b: string): number => {
 	const pa = a.split(".").map(Number);
@@ -42,12 +49,15 @@ const HA = () => {
 	// ---- Rolling update / failover ----
 	const [actionMsg, setActionMsg] = useState<string | null>(null);
 	const [busy, setBusy] = useState(false);
+	const [updatingNode, setUpdatingNode] = useState<string | null>(null);
+	const { data: updateLog } = useHAUpdateLog(updatingNode, !!updatingNode);
 	const doUpdate = async (node: string) => {
 		setActionMsg(null);
 		setBusy(true);
 		try {
 			await updateHANode(node);
 			setActionMsg(`Update auf „${node}" gestartet — der Node startet gleich mit dem neuen Stand neu.`);
+			setUpdatingNode(node);
 		} catch (e) {
 			setActionMsg(e instanceof Error ? e.message : "Update fehlgeschlagen");
 		} finally {
@@ -161,6 +171,28 @@ const HA = () => {
 
 	const setDb = (key: string) => (e: ChangeEvent<HTMLInputElement>) =>
 		setDbForm((f) => ({ ...f, [key]: e.target.value }));
+
+	// ---- Change floating IP ----
+	const [newVip, setNewVip] = useState("");
+	const [vipChanging, setVipChanging] = useState(false);
+	const [vipStartError, setVipStartError] = useState<string | null>(null);
+	const { data: vipJob } = useHAVipChangeStatus(vipChanging);
+
+	useEffect(() => {
+		if (vipJob && (vipJob.done || vipJob.error)) {
+			setVipChanging(false);
+		}
+	}, [vipJob]);
+
+	const startVipChange = async () => {
+		setVipStartError(null);
+		try {
+			await changeHAVip(newVip);
+			setVipChanging(true);
+		} catch (e) {
+			setVipStartError(e instanceof Error ? e.message : "Start fehlgeschlagen");
+		}
+	};
 
 	const saveDb = async () => {
 		await updateHADbConfig({
@@ -345,6 +377,26 @@ const HA = () => {
 							nirgends aktiv ist).
 						</div>
 						{actionMsg && <div className="alert alert-info mt-2 mb-0">{actionMsg}</div>}
+						{updatingNode && (
+							<div className="card mt-3">
+								<div className="card-header">
+									<h3 className="card-title">
+										Live-Log: Update auf „{updatingNode}"
+										<span className="spinner-border spinner-border-sm ms-2" />
+									</h3>
+									<div className="card-actions">
+										<button type="button" className="btn btn-sm" onClick={() => setUpdatingNode(null)}>
+											Schließen
+										</button>
+									</div>
+								</div>
+								<div className="card-body">
+									<pre className="text-muted small mb-0" style={{ maxHeight: 260, overflowY: "auto" }}>
+										{updateLog?.log || "Warte auf Log…"}
+									</pre>
+								</div>
+							</div>
+						)}
 					</div>
 				)}
 			</div>
@@ -509,6 +561,70 @@ const HA = () => {
 					{savedDb && <span className="text-green ms-2">Gespeichert</span>}
 				</div>
 			</div>
+
+			{/* Change floating IP */}
+			{!status?.standalone && (
+				<div className="card mt-3">
+					<div className="card-header">
+						<h3 className="card-title">Floating-IP ändern</h3>
+					</div>
+					<div className="card-body">
+						<p className="text-muted mb-2">
+							Ändert die VIP auf <strong>allen Nodes gleichzeitig</strong> (keepalived, Container-Umgebung und
+							VIP-Watcher) und speichert sie in der Konfiguration. Anders als beim Rolling-Update gibt es
+							hier keinen unterbrechungsfreien Weg — die Adresse selbst ändert sich, also kurz mit einer
+							Downtime für Clients rechnen. Denk danach an DNS/Router-Einträge, die auf die alte VIP
+							zeigten.
+						</p>
+						<div className="row g-2 align-items-end">
+							<div className="col-md-4">
+								<label className="form-label">Neue Floating-IP</label>
+								<input
+									className="form-control"
+									value={newVip}
+									onChange={(e) => setNewVip(e.target.value)}
+									placeholder="192.168.20.99"
+									disabled={vipChanging}
+								/>
+							</div>
+							<div className="col-md-4">
+								<button
+									type="button"
+									className="btn btn-warning"
+									onClick={startVipChange}
+									disabled={vipChanging || !newVip}
+								>
+									{vipChanging ? "Wird umgestellt…" : "Floating-IP ändern"}
+								</button>
+							</div>
+						</div>
+						{vipStartError && <div className="text-danger mt-2">{vipStartError}</div>}
+						{vipJob?.steps?.length ? (
+							<ul className="list-unstyled mt-3 mb-0">
+								{vipJob.steps.map((s) => (
+									<li key={s.name} className="mb-2">
+										{s.status === "ok" ? (
+											<IconCheck size={18} className="text-green me-2" />
+										) : s.status === "error" ? (
+											<IconX size={18} className="text-red me-2" />
+										) : (
+											<span className="spinner-border spinner-border-sm me-2" />
+										)}
+										<strong>{s.name}</strong>
+										{s.log && <pre className="text-muted small mt-1 mb-0">{s.log}</pre>}
+									</li>
+								))}
+							</ul>
+						) : null}
+						{vipJob?.error && <div className="alert alert-danger mt-2 mb-0">Fehler: {vipJob.error}</div>}
+						{vipJob?.done && (
+							<div className="alert alert-success mt-2 mb-0">
+								Floating-IP erfolgreich auf {newVip} umgestellt.
+							</div>
+						)}
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

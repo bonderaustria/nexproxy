@@ -78,6 +78,20 @@ const internalHaUpdate = {
 	getLatestVersion,
 
 	/**
+	 * Tail the remote update log for a node so the GUI can show live progress
+	 * of the "Update" action (which runs detached on the node itself).
+	 */
+	getUpdateLog: async (nodeName) => {
+		const target = await getNodeSsh(nodeName);
+		try {
+			const out = await run(target, "tail -n 200 /opt/nexproxy/update.log 2>/dev/null || echo '(noch kein Update-Log)'");
+			return { log: out };
+		} catch (err) {
+			return { log: `(Log konnte nicht gelesen werden: ${err.message})` };
+		}
+	},
+
+	/**
 	 * Pull the latest image and restart a node's container + keepalived. Runs
 	 * detached so it survives restarting the very node it targets. The active
 	 * (VIP-holding) node cannot be updated directly — force a failover first.
@@ -118,8 +132,9 @@ const internalHaUpdate = {
 				? `echo '${regToken}' | docker login ghcr.io -u ${regUser || "x"} --password-stdin >/dev/null 2>&1; `
 				: "";
 		const applyCmd = `${loginCmd}cd /opt/nexproxy && docker compose pull && docker compose up -d && systemctl restart keepalived`;
+		const logged = `{ ${applyCmd} ; } > /opt/nexproxy/update.log 2>&1`;
 
-		await run(target, `systemd-run --collect --unit=nexproxy-update-$(date +%s) /bin/sh -c 'sleep 2; ${applyCmd}'`);
+		await run(target, `echo "--- Update gestartet $(date -Iseconds) ---" > /opt/nexproxy/update.log; systemd-run --collect --unit=nexproxy-update-$(date +%s) /bin/sh -c 'sleep 2; ${logged}'`);
 		// This node is intentionally back in the game — cancel any pending auto-reclaim hold.
 		await db()("ha_node").where({ name: nodeName }).update({ hold_until: 0 });
 		logger.info(`[HA-Update] Update scheduled on ${nodeName}`);

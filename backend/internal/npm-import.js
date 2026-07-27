@@ -1,17 +1,13 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import knexLib from "knex";
 import db from "../db.js";
-import Access from "../lib/access.js";
 import { isPostgres } from "../lib/config.js";
 import { sshDownloadDir, sshDownloadFile, sshReadlink, sshRemoteExists, sshTest } from "../lib/ssh.js";
 import { global as logger } from "../logger.js";
-import internalDeadHost from "./dead-host.js";
 import internalNginx from "./nginx.js";
-import internalProxyHost from "./proxy-host.js";
-import internalRedirectionHost from "./redirection-host.js";
-import internalStream from "./stream.js";
 import deadHostModel from "../models/dead_host.js";
 import proxyHostModel from "../models/proxy_host.js";
 import redirectionHostModel from "../models/redirection_host.js";
@@ -104,14 +100,27 @@ async function countHeadline(srcKnex) {
  * certificate references to their NEWLY assigned ids (the target may already
  * have its own data — we never assume an empty database).
  */
-async function copyTableWithRemap(srcKnex, tableName, maps) {
+async function copyTableWithRemap(srcKnex, tableName, maps, sourceKey) {
 	const rows = await srcKnex(tableName).select();
 	const idMap = {};
 	const jsonCols = JSON_COLUMNS[tableName] || [];
 	let inserted = 0;
+	let reused = 0;
 
 	for (const row of rows) {
 		const oldId = row.id;
+
+		// Already imported from this exact source before? Reuse the mapping
+		// instead of inserting a duplicate row.
+		const existing = await db()("npm_import_log")
+			.where({ source_key: sourceKey, table_name: tableName, source_row_id: oldId })
+			.first();
+		if (existing) {
+			idMap[oldId] = existing.target_row_id;
+			reused++;
+			continue;
+		}
+
 		const newRow = { ...row };
 		delete newRow.id;
 
@@ -130,13 +139,14 @@ async function copyTableWithRemap(srcKnex, tableName, maps) {
 		if ("upstream_id" in newRow) {
 			newRow.upstream_id = null; // NexProxy-only concept — never carried over
 		}
+		// json/jsonb columns need an actual JSON-text STRING as the insert
+		// parameter — we're going through raw knex (not an Objection model,
+		// which would normally serialize this for us), so we must do it
+		// ourselves. SQLite already stores/returns these as JSON text; only
+		// re-stringify if some driver handed us an already-parsed object.
 		for (const col of jsonCols) {
-			if (typeof newRow[col] === "string") {
-				try {
-					newRow[col] = JSON.parse(newRow[col]);
-				} catch (_e) {
-					/* leave as-is */
-				}
+			if (newRow[col] !== null && newRow[col] !== undefined && typeof newRow[col] !== "string") {
+				newRow[col] = JSON.stringify(newRow[col]);
 			}
 		}
 
@@ -150,8 +160,16 @@ async function copyTableWithRemap(srcKnex, tableName, maps) {
 		}
 		idMap[oldId] = newId;
 		inserted++;
+
+		await db()("npm_import_log").insert({
+			source_key: sourceKey,
+			table_name: tableName,
+			source_row_id: oldId,
+			target_row_id: newId,
+			imported_on: Date.now(),
+		});
 	}
-	return { idMap, inserted, rows };
+	return { idMap, inserted, reused, rows };
 }
 
 async function importLetsEncryptCert(target, oldCertId, newCertId) {
@@ -224,7 +242,10 @@ const internalNpmImport = {
 			s2.append(`Heruntergeladen nach ${tmp}`);
 			s2.ok();
 
-			const summary = await internalNpmImport.importFromSqliteFile(tmp, { certTarget: target });
+			const summary = await internalNpmImport.importFromSqliteFile(tmp, {
+				certTarget: target,
+				sourceKey: `ssh:${target.host}:${target.port || 22}`,
+			});
 			fs.unlink(tmp, () => {});
 
 			job.summary = summary;
@@ -251,7 +272,8 @@ const internalNpmImport = {
 		resetJob();
 		job.running = true;
 		try {
-			const summary = await internalNpmImport.importFromSqliteFile(localSqlitePath, {});
+			const hash = crypto.createHash("sha256").update(fs.readFileSync(localSqlitePath)).digest("hex").slice(0, 16);
+			const summary = await internalNpmImport.importFromSqliteFile(localSqlitePath, { sourceKey: `upload:${hash}` });
 			fs.unlink(localSqlitePath, () => {});
 			job.summary = summary;
 			job.done = true;
@@ -274,7 +296,7 @@ const internalNpmImport = {
 	 * If `certTarget` is given, certificate files are pulled from that SSH
 	 * target too; otherwise only the database is imported.
 	 */
-	importFromSqliteFile: async (sqlitePath, { certTarget } = {}) => {
+	importFromSqliteFile: async (sqlitePath, { certTarget, sourceKey } = {}) => {
 		const srcKnex = openTempSqlite(sqlitePath);
 		try {
 			const s3 = step("Daten importieren");
@@ -286,7 +308,7 @@ const internalNpmImport = {
 			for (const table of IMPORT_TABLES) {
 				let result;
 				try {
-					result = await copyTableWithRemap(srcKnex, table, maps);
+					result = await copyTableWithRemap(srcKnex, table, maps, sourceKey);
 				} catch (err) {
 					s3.append(`${table}: übersprungen (${err.message})`);
 					continue;
@@ -299,7 +321,11 @@ const internalNpmImport = {
 				}
 				if (table in newIds) newIds[table] = Object.values(result.idMap);
 				counts[table] = result.inserted;
-				s3.append(`${table}: ${result.inserted} übernommen`);
+				s3.append(
+					result.reused
+						? `${table}: ${result.inserted} übernommen, ${result.reused} bereits importiert (übersprungen)`
+						: `${table}: ${result.inserted} übernommen`,
+				);
 			}
 			s3.ok();
 
@@ -324,16 +350,25 @@ const internalNpmImport = {
 			}
 
 			const s5 = step("Nginx-Konfiguration erzeugen");
-			// A synthetic full-access context for this system-initiated operation —
-			// same pattern used elsewhere for setup-mode/background actions.
-			const sysAccess = new Access(null);
-			await sysAccess.load(true);
+			// Fetch rows directly via the model rather than through the normal
+			// Access-gated internal .get() helpers: this is a system-initiated bulk
+			// operation with no real user token, and Access's "internal access"
+			// bypass only shortcuts can() to `true` — it does NOT set
+			// permission_visibility, so the row queries would still (wrongly)
+			// filter by owner_user_id and find nothing.
+			const fetchRow = async (model, id, expand) => {
+				const query = model.query().where("is_deleted", 0).andWhere("id", id).allowGraph(model.defaultAllowGraph).first();
+				if (expand) query.withGraphFetched(`[${expand.join(", ")}]`);
+				const row = await query;
+				if (!row) throw new Error("Not Found");
+				return row;
+			};
 
 			let configured = 0;
-			const regenerate = async (ids, getter, model, hostType, expand) => {
+			const regenerate = async (ids, model, hostType, expand) => {
 				for (const id of ids) {
 					try {
-						const row = await getter(sysAccess, { id, expand });
+						const row = await fetchRow(model, id, expand);
 						await internalNginx.configure(model, hostType, row);
 						configured++;
 					} catch (err) {
@@ -342,15 +377,10 @@ const internalNpmImport = {
 				}
 			};
 			try {
-				await regenerate(newIds.proxy_host, internalProxyHost.get, proxyHostModel, "proxy_host", [
-					"certificate",
-					"access_list.[clients,items]",
-				]);
-				await regenerate(newIds.redirection_host, internalRedirectionHost.get, redirectionHostModel, "redirection_host", [
-					"certificate",
-				]);
-				await regenerate(newIds.dead_host, internalDeadHost.get, deadHostModel, "dead_host", ["certificate"]);
-				await regenerate(newIds.stream, internalStream.get, streamModel, "stream", undefined);
+				await regenerate(newIds.proxy_host, proxyHostModel, "proxy_host", ["certificate", "access_list.[clients,items]"]);
+				await regenerate(newIds.redirection_host, redirectionHostModel, "redirection_host", ["certificate"]);
+				await regenerate(newIds.dead_host, deadHostModel, "dead_host", ["certificate"]);
+				await regenerate(newIds.stream, streamModel, "stream", undefined);
 				await internalNginx.reload();
 				s5.append(`${configured} Host-Konfigurationen erzeugt, Nginx neu geladen`);
 			} catch (err) {

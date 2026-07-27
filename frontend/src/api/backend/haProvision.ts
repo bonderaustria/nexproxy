@@ -44,3 +44,16 @@ export async function getHAProvisionStatus(): Promise<ProvisionJob> {
 		url: "/ha/provision-status",
 	});
 }
+
+export async function changeHAVip(vip: string, iface?: string): Promise<{ started: boolean }> {
+	return await api.post({
+		url: "/ha/change-vip",
+		data: { vip, iface },
+	});
+}
+
+export async function getHAVipChangeStatus(): Promise<ProvisionJob> {
+	return await api.get({
+		url: "/ha/vip-change-status",
+	});
+}

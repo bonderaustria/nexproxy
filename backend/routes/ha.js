@@ -139,6 +139,36 @@ router
 		res.status(200).send({ ok: true });
 	});
 
+/**
+ * POST /api/ha/change-vip { vip, iface } — start rolling out a new floating IP
+ * GET  /api/ha/vip-change-status — poll progress
+ */
+router
+	.route("/change-vip")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.post(async (req, res, next) => {
+		try {
+			const b = req.body || {};
+			if (internalHaProvision.getVipJob().running) {
+				return res.status(409).send({ error: "Änderung der Floating-IP läuft bereits" });
+			}
+			internalHaProvision.changeVip(b.vip, b.iface);
+			res.status(202).send({ started: true });
+		} catch (error) {
+			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${error}`);
+			next(error);
+		}
+	});
+
+router
+	.route("/vip-change-status")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.get(async (_req, res) => {
+		res.status(200).send(internalHaProvision.getVipJob());
+	});
+
 router
 	.route("/provision-status")
 	.options((_, res) => res.sendStatus(204))
@@ -206,6 +236,19 @@ router
 			res.status(200).send(data);
 		} catch (error) {
 			res.status(400).send({ error: { code: 400, message: error.message } });
+		}
+	});
+
+router
+	.route("/update-log")
+	.options((_, res) => res.sendStatus(204))
+	.all(jwtdecode())
+	.get(async (req, res, next) => {
+		try {
+			const data = await internalHaUpdate.getUpdateLog(req.query.node_name);
+			res.status(200).send(data);
+		} catch (error) {
+			next(error);
 		}
 	});
 

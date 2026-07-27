@@ -12,6 +12,8 @@ export * from "./useHADbConfig";
 export * from "./useHALatestVersion";
 export * from "./useHAProvisionStatus";
 export * from "./useHAStatus";
+export * from "./useHAUpdateLog";
+export * from "./useHAVipChangeStatus";
 export * from "./useHealth";
 export * from "./useLicense";
 export * from "./useNpmImportStatus";

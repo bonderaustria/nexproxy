@@ -2,10 +2,11 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import db from "../db.js";
 import { configGet } from "../lib/config.js";
-import { encryptSecret } from "../lib/secret-store.js";
+import { decryptSecret, encryptSecret } from "../lib/secret-store.js";
 import { sshExec, sshTest } from "../lib/ssh.js";
 import { global as logger } from "../logger.js";
 import { copySqliteToPostgres } from "./db-migrate-data.js";
+import internalHa from "./ha.js";
 
 const DEFAULT_IMAGE = process.env.NEXPROXY_IMAGE || "ghcr.io/bonderaustria/nexproxy:latest";
 const CERT_EXPORT = "/srv/nexproxy-certs";
@@ -55,6 +56,31 @@ const resetJob = () => {
 const step = (name) => {
 	const s = { name, status: "running", log: "" };
 	job.steps.push(s);
+	logger.info(`[HA-Provision] ${name} ...`);
+	return {
+		append: (line) => {
+			s.log += `${line}\n`;
+		},
+		ok: () => {
+			s.status = "ok";
+		},
+		fail: (msg) => {
+			s.status = "error";
+			s.log += `${msg}\n`;
+		},
+	};
+};
+
+// Separate singleton for the "change VIP" job, polled via GET /api/ha/vip-change-status
+let vipJob = { running: false, done: false, error: null, steps: [] };
+
+const resetVipJob = () => {
+	vipJob = { running: false, done: false, error: null, steps: [] };
+};
+
+const vipStep = (name) => {
+	const s = { name, status: "running", log: "" };
+	vipJob.steps.push(s);
 	logger.info(`[HA-Provision] ${name} ...`);
 	return {
 		append: (line) => {
@@ -304,6 +330,102 @@ const internalHaProvision = {
 	 * orchestrator) is handed to systemd-run so it survives the restart — this is
 	 * essential for the primary reconfiguring itself.
 	 */
+	getVipJob: () => vipJob,
+
+	/**
+	 * Change the cluster's floating IP after the fact. The VIP is baked into
+	 * three places per node (keepalived.conf's virtual_ipaddress, the
+	 * docker-compose HA_VIP env, and the independent vip-watch systemd unit) —
+	 * changing only one of them is exactly what caused the earlier VIP bugs, so
+	 * this updates all three, on every known node, in one job.
+	 *
+	 * This is inherently a "flag day" for clients (the address itself changes)
+	 * — unlike a rolling update there's no way to keep the old VIP reachable
+	 * throughout, so all nodes are switched together rather than one at a time.
+	 */
+	changeVip: async (newVip, iface) => {
+		resetVipJob();
+		vipJob.running = true;
+		try {
+			if (!newVip) throw new Error("Keine neue Floating-IP angegeben");
+
+			const cfgRow = await db()("ha_config").where({ id: 1 }).first();
+			const oldVip = cfgRow?.vip || "";
+			const useIface = iface || cfgRow?.iface || "eth0";
+
+			const nodes = await db()("ha_node_ssh").select();
+			if (!nodes.length) throw new Error("Keine Nodes mit gespeicherten SSH-Zugangsdaten gefunden");
+
+			// If this API call is being served by one of the nodes we're about to
+			// touch, that node's own "docker compose up -d" recreates the very
+			// container this job is running in — which would kill this loop mid-way
+			// and silently leave the remaining nodes untouched (exactly what caused
+			// an earlier VIP rollout to only half-apply). So: process the self node
+			// LAST, and detach its apply step via systemd-run so it survives.
+			let selfName = null;
+			try {
+				selfName = (await internalHa.getStatus()).self;
+			} catch (_e) {
+				/* best effort — falls back to normal ordering/apply if unknown */
+			}
+			const orderedNodes = [...nodes].sort((a, b) => (a.node_name === selfName ? 1 : 0) - (b.node_name === selfName ? 1 : 0));
+
+			const s1 = vipStep(`Neue Floating-IP (${newVip}) auf allen Nodes ausrollen`);
+			const vipWatchUnit = buildVipWatchUnit(newVip, useIface);
+			const vipMatch = oldVip ? oldVip.replace(/\./g, "\\.") : "[0-9.]\\+";
+			for (const row of orderedNodes) {
+				const target = {
+					host: row.host,
+					port: row.port || 22,
+					username: row.username || "root",
+					password: decryptSecret(row.password_enc) || undefined,
+					privateKey: decryptSecret(row.private_key_enc) || undefined,
+				};
+				// `;` between the container recreate and the keepalived restart —
+				// NOT `&&` — so a slow/hiccupy container recreate can never silently
+				// skip the keepalived restart that actually moves the VIP.
+				const writeConfig =
+					`sed -i "s|${vipMatch}/[0-9]\\+|${newVip}/24|" /etc/keepalived/keepalived.conf; ` +
+					`sed -i 's|HA_VIP: ".*"|HA_VIP: "${newVip}"|' /opt/nexproxy/docker-compose.yml; ` +
+					`cat > /etc/systemd/system/nexproxy-vip-watch.service <<'UNIT'\n${vipWatchUnit}UNIT\n` +
+					"systemctl daemon-reload; systemctl restart nexproxy-vip-watch";
+				const apply = "cd /opt/nexproxy && docker compose up -d; systemctl restart keepalived";
+				try {
+					if (row.node_name === selfName) {
+						await run(target, writeConfig);
+						// Detached: survives this node's own container restart.
+						await run(target, `systemd-run --collect --unit=nexproxy-vip-apply-$(date +%s) /bin/sh -c 'sleep 2; ${apply}'`);
+						s1.append(`${row.node_name}: aktualisiert (Container-Neustart läuft entkoppelt weiter)`);
+					} else {
+						await run(target, `${writeConfig}; ${apply}`);
+						s1.append(`${row.node_name}: aktualisiert`);
+					}
+				} catch (err) {
+					s1.append(`${row.node_name}: FEHLGESCHLAGEN — ${err.message}`);
+					throw new Error(`Node "${row.node_name}" konnte nicht umgestellt werden: ${err.message}`);
+				}
+			}
+			s1.ok();
+
+			const s2 = vipStep("Neue Floating-IP speichern");
+			await db()("ha_config").where({ id: 1 }).update({ vip: newVip, iface: useIface, modified_on: Date.now() });
+			s2.append("Gespeichert. Denk daran, DNS/Router-Einträge, die auf die alte VIP zeigten, anzupassen.");
+			s2.ok();
+
+			vipJob.done = true;
+		} catch (err) {
+			logger.error(`[HA-Provision] change-vip failed: ${err.message}`);
+			vipJob.error = err.message;
+			const last = vipJob.steps[vipJob.steps.length - 1];
+			if (last && last.status === "running") {
+				last.status = "error";
+				last.log += `${err.message}\n`;
+			}
+		} finally {
+			vipJob.running = false;
+		}
+	},
+
 	setupNode: async (target, c) => {
 		// 1) Docker + keepalived (safe: does not touch the running container)
 		await run(
