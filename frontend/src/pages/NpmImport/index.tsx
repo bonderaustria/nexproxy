@@ -6,6 +6,7 @@ import {
 	startNpmImportUpload,
 	type NpmImportPreview,
 } from "src/api/backend";
+import { PageTitle } from "src/components";
 import { useNpmImportStatus } from "src/hooks";
 
 const HEADLINE_LABELS: Record<string, string> = {
@@ -93,15 +94,19 @@ const NpmImport = () => {
 
 	return (
 		<div>
-			<h2>Migration von Nginx Proxy Manager</h2>
+			<PageTitle
+				eyebrow="nav.group.system"
+				title="Migration von Nginx Proxy Manager"
+				rawTitle
+				subtitle="NexProxy ist ein Fork von Nginx Proxy Manager — die Datenbank hat dasselbe Format."
+			/>
 
 			<div className="card mb-3">
 				<div className="card-body">
 					<p className="text-muted mb-0">
-						NexProxy ist ein Fork von Nginx Proxy Manager — die Datenbank hat dasselbe Format. Proxy-Hosts,
-						Zertifikate, Zugriffslisten und Nutzer deiner alten Instanz können direkt übernommen werden. Schon
-						vorhandene Daten in NexProxy bleiben erhalten, die importierten Daten werden ergänzt (keine
-						Duplikate bei Kollisionen, neue IDs werden automatisch vergeben).
+						Proxy-Hosts, Zertifikate, Zugriffslisten und Nutzer deiner alten Instanz können direkt
+						übernommen werden. Schon vorhandene Daten in NexProxy bleiben erhalten, die importierten Daten
+						werden ergänzt (keine Duplikate bei Kollisionen, neue IDs werden automatisch vergeben).
 					</p>
 				</div>
 			</div>

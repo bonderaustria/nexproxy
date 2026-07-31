@@ -1,6 +1,7 @@
 import { IconCrown } from "@tabler/icons-react";
 import { useState } from "react";
 import { clearLicense, setLicense } from "src/api/backend";
+import { PageTitle } from "src/components";
 import { useLicense } from "src/hooks";
 
 const License = () => {
@@ -39,9 +40,7 @@ const License = () => {
 
 	return (
 		<div>
-			<h2>
-				Lizenz <IconCrown size={20} style={{ color: "#F0A93B", verticalAlign: "-3px" }} />
-			</h2>
+			<PageTitle eyebrow="nav.group.system" title="license" />
 
 			<div className="card mb-3" style={{ maxWidth: 760 }}>
 				<div className="card-body">

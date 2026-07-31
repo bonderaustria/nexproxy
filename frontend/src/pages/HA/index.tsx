@@ -1,4 +1,5 @@
 import { IconCheck, IconServer, IconX } from "@tabler/icons-react";
+import { PageTitle } from "src/components";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { changeHAVip, forceHAFailover, startHAProvision, updateHANode } from "src/api/backend";
 import {
@@ -188,7 +189,7 @@ const HA = () => {
 
 	return (
 		<div>
-			<h2>HA-Cluster</h2>
+			<PageTitle eyebrow="nav.group.system" title="ha-cluster" />
 
 			{/* How it works */}
 			<div className="card mb-3">

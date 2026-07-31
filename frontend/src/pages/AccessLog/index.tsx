@@ -7,6 +7,7 @@ import {
 	getAccessLogStats,
 	setAccessLogRetention,
 } from "src/api/backend";
+import { PageTitle } from "src/components";
 import { AuthStore } from "src/modules/AuthStore";
 
 const authStore = new AuthStore();
@@ -117,13 +118,16 @@ const AccessLog = () => {
 
 	return (
 		<div>
-			<h2>
-				Zugriffsprotokoll{" "}
-				<span className="badge bg-yellow-lt ms-1">
-					<IconCrown size={14} className="me-1" />
-					Enterprise
-				</span>
-			</h2>
+			<PageTitle
+				eyebrow="nav.group.overview"
+				title="access-log"
+				subtitle={
+					<span className="badge bg-yellow-lt">
+						<IconCrown size={14} className="me-1" />
+						Enterprise
+					</span>
+				}
+			/>
 
 			{/* stat strip */}
 			<div className="row row-cards mb-3">

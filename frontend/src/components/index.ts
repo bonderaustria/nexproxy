@@ -11,6 +11,7 @@ export * from "./LocalePicker";
 export * from "./NavLink";
 export * from "./Page";
 export * from "./PageCard";
+export * from "./PageTitle";
 export * from "./SiteContainer";
 export * from "./SiteFooter";
 // SiteHeader ist mit dem Wegfall des klebenden Kopfbereichs nicht mehr im
