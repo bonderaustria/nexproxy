@@ -30,16 +30,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Version bestimmen
+      - name: Version und Tags bestimmen
         id: v
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
-            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-            echo "latest=true" >> "$GITHUB_OUTPUT"
+            VERSION="${GITHUB_REF_NAME#v}"
+            LATEST=true
           else
-            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
-            echo "latest=${{ inputs.latest }}" >> "$GITHUB_OUTPUT"
+            VERSION="${{ inputs.version }}"
+            LATEST="${{ inputs.latest }}"
           fi
+          IMAGE=ghcr.io/bonderaustria/nexproxy
+          # Die Tag-Liste hier zusammensetzen statt per Ausdruck in der Action:
+          # ein bedingter Ausdruck liefert sonst eine leere Zeile, und darauf
+          # bricht build-push-action ab.
+          TAGS="$IMAGE:$VERSION"
+          if [ "$LATEST" = "true" ]; then
+            TAGS="$TAGS
+          $IMAGE:latest"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          {
+            echo "tags<<EOF"
+            echo "$TAGS"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "Tags:"; echo "$TAGS"
 
       - uses: actions/setup-node@v4
         with:
@@ -74,11 +90,7 @@ jobs:
             BUILD_VERSION=${{ steps.v.outputs.version }}
             BUILD_COMMIT=${{ github.sha }}
             BUILD_DATE=${{ github.event.repository.updated_at }}
-          tags: |
-            ghcr.io/bonderaustria/nexproxy:${{ steps.v.outputs.version }}
-            ${{ steps.v.outputs.latest == 'true' && format('ghcr.io/bonderaustria/nexproxy:latest', '') || '' }}
+          tags: ${{ steps.v.outputs.tags }}
 
       - name: Ergebnis
-        run: |
-          echo "Veroeffentlicht: ghcr.io/bonderaustria/nexproxy:${{ steps.v.outputs.version }}"
-          echo "latest mitgezogen: ${{ steps.v.outputs.latest }}"
+        run: echo "Veroeffentlicht:" && echo "${{ steps.v.outputs.tags }}"
