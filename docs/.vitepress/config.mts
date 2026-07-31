@@ -34,6 +34,9 @@ export default defineConfig({
 	metaChunk: true,
 	srcDir: "./src",
 	outDir: "./dist",
+	// Dunkel als Standard: die Anwendung selbst ist eine reine Dunkelanwendung,
+	// und die Website soll denselben Eindruck machen. Der Umschalter bleibt.
+	appearance: "dark",
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
 		logo: { src: "/logo.svg", width: 24, height: 24 },

@@ -1,25 +1,146 @@
+/*
+ * NexProxy-Theme fuer die Website.
+ *
+ * Die Werte sind dieselben wie in der Anwendung (frontend/src/styles/tokens.css).
+ * Website und Produkt sollen wie ein Stueck wirken — vorher lief hier das
+ * VitePress-Standardtheme mit den Markenfarben des Ursprungsprojekts, wodurch
+ * die Seite kaum von deren Website zu unterscheiden war.
+ */
+
 :root {
+	/* Tokens aus der Anwendung */
+	--np-bg: #161c26;
+	--np-card: #1e2732;
+	--np-chrome: #1a222d;
+	--np-muted: #273140;
+	--np-hover: #232d3a;
+	--np-control: #313c4d;
+	--np-brand-tint: #7f9dbd;
+	--np-brand-navy: #142c4a;
+	--np-accent: #eaa633;
+	--np-accent-hover: #d4941f;
+	--np-text-strong: #ffffff;
+	--np-text: #e6ebf2;
+	--np-text-muted: #9aa8bb;
+	--np-text-subtle: #6b7a90;
+
+	/* Markenfarbe von VitePress: der ruhige Blauton, nicht Amber. Amber bleibt
+	   der Hauptaktion vorbehalten — sonst leuchtet die halbe Seite. */
+	--vp-c-brand-1: #a8c1dc;
+	--vp-c-brand-2: #7f9dbd;
+	--vp-c-brand-3: #7f9dbd;
+	--vp-c-brand-soft: rgba(127, 157, 189, 0.16);
+
+	/* Hero: Verlauf in Amber statt im Orange des Ursprungsprojekts. */
 	--vp-home-hero-name-color: transparent;
-	--vp-home-hero-name-background: -webkit-linear-gradient(120deg, #f15833 30%, #FAA42F);
+	--vp-home-hero-name-background: linear-gradient(120deg, #eaa633 20%, #f3c874 80%);
+	--vp-home-hero-image-background-image: linear-gradient(-45deg, #eaa633 30%, #7f9dbd 70%);
+	--vp-home-hero-image-filter: blur(56px);
 
-	--vp-home-hero-image-background-image: linear-gradient(-45deg, #aaaaaa 50%, #777777 50%);
-	--vp-home-hero-image-filter: blur(44px);
-
-	--vp-c-brand-1: #f15833;
-	--vp-c-brand-2: #FAA42F;
-	--vp-c-brand-3: #f15833;
+	/* Amber-Knopf der Hauptaktion, wie im Dashboard. */
+	--vp-button-brand-bg: #eaa633;
+	--vp-button-brand-border: #eaa633;
+	--vp-button-brand-text: #142c4a;
+	--vp-button-brand-hover-bg: #d4941f;
+	--vp-button-brand-hover-border: #d4941f;
+	--vp-button-brand-hover-text: #142c4a;
+	--vp-button-brand-active-bg: #d4941f;
+	--vp-button-brand-active-border: #d4941f;
+	--vp-button-brand-active-text: #142c4a;
 }
 
-  @media (min-width: 640px) {
-	:root {
-		--vp-home-hero-image-filter: blur(56px);
-	}
+/* Dunkle Flaechen exakt wie in der Anwendung. */
+.dark {
+	--vp-c-bg: var(--np-bg);
+	--vp-c-bg-alt: var(--np-chrome);
+	--vp-c-bg-soft: var(--np-card);
+	--vp-c-bg-elv: var(--np-card);
+
+	--vp-c-divider: var(--np-muted);
+	--vp-c-gutter: var(--np-muted);
+	--vp-c-border: var(--np-muted);
+
+	--vp-c-text-1: var(--np-text-strong);
+	--vp-c-text-2: var(--np-text);
+	--vp-c-text-3: var(--np-text-muted);
+
+	--vp-nav-bg-color: var(--np-chrome);
+	--vp-sidebar-bg-color: var(--np-card);
+	--vp-code-block-bg: var(--np-chrome);
+	--vp-code-bg: var(--np-hover);
 }
 
-  @media (min-width: 960px) {
+@media (min-width: 640px) {
 	:root {
 		--vp-home-hero-image-filter: blur(68px);
 	}
+}
+
+@media (min-width: 960px) {
+	:root {
+		--vp-home-hero-image-filter: blur(80px);
+	}
+}
+
+/* Feature-Kacheln nach dem Kartenrezept der Anwendung: gleiche Flaeche,
+   gleicher Rahmen, gleicher Radius, ein Schatten. */
+.dark .VPFeature {
+	background: var(--np-card);
+	border: 1px solid var(--np-muted);
+	border-radius: 12px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	transition: border-color 160ms ease;
+}
+
+.dark .VPFeature:hover {
+	border-color: var(--np-control);
+}
+
+.dark .VPFeature .title {
+	color: var(--np-text-strong);
+	font-weight: 600;
+}
+
+.dark .VPFeature .details {
+	color: var(--np-text-muted);
+}
+
+/* Editionen-Tabelle auf der Startseite. */
+.dark .vp-doc th {
+	background: var(--np-chrome);
+	color: var(--np-text-subtle);
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	border-color: var(--np-muted);
+}
+
+.dark .vp-doc td {
+	border-color: var(--np-muted);
+}
+
+.dark .vp-doc tr {
+	background: transparent;
+	border-color: var(--np-muted);
+}
+
+.dark .vp-doc tr:hover td {
+	background: var(--np-hover);
+}
+
+/* Der zweite Hero-Knopf war als heller Block kaum vom Hintergrund zu
+   unterscheiden — als Umriss passt er zum Nebenaktions-Stil der Anwendung. */
+.dark .VPButton.alt {
+	background: transparent;
+	border: 1px solid var(--np-control);
+	color: var(--np-text);
+}
+
+.dark .VPButton.alt:hover {
+	background: var(--np-hover);
+	border-color: var(--np-control);
+	color: var(--np-text-strong);
 }
 
 .inline-img img {
