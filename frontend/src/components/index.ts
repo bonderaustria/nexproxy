@@ -13,7 +13,10 @@ export * from "./Page";
 export * from "./SiteContainer";
 export * from "./SiteFooter";
 export * from "./SiteHeader";
-export * from "./SiteMenu";
+export * from "./SiteSidebar";
 export * from "./Table";
-export * from "./ThemeSwitcher";
+// SiteMenu (obere Navigationsleiste) und ThemeSwitcher sind mit dem Redesign
+// entfallen: die Navigation steckt jetzt in SiteSidebar, und die App ist reine
+// Dunkelanwendung. Die Dateien bleiben vorerst liegen, bis alle Seiten migriert
+// sind und sicher ist, dass niemand mehr darauf zugreift.
 export * from "./Unhealthy";

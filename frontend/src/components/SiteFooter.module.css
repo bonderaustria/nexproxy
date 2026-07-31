@@ -1,0 +1,58 @@
+.footer {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 16px 32px;
+	background: var(--np-chrome);
+	border-top: 1px solid var(--np-muted);
+	font-size: 12px;
+	color: var(--np-text-subtle);
+}
+
+.sep {
+	color: var(--np-subtle);
+}
+
+.link {
+	color: var(--np-text-subtle);
+	text-decoration: none;
+}
+
+.link:hover {
+	color: var(--np-brand-tint-hover);
+}
+
+/* Version rechts, wie im Handoff: margin-left auto, 600, helleres Grau. */
+.version {
+	margin-left: auto;
+	font-weight: 600;
+	color: var(--np-text-muted);
+	text-decoration: none;
+}
+
+.version:hover {
+	color: var(--np-brand-tint-hover);
+}
+
+/* Hinweis auf eine neue Version — bewusst in Akzentfarbe, damit er sich vom
+   ruhigen Rest des Footers abhebt. */
+.update {
+	font-weight: 600;
+	color: var(--np-accent);
+	text-decoration: none;
+}
+
+.update:hover {
+	color: var(--np-accent-hover);
+}
+
+@media (max-width: 640px) {
+	.footer {
+		flex-wrap: wrap;
+		padding: 16px 20px;
+	}
+
+	.version {
+		margin-left: 0;
+	}
+}

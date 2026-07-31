@@ -431,8 +431,50 @@
 	"expires.on": {
 		"defaultMessage": "Expires: {date}"
 	},
+	"dashboard.activity": {
+		"defaultMessage": "Recent Activity"
+	},
+	"dashboard.certificates": {
+		"defaultMessage": "Certificates"
+	},
+	"dashboard.certificates.manage": {
+		"defaultMessage": "Manage"
+	},
+	"dashboard.hosts.empty": {
+		"defaultMessage": "No proxy hosts yet."
+	},
+	"dashboard.hosts.subtitle": {
+		"defaultMessage": "Most recently updated"
+	},
+	"dashboard.hosts.view-all": {
+		"defaultMessage": "View all →"
+	},
+	"dashboard.system-health": {
+		"defaultMessage": "System Health"
+	},
+	"dashboard.system-health.cpu": {
+		"defaultMessage": "CPU"
+	},
+	"dashboard.system-health.disk": {
+		"defaultMessage": "Disk"
+	},
+	"dashboard.system-health.memory": {
+		"defaultMessage": "Memory"
+	},
+	"dashboard.system-health.nginx-running": {
+		"defaultMessage": "Nginx running · Uptime {days} d"
+	},
+	"dashboard.system-health.nginx-stopped": {
+		"defaultMessage": "Nginx not running"
+	},
+	"footer.documentation": {
+		"defaultMessage": "Documentation"
+	},
 	"footer.github-fork": {
 		"defaultMessage": "Fork me on Github"
+	},
+	"footer.support": {
+		"defaultMessage": "Support"
 	},
 	"host.flags.block-exploits": {
 		"defaultMessage": "Block Common Exploits"
@@ -613,6 +655,24 @@
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"
+	},
+	"nav.brand-subtitle": {
+		"defaultMessage": "Proxy Manager"
+	},
+	"nav.group.overview": {
+		"defaultMessage": "Overview"
+	},
+	"nav.group.routing": {
+		"defaultMessage": "Routing"
+	},
+	"nav.group.security": {
+		"defaultMessage": "Security"
+	},
+	"nav.group.system": {
+		"defaultMessage": "System"
+	},
+	"proxy-hosts.add": {
+		"defaultMessage": "Add Proxy Host"
 	},
 	"proxy-hosts.count": {
 		"defaultMessage": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}"

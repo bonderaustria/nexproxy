@@ -353,8 +353,68 @@
 	"expires.on": {
 		"defaultMessage": "Ablauf am: {date}"
 	},
+	"dashboard.activity": {
+		"defaultMessage": "Letzte Aktivität"
+	},
+	"dashboard.certificates": {
+		"defaultMessage": "Zertifikate"
+	},
+	"dashboard.certificates.manage": {
+		"defaultMessage": "Verwalten"
+	},
+	"dashboard.hosts.empty": {
+		"defaultMessage": "Noch keine Proxy-Hosts."
+	},
+	"dashboard.hosts.subtitle": {
+		"defaultMessage": "Zuletzt geändert"
+	},
+	"dashboard.hosts.view-all": {
+		"defaultMessage": "Alle anzeigen →"
+	},
+	"dashboard.system-health": {
+		"defaultMessage": "Systemzustand"
+	},
+	"dashboard.system-health.cpu": {
+		"defaultMessage": "CPU"
+	},
+	"dashboard.system-health.disk": {
+		"defaultMessage": "Festplatte"
+	},
+	"dashboard.system-health.memory": {
+		"defaultMessage": "Speicher"
+	},
+	"dashboard.system-health.nginx-running": {
+		"defaultMessage": "Nginx läuft · Laufzeit {days} T"
+	},
+	"dashboard.system-health.nginx-stopped": {
+		"defaultMessage": "Nginx läuft nicht"
+	},
+	"footer.documentation": {
+		"defaultMessage": "Dokumentation"
+	},
+	"nav.brand-subtitle": {
+		"defaultMessage": "Proxy Manager"
+	},
+	"nav.group.overview": {
+		"defaultMessage": "Überblick"
+	},
+	"nav.group.routing": {
+		"defaultMessage": "Routing"
+	},
+	"nav.group.security": {
+		"defaultMessage": "Sicherheit"
+	},
+	"nav.group.system": {
+		"defaultMessage": "System"
+	},
+	"proxy-hosts.add": {
+		"defaultMessage": "Proxy-Host anlegen"
+	},
 	"footer.github-fork": {
 		"defaultMessage": "Fork me on Github"
+	},
+	"footer.support": {
+		"defaultMessage": "Support"
 	},
 	"host.flags.block-exploits": {
 		"defaultMessage": "Gängige Exploits blockieren"

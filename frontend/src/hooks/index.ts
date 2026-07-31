@@ -19,6 +19,7 @@ export * from "./useLicense";
 export * from "./useNpmImportStatus";
 export * from "./useUpstreams";
 export * from "./useHostReport";
+export * from "./useSystemHealth";
 export * from "./useProxyHost";
 export * from "./useProxyHosts";
 export * from "./useRedirectionHost";

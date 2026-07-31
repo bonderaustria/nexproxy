@@ -4,7 +4,7 @@ import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import { createUser } from "src/api/backend";
-import { Button, LocalePicker, Page, ThemeSwitcher } from "src/components";
+import { Button, LocalePicker, Page } from "src/components";
 import { useAuthState } from "src/context";
 import { intl, T } from "src/locale";
 import { validateEmail, validateString } from "src/modules/Validations";
@@ -62,7 +62,6 @@ export default function Setup() {
 		<Page className="page page-center">
 			<div className={cn("d-none", "d-md-flex", styles.helperBtns)}>
 				<LocalePicker />
-				<ThemeSwitcher />
 			</div>
 			<div className="container container-tight py-4">
 				<div className="text-center mb-4">

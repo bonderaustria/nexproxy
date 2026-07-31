@@ -1,0 +1,378 @@
+.page {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* ── Kennzahlen ────────────────────────────────────── */
+.stats {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 16px;
+}
+
+.card {
+	background: var(--np-card);
+	border: 1px solid var(--np-muted);
+	border-radius: var(--np-radius-card);
+	box-shadow: var(--np-shadow-card);
+}
+
+.statCard {
+	composes: card;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	text-decoration: none;
+}
+
+.statTop {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.eyebrow {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--np-text-muted-dim);
+}
+
+.dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--np-subtle);
+	margin-left: auto;
+	flex: none;
+}
+
+.dotActive {
+	background: var(--np-success);
+}
+
+.statValue {
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--np-text-strong);
+}
+
+.statContext {
+	font-size: 12px;
+	color: var(--np-text-muted-dim);
+}
+
+/* ── Zweispaltiger Rumpf ───────────────────────────── */
+.body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) var(--np-rail-width);
+	gap: 20px;
+	align-items: start;
+}
+
+.rail {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.railCard {
+	composes: card;
+	padding: 20px;
+}
+
+/* ── Hosts-Tabelle ─────────────────────────────────── */
+.tableCard {
+	composes: card;
+	overflow: hidden;
+}
+
+.cardHeader {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 18px 20px;
+	border-bottom: 1px solid var(--np-muted);
+}
+
+.cardTitle {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--np-text-strong);
+}
+
+.cardSubtitle {
+	font-size: 12px;
+	color: var(--np-text-muted-dim);
+}
+
+.cardLink {
+	margin-left: auto;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--np-brand-tint);
+	text-decoration: none;
+}
+
+.cardLink:hover {
+	color: var(--np-brand-tint-hover);
+}
+
+/* Kopf und Zeilen teilen sich dieselbe Rasterdefinition — sonst laufen sie
+   auseinander, sobald eine Spalte ihren Inhalt aendert. */
+.row {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) 100px 110px 90px;
+	align-items: center;
+	gap: 12px;
+}
+
+.head {
+	composes: row;
+	padding: 10px 20px;
+	background: var(--np-chrome);
+	border-bottom: 1px solid var(--np-muted);
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--np-text-subtle);
+}
+
+.bodyRow {
+	composes: row;
+	width: 100%;
+	padding: 14px 20px;
+	border-bottom: 1px solid var(--np-hover);
+	font-size: 13px;
+	background: none;
+	border-left: 0;
+	border-right: 0;
+	border-top: 0;
+	text-align: left;
+	color: inherit;
+	cursor: pointer;
+	transition: var(--np-motion-bg);
+	font-family: inherit;
+}
+
+.bodyRow:hover {
+	background: var(--np-hover);
+}
+
+.bodyRow:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+	outline-offset: -2px;
+}
+
+.domain {
+	color: var(--np-text-strong);
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.destination {
+	font-family: var(--np-font-mono);
+	font-size: 12px;
+	color: var(--np-text-muted);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cell {
+	font-size: 12px;
+	color: var(--np-text-muted);
+}
+
+.pill {
+	font-size: 11px;
+	font-weight: 700;
+	border-radius: var(--np-radius-pill);
+	padding: 3px 10px;
+	justify-self: start;
+}
+
+.pillOnline {
+	composes: pill;
+	color: var(--np-pill-ok-text);
+	background: var(--np-pill-ok-bg);
+	border: 1px solid var(--np-pill-ok-border);
+}
+
+.pillDisabled {
+	composes: pill;
+	color: #cbd5e1;
+	background: var(--np-control);
+	border: 1px solid var(--np-subtle);
+}
+
+.pillWarn {
+	composes: pill;
+	color: var(--np-pill-warn-text);
+	background: var(--np-pill-warn-bg);
+	border: 1px solid transparent;
+}
+
+.empty {
+	padding: 32px 20px;
+	text-align: center;
+	color: var(--np-text-muted-dim);
+	font-size: 13px;
+}
+
+/* ── Systemzustand ─────────────────────────────────── */
+.metrics {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 14px;
+}
+
+.metricLabel {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 6px;
+}
+
+.metricName {
+	font-size: 13px;
+	color: var(--np-text-secondary);
+}
+
+.metricValue {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--np-text-strong);
+}
+
+.track {
+	height: 6px;
+	border-radius: var(--np-radius-pill);
+	background: var(--np-control);
+	overflow: hidden;
+}
+
+.fill {
+	height: 100%;
+	border-radius: var(--np-radius-pill);
+	transition: var(--np-motion-bar);
+}
+
+.healthFooter {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 16px;
+	padding-top: 14px;
+	border-top: 1px solid var(--np-muted);
+	font-size: 12px;
+	color: var(--np-text-muted-dim);
+}
+
+/* ── Zertifikate und Aktivität ─────────────────────── */
+.railHeader {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.certRow {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 13px;
+	color: var(--np-text-strong);
+	padding: 6px 0;
+}
+
+.certRow span:first-child {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.certRow .pillOnline,
+.certRow .pillWarn {
+	margin-left: auto;
+	flex: none;
+}
+
+.activity {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.activityItem {
+	display: flex;
+	gap: 10px;
+}
+
+.activityDot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--np-brand-tint);
+	margin-top: 6px;
+	flex: none;
+}
+
+.activityText {
+	font-size: 13px;
+	color: var(--np-text);
+}
+
+.activityMeta {
+	font-size: 11px;
+	color: var(--np-text-subtle);
+}
+
+/* ── Skelette ──────────────────────────────────────── */
+.skeleton {
+	background: var(--np-hover);
+	border-radius: 4px;
+	color: transparent;
+}
+
+/* ── Responsiv ─────────────────────────────────────── */
+@media (max-width: 1280px) {
+	.body {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 1024px) {
+	.stats {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 640px) {
+	.stats {
+		grid-template-columns: 1fr;
+	}
+
+	/* Tabelle wird zur Kartenliste: Domain und Status oben, Rest darunter. */
+	.head {
+		display: none;
+	}
+
+	.bodyRow {
+		grid-template-columns: minmax(0, 1fr) auto;
+		row-gap: 6px;
+	}
+
+	.destination,
+	.cell {
+		grid-column: 1 / -1;
+	}
+}

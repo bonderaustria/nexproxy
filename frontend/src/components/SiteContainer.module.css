@@ -1,0 +1,33 @@
+/* Rahmen der gesamten Anwendung: feste Sidebar links, rechts eine Spalte aus
+   Kopf (klebend), Inhalt und Fuss. */
+.shell {
+	display: grid;
+	grid-template-columns: var(--np-sidebar-width) 1fr;
+	min-height: 100vh;
+	background: var(--np-bg);
+	color: var(--np-text);
+	font-family: var(--np-font);
+	font-size: 14px;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.main {
+	flex: 1;
+	padding: 28px 32px 36px;
+	min-width: 0;
+}
+
+@media (max-width: 1024px) {
+	.shell {
+		grid-template-columns: 1fr;
+	}
+
+	.main {
+		padding: 20px;
+	}
+}

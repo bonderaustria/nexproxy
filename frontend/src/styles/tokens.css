@@ -1,0 +1,67 @@
+/*
+ * Design-Tokens aus dem GUI-Handoff (Bibliothek Design System, Dark-Surface-Set).
+ *
+ * Diese Datei ist die einzige Stelle, an der Farbwerte des neuen Designs stehen.
+ * Neue Bausteine referenzieren ausschliesslich diese Variablen — kein Hex-Wert
+ * direkt in einem CSS-Modul, sonst laufen die Seiten waehrend der Migration
+ * auseinander.
+ *
+ * Die App ist reine Dunkelanwendung: der Handoff gibt nur Dunkelwerte vor, und
+ * abgeleitete Hellwerte waeren Erfindung. Der Theme-Umschalter entfaellt.
+ */
+
+:root {
+	/* Flaechen */
+	--np-bg: #161c26; /* Seitenhintergrund */
+	--np-card: #1e2732; /* Karten, Sidebar */
+	--np-chrome: #1a222d; /* Header, Footer, Tabellenkopf */
+	--np-muted: #273140; /* aktiver Nav-Eintrag, Trennlinien */
+	--np-hover: #232d3a; /* Zeilen-Hover, Eingabefelder */
+	--np-control: #313c4d; /* Rahmen von Bedienelementen, Zaehlblasen */
+	--np-subtle: #3f4a5c; /* feine Rahmen, inaktive Punkte */
+
+	/* Marke und Akzente */
+	--np-brand-tint: #7f9dbd; /* Links, Fortschrittsbalken, Avatar */
+	--np-brand-tint-hover: #a8c1dc;
+	--np-brand-navy: #142c4a; /* Text auf Amber- und Tint-Flaechen */
+	--np-accent: #eaa633;
+	--np-accent-hover: #d4941f;
+	--np-success: #059669;
+	--np-danger: #dc2626;
+
+	/* Text */
+	--np-text-strong: #ffffff;
+	--np-text: #e6ebf2;
+	--np-text-secondary: #cfd8e3;
+	--np-text-secondary-dim: #b6c1d0;
+	--np-text-muted: #9aa8bb;
+	--np-text-muted-dim: #7f8ea3;
+	--np-text-subtle: #6b7a90; /* Eyebrows */
+
+	/* Pillen */
+	--np-pill-ok-text: #6ee7b7;
+	--np-pill-ok-bg: rgba(5, 150, 105, 0.16);
+	--np-pill-ok-border: rgba(5, 150, 105, 0.4);
+	--np-pill-warn-text: #fcd9a0;
+	--np-pill-warn-bg: rgba(234, 166, 51, 0.18);
+
+	/* Radien */
+	--np-radius-control: 8px; /* Knoepfe, Eingaben, Nav-Eintraege */
+	--np-radius-card: 12px;
+	--np-radius-pill: 9999px;
+
+	/* Schatten — im Handoff gibt es genau einen */
+	--np-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.25);
+
+	/* Bewegung — nur diese beiden animieren laut Handoff */
+	--np-motion-bg: background 160ms ease;
+	--np-motion-bar: width 200ms ease;
+
+	/* Typografie */
+	--np-font: Arial, Helvetica, "Helvetica Neue", system-ui, sans-serif;
+	--np-font-mono: ui-monospace, Menlo, Consolas, monospace;
+
+	/* Rahmenmasse */
+	--np-sidebar-width: 244px;
+	--np-rail-width: 320px;
+}

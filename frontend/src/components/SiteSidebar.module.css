@@ -1,0 +1,237 @@
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	background: var(--np-card);
+	border-right: 1px solid var(--np-muted);
+	min-height: 100vh;
+}
+
+/* ── Markenblock ───────────────────────────────────── */
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 20px 20px 18px;
+	text-decoration: none;
+}
+
+.logo {
+	width: 32px;
+	height: 32px;
+	border-radius: var(--np-radius-control);
+	background: var(--np-accent);
+	color: var(--np-brand-navy);
+	font-weight: 700;
+	font-size: 15px;
+	display: grid;
+	place-items: center;
+	flex: none;
+}
+
+.brandName {
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--np-text-strong);
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+}
+
+.brandSub {
+	font-size: 11px;
+	color: var(--np-text-muted-dim);
+}
+
+/* ── Navigation ────────────────────────────────────── */
+.nav {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 8px 12px;
+}
+
+.group {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.eyebrow {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--np-text-subtle);
+	padding: 6px 8px;
+}
+
+.item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 13px;
+	border-radius: var(--np-radius-control);
+	color: var(--np-text-secondary-dim);
+	text-decoration: none;
+	font-size: 14px;
+	/* Nur der Hintergrund animiert — der Handoff erlaubt sonst nichts. */
+	transition: var(--np-motion-bg);
+}
+
+.item:hover {
+	background: var(--np-hover);
+	color: var(--np-text-strong);
+}
+
+.item:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+	outline-offset: -2px;
+}
+
+/* Der aktive Eintrag traegt links 3px Amber. Das Padding wird um genau diese
+   3px reduziert, damit die Beschriftung mit den uebrigen Eintraegen fluchtet. */
+.itemActive {
+	background: var(--np-muted);
+	color: var(--np-text-strong);
+	font-weight: 600;
+	border-left: 3px solid var(--np-accent);
+	padding-left: 10px;
+}
+
+.label {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.bubble {
+	margin-left: auto;
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--np-text-secondary);
+	background: var(--np-control);
+	border-radius: var(--np-radius-pill);
+	padding: 2px 8px;
+	flex: none;
+}
+
+/* ── Kontoblock ────────────────────────────────────── */
+.account {
+	margin-top: auto;
+	padding: 16px 16px 18px;
+	border-top: 1px solid var(--np-muted);
+}
+
+.accountSummary {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+	list-style: none;
+	border-radius: var(--np-radius-control);
+	transition: var(--np-motion-bg);
+}
+
+/* Das Standard-Dreieck von <summary> entfernen — der Block soll wie eine Zeile
+   wirken, nicht wie ein Aufklapper. */
+.accountSummary::-webkit-details-marker {
+	display: none;
+}
+
+.accountSummary:hover {
+	color: var(--np-text-strong);
+}
+
+.accountSummary:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+	outline-offset: 2px;
+}
+
+.accountMenu {
+	display: flex;
+	flex-direction: column;
+	margin-top: 10px;
+	gap: 2px;
+}
+
+.accountAction {
+	text-align: left;
+	background: none;
+	border: 0;
+	padding: 8px 10px;
+	border-radius: var(--np-radius-control);
+	color: var(--np-text-secondary-dim);
+	font: inherit;
+	font-size: 13px;
+	cursor: pointer;
+	transition: var(--np-motion-bg);
+}
+
+.accountAction:hover {
+	background: var(--np-hover);
+	color: var(--np-text-strong);
+}
+
+.accountAction:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+	outline-offset: -2px;
+}
+
+.avatar {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: var(--np-brand-tint);
+	color: var(--np-brand-navy);
+	font-weight: 700;
+	display: grid;
+	place-items: center;
+	flex: none;
+	background-size: cover;
+	background-position: center;
+}
+
+.accountText {
+	min-width: 0;
+}
+
+.accountName {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--np-text-strong);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.accountRole {
+	font-size: 11px;
+	color: var(--np-text-muted-dim);
+}
+
+/* ≤1024px: Sidebar als Schublade ueber dem Inhalt. */
+@media (max-width: 1024px) {
+	.sidebar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		width: var(--np-sidebar-width);
+		z-index: 30;
+		transform: translateX(-100%);
+		transition: transform 160ms ease;
+	}
+
+	.sidebarOpen {
+		transform: translateX(0);
+	}
+
+	.scrim {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 25;
+		border: 0;
+		padding: 0;
+	}
+}

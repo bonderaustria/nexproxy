@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { Button, LocalePicker, Page, ThemeSwitcher } from "src/components";
+import { Button, LocalePicker, Page } from "src/components";
 import { useAuthState } from "src/context";
 import { useHealth } from "src/hooks";
 import { intl, T } from "src/locale";
@@ -189,7 +189,6 @@ export default function Login() {
 					/>
 					<div className="d-flex align-items-center gap-1">
 						<LocalePicker />
-						<ThemeSwitcher />
 					</div>
 				</div>
 				<div className="card card-md">

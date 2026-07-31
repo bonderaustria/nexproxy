@@ -1,8 +1,135 @@
-.logo {
-	font-size: 1.1rem;
+.standby {
+	background: #8a4b00;
+	color: #fff;
+	text-align: center;
+	padding: 7px 14px;
+	font-size: 13px;
 	font-weight: 500;
+}
 
-	img {
-		margin-right: 0.8rem;
+.header {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 16px 32px;
+	background: var(--np-chrome);
+	border-bottom: 1px solid var(--np-muted);
+}
+
+.eyebrow {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--np-text-subtle);
+}
+
+.title {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--np-text-strong);
+}
+
+.actions {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.search {
+	width: 240px;
+	padding: 8px 12px;
+	background: var(--np-hover);
+	border: 1px solid var(--np-control);
+	border-radius: var(--np-radius-control);
+	color: var(--np-text);
+	font: inherit;
+	font-size: 13px;
+}
+
+.search::placeholder {
+	color: var(--np-text-muted-dim);
+}
+
+.search:focus {
+	outline: none;
+	border-color: var(--np-brand-tint);
+}
+
+.iconButton {
+	width: 36px;
+	height: 36px;
+	display: grid;
+	place-items: center;
+	border-radius: var(--np-radius-control);
+	border: 1px solid var(--np-control);
+	background: transparent;
+	color: var(--np-text-secondary-dim);
+	cursor: pointer;
+	transition: var(--np-motion-bg);
+	font-size: 15px;
+}
+
+.iconButton:hover {
+	background: var(--np-hover);
+	color: var(--np-text-strong);
+}
+
+.iconButton:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+}
+
+.primary {
+	background: var(--np-accent);
+	color: var(--np-brand-navy);
+	font-size: 13px;
+	font-weight: 600;
+	padding: 9px 16px;
+	border-radius: var(--np-radius-control);
+	border: 0;
+	cursor: pointer;
+	/* Kein Anheben, kein Skalieren — laut Handoff animiert nur der Hintergrund. */
+	transition: var(--np-motion-bg);
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.primary:hover {
+	background: var(--np-accent-hover);
+}
+
+.primary:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+	outline-offset: 2px;
+}
+
+/* Nur unterhalb der Sidebar-Schwelle sichtbar. */
+.burger {
+	display: none;
+}
+
+@media (max-width: 1024px) {
+	.burger {
+		display: grid;
+	}
+
+	.header {
+		padding: 16px 20px;
+	}
+
+	.search {
+		width: 160px;
+	}
+}
+
+@media (max-width: 640px) {
+	.search {
+		display: none;
 	}
 }
