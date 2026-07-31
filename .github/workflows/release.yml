@@ -1,0 +1,84 @@
+name: Release
+
+# Baut das Produktions-Image und laedt es nach ghcr.io.
+#
+# Bisher entstanden die Images von Hand auf einem der Nodes und wurden per
+# docker save weitergereicht -- dadurch lag auf ghcr wochenlang ein aelterer
+# Stand als auf den eigenen Servern. Dieser Workflow schliesst die Luecke.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versionsnummer ohne v, z. B. 1.0.28"
+        required: true
+      latest:
+        description: "Zusaetzlich als latest veroeffentlichen"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  # Fuer das Hochladen nach ghcr. Ein GITHUB_TOKEN reicht, es braucht keinen
+  # persoenlichen Zugriffstoken.
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version bestimmen
+        id: v
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+            echo "latest=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+            echo "latest=${{ inputs.latest }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Das Dockerfile erwartet ein fertig gebautes frontend/dist und baut es
+      # nicht selbst -- ohne diesen Schritt landet eine leere Oberflaeche im Image.
+      - name: Frontend bauen
+        working-directory: frontend
+        run: |
+          npm install --no-audit --no-fund
+          npm run locale-compile
+          npm run build
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image bauen und hochladen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            BUILD_VERSION=${{ steps.v.outputs.version }}
+            BUILD_COMMIT=${{ github.sha }}
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+          tags: |
+            ghcr.io/bonderaustria/nexproxy:${{ steps.v.outputs.version }}
+            ${{ steps.v.outputs.latest == 'true' && format('ghcr.io/bonderaustria/nexproxy:latest', '') || '' }}
+
+      - name: Ergebnis
+        run: |
+          echo "Veroeffentlicht: ghcr.io/bonderaustria/nexproxy:${{ steps.v.outputs.version }}"
+          echo "latest mitgezogen: ${{ steps.v.outputs.latest }}"
