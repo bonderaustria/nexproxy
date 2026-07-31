@@ -253,6 +253,14 @@
 	color: var(--np-text-strong);
 }
 
+/* Absolutwert vor dem Prozentwert, ruhiger gesetzt: die Zahl fuehrt, die
+   Einordnung steht daneben. */
+.metricDetail {
+	font-weight: 400;
+	color: var(--np-text-muted-dim);
+	margin-right: 6px;
+}
+
 .track {
 	height: 6px;
 	border-radius: var(--np-radius-pill);
@@ -344,7 +352,11 @@
 }
 
 /* ── Responsiv ─────────────────────────────────────── */
-@media (max-width: 1280px) {
+/* 1400 statt der 1280 aus dem Handoff: bei 1320 px Fensterbreite bleiben nach
+   Sidebar (244) und Seitenrand (64) nur ~1010 px. Davon nimmt die Schiene 320,
+   und die Tabelle mit ihren festen Spalten (100+110+90) lief rechts aus dem
+   Bild. Die Schiene rutscht deshalb frueher unter die Tabelle. */
+@media (max-width: 1400px) {
 	.body {
 		grid-template-columns: minmax(0, 1fr);
 	}

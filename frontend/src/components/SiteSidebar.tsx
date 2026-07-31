@@ -101,15 +101,10 @@ export function SiteSidebar({ open, onNavigate }: Props) {
 			)}
 			<aside className={cn(styles.sidebar, open && styles.sidebarOpen)}>
 				<NavLink to="/" className={styles.brand} onClick={onNavigate}>
-					<span className={styles.logo} aria-hidden="true">
-						N
-					</span>
-					<span>
-						<span className={styles.brandName}>NexProxy</span>
-						<span className={styles.brandSub}>
-							<T id="nav.brand-subtitle" />
-						</span>
-					</span>
+					{/* Das echte Schild-Logo statt des amberfarbenen "N"-Platzhalters, den
+					    der Handoff ausdruecklich als Platzhalter bezeichnet. */}
+					<img className={styles.logo} src="/images/logo-no-text.svg" alt="" width={32} height={32} />
+					<span className={styles.brandName}>NexProxy</span>
 				</NavLink>
 
 				<nav className={styles.nav}>
@@ -119,10 +114,12 @@ export function SiteSidebar({ open, onNavigate }: Props) {
 								<T id={group.eyebrow} />
 							</div>
 							{group.items.map((item) => {
-								// The dashboard would otherwise match every route, since "/"
-								// is a prefix of all of them.
+								// Exakter Treffer oder echter Unterpfad. Ein blosses startsWith
+								// waere falsch: "/access-log" beginnt mit "/access", wodurch
+								// "Access Lists" beim Klick auf "Access Log" mitmarkiert wurde.
 								const active =
-									item.to === "/" ? location.pathname === "/" : location.pathname.startsWith(item.to);
+									location.pathname === item.to ||
+									(item.to !== "/" && location.pathname.startsWith(`${item.to}/`));
 								const count = item.count ? hostReport?.[item.count] : undefined;
 								return (
 									<HasPermission

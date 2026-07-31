@@ -1,8 +1,7 @@
-import { IconCheck, IconEye, IconEyeOff, IconServer, IconX } from "@tabler/icons-react";
+import { IconCheck, IconServer, IconX } from "@tabler/icons-react";
 import { type ChangeEvent, useEffect, useState } from "react";
-import { changeHAVip, forceHAFailover, startHAProvision, updateHADbConfig, updateHANode } from "src/api/backend";
+import { changeHAVip, forceHAFailover, startHAProvision, updateHANode } from "src/api/backend";
 import {
-	useHADbConfig,
 	useHALatestVersion,
 	useHAProvisionStatus,
 	useHAStatus,
@@ -150,28 +149,6 @@ const HA = () => {
 		}
 	};
 
-	// ---- DB config ----
-	const { data: dbCfg, refetch: refetchDb } = useHADbConfig();
-	const [dbForm, setDbForm] = useState({ dbHost: "", dbPort: "5432", dbName: "npm", dbUser: "npm", dbPassword: "", vip: "" });
-	const [showPw, setShowPw] = useState(false);
-	const [savedDb, setSavedDb] = useState(false);
-
-	useEffect(() => {
-		if (dbCfg) {
-			setDbForm({
-				dbHost: dbCfg.dbHost,
-				dbPort: String(dbCfg.dbPort),
-				dbName: dbCfg.dbName,
-				dbUser: dbCfg.dbUser,
-				dbPassword: dbCfg.dbPassword,
-				vip: dbCfg.vip,
-			});
-		}
-	}, [dbCfg]);
-
-	const setDb = (key: string) => (e: ChangeEvent<HTMLInputElement>) =>
-		setDbForm((f) => ({ ...f, [key]: e.target.value }));
-
 	// ---- Change floating IP ----
 	const [newVip, setNewVip] = useState("");
 	const [vipChanging, setVipChanging] = useState(false);
@@ -192,20 +169,6 @@ const HA = () => {
 		} catch (e) {
 			setVipStartError(e instanceof Error ? e.message : "Start fehlgeschlagen");
 		}
-	};
-
-	const saveDb = async () => {
-		await updateHADbConfig({
-			dbHost: dbForm.dbHost,
-			dbPort: Number(dbForm.dbPort) || 5432,
-			dbName: dbForm.dbName,
-			dbUser: dbForm.dbUser,
-			dbPassword: dbForm.dbPassword,
-			vip: dbForm.vip,
-		});
-		setSavedDb(true);
-		setTimeout(() => setSavedDb(false), 2000);
-		refetchDb();
 	};
 
 	const sshFields = (prefix: "db" | "node" | "primary", label: string, hint: string) => (
@@ -485,82 +448,20 @@ const HA = () => {
 				</div>
 			</div>
 
-			{/* DB config (admin, viewable + editable) */}
-			<div className="card">
-				<div className="card-header">
-					<h3 className="card-title">Datenbank-Konfiguration</h3>
-					{dbCfg?.provisioned && (
-						<div className="card-actions">
-							<span className="badge bg-green-lt">eingerichtet</span>
-						</div>
-					)}
-				</div>
-				<div className="card-body">
-					<p className="text-muted mb-2">
-						Die Zugangsdaten der <strong>gemeinsamen PostgreSQL</strong>, die beide Nodes im HA-Betrieb nutzen.
-						Beim automatischen Einrichten werden sie hier gespeichert (Passwort verschlüsselt). Du kannst sie
-						einsehen (Passwort mit dem Auge aufdecken) und anpassen — nur für Administratoren.
-					</p>
-					<div
-						style={{
-							background: "rgba(0,95,246,.08)",
-							border: "1px solid rgba(0,95,246,.25)",
-							borderRadius: "10px",
-							padding: "14px 16px",
-							marginBottom: "16px",
-						}}
-					>
-						<div className="fw-bold mb-1">Wie das Speichern wirkt</div>
-						<p className="mb-0 text-secondary">
-							Dieses Feld ist zum Einsehen und Festhalten gedacht (Referenz, Backups, Doku). Die laufenden
-							Nodes verbinden sich zur Datenbank über ihre Container-Einstellungen — änderst du hier etwas,
-							wird der gespeicherte Datensatz aktualisiert. Damit eine geänderte Datenbank auf den Nodes
-							greift, müssen sie mit den neuen Werten neu gestartet werden; ein echter Live-DB-Wechsel ist ein
-							eigener Schritt.
-						</p>
-					</div>
-					<div className="row g-2">
-						<div className="col-md-4">
-							<label className="form-label">DB-Host</label>
-							<input className="form-control" value={dbForm.dbHost} onChange={setDb("dbHost")} />
-						</div>
-						<div className="col-md-2">
-							<label className="form-label">Port</label>
-							<input className="form-control" value={dbForm.dbPort} onChange={setDb("dbPort")} />
-						</div>
-						<div className="col-md-3">
-							<label className="form-label">DB-Name</label>
-							<input className="form-control" value={dbForm.dbName} onChange={setDb("dbName")} />
-						</div>
-						<div className="col-md-3">
-							<label className="form-label">Benutzer</label>
-							<input className="form-control" value={dbForm.dbUser} onChange={setDb("dbUser")} />
-						</div>
-						<div className="col-md-6">
-							<label className="form-label">Passwort</label>
-							<div className="input-group">
-								<input
-									className="form-control"
-									type={showPw ? "text" : "password"}
-									value={dbForm.dbPassword}
-									onChange={setDb("dbPassword")}
-								/>
-								<button type="button" className="btn" onClick={() => setShowPw((v) => !v)}>
-									{showPw ? <IconEyeOff size={16} /> : <IconEye size={16} />}
-								</button>
-							</div>
-						</div>
-						<div className="col-md-6">
-							<label className="form-label">Floating-IP</label>
-							<input className="form-control" value={dbForm.vip} onChange={setDb("vip")} />
-						</div>
-					</div>
-					<button type="button" className="btn btn-primary mt-3" onClick={saveDb}>
-						Speichern
-					</button>
-					{savedDb && <span className="text-green ms-2">Gespeichert</span>}
-				</div>
-			</div>
+			{/*
+				Der Block "Datenbank-Konfiguration" wird bewusst nicht mehr gerendert.
+
+				Er sah aus wie ein Formular, das die Datenbankverbindung umstellt, tat
+				das aber nicht: die laufenden Nodes ziehen ihre Zugangsdaten aus den
+				Container-Umgebungsvariablen. Ein Formular, das eine Wirkung vortaeuscht,
+				die es nicht hat, ist schlimmer als keines.
+
+				Die Daten selbst bleiben erhalten: sie werden beim automatischen
+				Einrichten in ha_config geschrieben und von generateConfig() gelesen,
+				das die fertige docker-compose.yml fuer einen manuell hinzugefuegten
+				Node erzeugt. Die Endpunkte GET/POST /api/ha/db-config bestehen
+				unveraendert weiter — entfernt ist nur die Oberflaeche.
+			*/}
 
 			{/* Change floating IP */}
 			{!status?.standalone && (

@@ -461,11 +461,8 @@
 	"dashboard.system-health.memory": {
 		"defaultMessage": "Memory"
 	},
-	"dashboard.system-health.nginx-running": {
-		"defaultMessage": "Nginx running · Uptime {days} d"
-	},
-	"dashboard.system-health.nginx-stopped": {
-		"defaultMessage": "Nginx not running"
+	"dashboard.system-health.uptime": {
+		"defaultMessage": "Uptime {days} d"
 	},
 	"footer.documentation": {
 		"defaultMessage": "Documentation"
@@ -655,9 +652,6 @@
 	},
 	"proxy-hosts": {
 		"defaultMessage": "Proxy Hosts"
-	},
-	"nav.brand-subtitle": {
-		"defaultMessage": "Proxy Manager"
 	},
 	"nav.group.overview": {
 		"defaultMessage": "Overview"

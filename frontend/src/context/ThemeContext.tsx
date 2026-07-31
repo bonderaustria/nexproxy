@@ -21,22 +21,17 @@ interface ThemeProviderProps {
 	children: ReactNode;
 }
 
-const getBrowserDefault = (): Theme => {
-	if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-		return Dark;
-	}
-	return Light;
-};
-
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-	const [theme, setThemeState] = useState<Theme>(() => {
-		// Try to read theme from localStorage or use 'light' as default
-		if (typeof window !== "undefined") {
-			const stored = localStorage.getItem(StorageKey) as Theme | null;
-			return stored || getBrowserDefault();
-		}
-		return getBrowserDefault();
-	});
+	/**
+	 * Seit dem Redesign ist NexProxy eine reine Dunkelanwendung: der Handoff gibt
+	 * ausschliesslich Dunkelwerte vor, und der Umschalter ist entfallen.
+	 *
+	 * Fest auf Dark statt auf localStorage oder prefers-color-scheme — sonst
+	 * bekaeme jemand mit heller Systemeinstellung ein helles Tabler unter dem
+	 * dunklen Rahmen, und ohne Umschalter gaebe es keinen Weg zurueck.
+	 * Die Schnittstelle bleibt erhalten, damit vorhandene Aufrufer nicht brechen.
+	 */
+	const [theme, setThemeState] = useState<Theme>(Dark);
 
 	useEffect(() => {
 		document.body.dataset.theme = theme;

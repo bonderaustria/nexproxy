@@ -1,0 +1,378 @@
+/*
+ * Bruecke zwischen Tabler und dem neuen Design.
+ *
+ * Statt jede der verbleibenden Seiten einzeln umzubauen, werden hier Tablers
+ * eigene CSS-Variablen auf die Tokens aus tokens.css gelegt. Damit ziehen
+ * Karten, Tabellen, Formulare, Dialoge, Badges und Knoepfe auf allen noch nicht
+ * migrierten Seiten auf einen Schlag nach.
+ *
+ * WICHTIG zur Spezifitaet: Tabler definiert seine Dunkelwerte unter
+ * [data-bs-theme="dark"] (0,1,0) — eine reine :root-Regel (0,0,1) wuerde
+ * verlieren. Die Selektorliste unten enthaelt deshalb denselben Attribut-
+ * selektor; da diese Datei nach Tabler eingebunden wird, gewinnt sie im
+ * Kaskadenvergleich.
+ *
+ * Diese Datei ist eine Uebergangsloesung. Sobald jede Seite eigene CSS-Module
+ * hat, koennen Tabler und diese Bruecke zusammen entfallen.
+ */
+
+:root,
+[data-bs-theme="dark"] {
+	/* ── Flaechen und Text ─────────────────────────── */
+	--tblr-body-bg: var(--np-bg);
+	--tblr-body-color: var(--np-text);
+	--tblr-body-font-family: var(--np-font);
+	--tblr-body-font-size: 14px;
+
+	--tblr-bg-surface: var(--np-card);
+	--tblr-bg-surface-secondary: var(--np-chrome);
+	--tblr-bg-surface-tertiary: var(--np-hover);
+	--tblr-bg-surface-dark: var(--np-bg);
+
+	--tblr-border-color: var(--np-muted);
+	--tblr-border-color-translucent: var(--np-muted);
+	--tblr-active-bg: var(--np-muted);
+
+	--tblr-secondary: var(--np-text-muted);
+	--tblr-secondary-color: var(--np-text-muted);
+	--tblr-muted: var(--np-text-muted-dim);
+
+	/* ── Marke ─────────────────────────────────────── */
+	/* Primary bleibt der Blaustich der Marke, damit Links und markierte Zustaende
+	   ruhig wirken. Die Amber-Akzentfarbe ist der Primaeraktion vorbehalten —
+	   wuerde sie hier stehen, waere die halbe Oberflaeche amber und der
+	   "Anlegen"-Knopf ginge unter. */
+	--tblr-primary: var(--np-brand-tint);
+	--tblr-primary-rgb: 127, 157, 189;
+	--tblr-link-color: var(--np-brand-tint);
+	--tblr-link-hover-color: var(--np-brand-tint-hover);
+
+	/* ── Karten ────────────────────────────────────── */
+	--tblr-card-bg: var(--np-card);
+	--tblr-card-color: var(--np-text);
+	--tblr-card-border-color: var(--np-muted);
+	--tblr-card-border-radius: var(--np-radius-card);
+	--tblr-card-cap-bg: var(--np-card);
+	--tblr-card-cap-color: var(--np-text-strong);
+	--tblr-card-box-shadow: var(--np-shadow-card);
+	--tblr-card-subtitle-color: var(--np-text-muted-dim);
+
+	/* ── Tabellen ──────────────────────────────────── */
+	--tblr-table-bg: transparent;
+	--tblr-table-color: var(--np-text);
+	--tblr-table-border-color: var(--np-hover);
+	--tblr-table-hover-bg: var(--np-hover);
+	--tblr-table-hover-color: var(--np-text-strong);
+	--tblr-table-striped-bg: var(--np-hover);
+
+	/* ── Formulare ─────────────────────────────────── */
+	--tblr-bg-forms: var(--np-hover);
+
+	/* ── Ueberlagerungen ───────────────────────────── */
+	--tblr-modal-bg: var(--np-card);
+	--tblr-modal-color: var(--np-text);
+	--tblr-modal-border-color: var(--np-muted);
+	--tblr-modal-header-border-color: var(--np-muted);
+	--tblr-modal-footer-border-color: var(--np-muted);
+	--tblr-modal-border-radius: var(--np-radius-card);
+
+	--tblr-dropdown-bg: var(--np-card);
+	--tblr-dropdown-color: var(--np-text);
+	--tblr-dropdown-border-color: var(--np-muted);
+	--tblr-dropdown-link-color: var(--np-text-secondary-dim);
+	--tblr-dropdown-link-hover-bg: var(--np-hover);
+	--tblr-dropdown-link-hover-color: var(--np-text-strong);
+	--tblr-dropdown-border-radius: var(--np-radius-control);
+
+	--tblr-popover-bg: var(--np-card);
+	--tblr-popover-border-color: var(--np-muted);
+	--tblr-tooltip-bg: var(--np-muted);
+	--tblr-tooltip-color: var(--np-text);
+
+	/* ── Radien ────────────────────────────────────── */
+	--tblr-border-radius: var(--np-radius-control);
+	--tblr-border-radius-sm: 6px;
+	--tblr-border-radius-lg: var(--np-radius-card);
+}
+
+/* ── Karten: Tabler setzt teils eigene Schatten je Variante ───────────────── */
+.card {
+	box-shadow: var(--np-shadow-card);
+}
+
+.card-header {
+	border-bottom-color: var(--np-muted);
+}
+
+.card-footer {
+	border-top-color: var(--np-muted);
+	background: var(--np-card);
+}
+
+.card-title {
+	color: var(--np-text-strong);
+	font-size: 15px;
+	font-weight: 600;
+}
+
+/* ── Tabellen: Kopfzeile wie im Dashboard ─────────────────────────────────── */
+.table thead th,
+.table > thead > tr > th {
+	background: var(--np-chrome);
+	border-bottom-color: var(--np-muted);
+	color: var(--np-text-subtle);
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+
+.table td,
+.table th {
+	border-color: var(--np-hover);
+}
+
+.table-vcenter td {
+	color: var(--np-text);
+}
+
+/* ── Formulare ────────────────────────────────────────────────────────────── */
+.form-control,
+.form-select,
+.input-group-text {
+	background-color: var(--np-hover);
+	border-color: var(--np-control);
+	color: var(--np-text);
+	border-radius: var(--np-radius-control);
+}
+
+.form-control::placeholder {
+	color: var(--np-text-muted-dim);
+}
+
+.form-control:focus,
+.form-select:focus {
+	background-color: var(--np-hover);
+	border-color: var(--np-brand-tint);
+	color: var(--np-text-strong);
+	/* Der weiche Bootstrap-Schein passt nicht zum flachen Design; ein klarer
+	   Rahmen in Markenfarbe ist auch fuer die Tastaturbedienung eindeutiger. */
+	box-shadow: 0 0 0 1px var(--np-brand-tint);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+	background-color: var(--np-muted);
+	color: var(--np-text-muted-dim);
+}
+
+.form-label {
+	color: var(--np-text-secondary);
+	font-size: 12.5px;
+}
+
+.form-hint,
+.form-text {
+	color: var(--np-text-muted-dim);
+}
+
+.form-check-input {
+	background-color: var(--np-hover);
+	border-color: var(--np-control);
+}
+
+.form-check-input:checked {
+	background-color: var(--np-brand-tint);
+	border-color: var(--np-brand-tint);
+}
+
+/* ── Knoepfe ──────────────────────────────────────────────────────────────── */
+.btn {
+	border-radius: var(--np-radius-control);
+	transition: var(--np-motion-bg);
+}
+
+/* Die Primaeraktion ist im Handoff amber mit dunkelblauer Schrift. */
+.btn-primary {
+	background-color: var(--np-accent);
+	border-color: var(--np-accent);
+	color: var(--np-brand-navy);
+	font-weight: 600;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+	background-color: var(--np-accent-hover);
+	border-color: var(--np-accent-hover);
+	color: var(--np-brand-navy);
+}
+
+.btn-secondary,
+.btn-outline-secondary,
+.btn-default {
+	background-color: transparent;
+	border-color: var(--np-control);
+	color: var(--np-text-secondary-dim);
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover,
+.btn-default:hover {
+	background-color: var(--np-hover);
+	border-color: var(--np-control);
+	color: var(--np-text-strong);
+}
+
+.btn-danger {
+	background-color: var(--np-danger);
+	border-color: var(--np-danger);
+}
+
+.btn:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+/* ── Badges und Pillen ────────────────────────────────────────────────────── */
+.badge {
+	border-radius: var(--np-radius-pill);
+	font-weight: 700;
+	font-size: 11px;
+	padding: 3px 10px;
+}
+
+.badge.bg-green-lt,
+.badge.bg-success-lt {
+	background: var(--np-pill-ok-bg) !important;
+	color: var(--np-pill-ok-text) !important;
+	border: 1px solid var(--np-pill-ok-border);
+}
+
+.badge.bg-yellow-lt,
+.badge.bg-warning-lt {
+	background: var(--np-pill-warn-bg) !important;
+	color: var(--np-pill-warn-text) !important;
+}
+
+.badge.bg-red-lt,
+.badge.bg-danger-lt {
+	background: rgba(220, 38, 38, 0.16) !important;
+	color: #fca5a5 !important;
+}
+
+/* ── Ueberlagerungen ──────────────────────────────────────────────────────── */
+.modal-content {
+	background: var(--np-card);
+	border: 1px solid var(--np-muted);
+	border-radius: var(--np-radius-card);
+}
+
+.modal-header,
+.modal-footer {
+	border-color: var(--np-muted);
+}
+
+.dropdown-menu {
+	background: var(--np-card);
+	border: 1px solid var(--np-muted);
+	border-radius: var(--np-radius-control);
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.dropdown-item {
+	color: var(--np-text-secondary-dim);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+	background: var(--np-hover);
+	color: var(--np-text-strong);
+}
+
+.dropdown-divider {
+	border-color: var(--np-muted);
+}
+
+/* ── Reiter ───────────────────────────────────────────────────────────────── */
+.nav-tabs {
+	border-bottom-color: var(--np-muted);
+}
+
+.nav-tabs .nav-link {
+	color: var(--np-text-muted);
+	border-radius: var(--np-radius-control) var(--np-radius-control) 0 0;
+}
+
+.nav-tabs .nav-link:hover {
+	color: var(--np-text-strong);
+	border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+	background: var(--np-card);
+	border-color: var(--np-muted) var(--np-muted) var(--np-card);
+	color: var(--np-text-strong);
+}
+
+/* ── Hinweise ─────────────────────────────────────────────────────────────── */
+.alert {
+	background: var(--np-hover);
+	border: 1px solid var(--np-muted);
+	border-radius: var(--np-radius-control);
+	color: var(--np-text);
+}
+
+.alert-danger,
+.alert-important.alert-danger {
+	border-color: var(--np-danger);
+	background: rgba(220, 38, 38, 0.12);
+}
+
+.alert-warning {
+	border-color: var(--np-accent);
+	background: var(--np-pill-warn-bg);
+}
+
+/* ── Seitenkopf innerhalb der Seiten ──────────────────────────────────────── */
+.page-header,
+.page-title {
+	color: var(--np-text-strong);
+}
+
+/* Tablers eigener Seitencontainer bringt Aussenabstaende mit, die im neuen
+   Rahmen doppelt wirken — der Abstand kommt jetzt von SiteContainer. */
+.page-body,
+.page-wrapper {
+	margin: 0;
+	padding: 0;
+}
+
+/* ── Paginierung ──────────────────────────────────────────────────────────── */
+.page-link {
+	background: transparent;
+	border-color: var(--np-control);
+	color: var(--np-text-secondary-dim);
+}
+
+.page-link:hover {
+	background: var(--np-hover);
+	color: var(--np-text-strong);
+}
+
+.page-item.active .page-link {
+	background: var(--np-muted);
+	border-color: var(--np-control);
+	color: var(--np-text-strong);
+}
+
+/* ── Fortschritt ──────────────────────────────────────────────────────────── */
+.progress {
+	background: var(--np-control);
+	border-radius: var(--np-radius-pill);
+}
+
+.progress-bar {
+	background: var(--np-brand-tint);
+}

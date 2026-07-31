@@ -383,17 +383,11 @@
 	"dashboard.system-health.memory": {
 		"defaultMessage": "Speicher"
 	},
-	"dashboard.system-health.nginx-running": {
-		"defaultMessage": "Nginx läuft · Laufzeit {days} T"
-	},
-	"dashboard.system-health.nginx-stopped": {
-		"defaultMessage": "Nginx läuft nicht"
+	"dashboard.system-health.uptime": {
+		"defaultMessage": "Laufzeit {days} T"
 	},
 	"footer.documentation": {
 		"defaultMessage": "Dokumentation"
-	},
-	"nav.brand-subtitle": {
-		"defaultMessage": "Proxy Manager"
 	},
 	"nav.group.overview": {
 		"defaultMessage": "Überblick"

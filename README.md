@@ -46,6 +46,9 @@ The core is free and open source (MIT). Enterprise features live in
 [`enterprise/`](enterprise/) and are free for private, non-commercial use — commercial
 use requires a license.
 
+**Running NexProxy in your homelab? Enterprise is free for you.** Private and
+non-commercial setups get a licence key at no cost — just ask.
+
 | Feature | Core (free) | Enterprise |
 | --- | :---: | :---: |
 | Reverse-proxy hosts, redirects, streams, 404 hosts | ✅ | ✅ |
@@ -53,11 +56,8 @@ use requires a license.
 | Access lists & HTTP authentication | ✅ | ✅ |
 | Advanced Nginx configuration | ✅ | ✅ |
 | User management, permissions & audit log | ✅ | ✅ |
-| SQLite / MySQL / MariaDB / PostgreSQL backends | ✅ | ✅ |
-| Fast backports of upstream fixes (e.g. UDP #5000) | ✅ | ✅ |
 | **High Availability** — floating-IP failover across nodes | — | ✅ |
 | **True multi-tenancy** — per-user host isolation | — | ✅ |
-| Priority support & SLA | — | ✅ |
 
 ## Quick Setup
 

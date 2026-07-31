@@ -18,27 +18,18 @@
 .logo {
 	width: 32px;
 	height: 32px;
-	border-radius: var(--np-radius-control);
-	background: var(--np-accent);
-	color: var(--np-brand-navy);
-	font-weight: 700;
-	font-size: 15px;
-	display: grid;
-	place-items: center;
 	flex: none;
+	display: block;
+	object-fit: contain;
 }
 
 .brandName {
+	display: block;
 	font-size: 15px;
 	font-weight: 700;
 	color: var(--np-text-strong);
 	letter-spacing: -0.01em;
 	line-height: 1.2;
-}
-
-.brandSub {
-	font-size: 11px;
-	color: var(--np-text-muted-dim);
 }
 
 /* ── Navigation ────────────────────────────────────── */
@@ -196,6 +187,7 @@
 }
 
 .accountName {
+	display: block;
 	font-size: 13px;
 	font-weight: 600;
 	color: var(--np-text-strong);
@@ -205,6 +197,7 @@
 }
 
 .accountRole {
+	display: block;
 	font-size: 11px;
 	color: var(--np-text-muted-dim);
 }

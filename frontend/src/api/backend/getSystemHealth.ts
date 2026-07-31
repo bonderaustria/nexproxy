@@ -2,9 +2,15 @@ import * as api from "./base";
 
 export interface SystemHealthResponse {
 	cpuPct: number;
+	/** Kerne, die diesem Container zustehen — nicht die des Wirts. */
+	cpuCores: number;
 	memPct: number;
-	/** null when the disk usage could not be determined — render nothing rather than a made-up number. */
+	memUsedBytes: number;
+	memTotalBytes: number;
+	/** null, wenn die Belegung nicht ermittelt werden konnte — dann lieber nichts anzeigen als einen erfundenen Wert. */
 	diskPct: number | null;
+	diskUsedBytes: number | null;
+	diskTotalBytes: number | null;
 	nginxRunning: boolean;
 	uptimeDays: number;
 	uptimeSeconds: number;

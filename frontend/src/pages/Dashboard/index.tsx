@@ -46,14 +46,38 @@ function StatCard({ eyebrow, value, context, active, to }: StatProps) {
 	);
 }
 
-function Metric({ label, value, color }: { label: string; value: number; color: string }) {
+/** Bytes in eine lesbare Groesse, damit neben dem Prozentwert etwas Greifbares steht. */
+const formatBytes = (bytes: number) => {
+	const units = ["B", "KB", "MB", "GB", "TB"];
+	let value = bytes;
+	let unit = 0;
+	while (value >= 1024 && unit < units.length - 1) {
+		value /= 1024;
+		unit++;
+	}
+	return `${value >= 10 || unit === 0 ? Math.round(value) : value.toFixed(1)} ${units[unit]}`;
+};
+
+function Metric({
+	label,
+	value,
+	detail,
+	color,
+}: {
+	label: string;
+	value: number;
+	detail: string;
+	color: string;
+}) {
 	return (
 		<div>
 			<div className={styles.metricLabel}>
 				<span className={styles.metricName}>
 					<T id={label} />
 				</span>
-				<span className={styles.metricValue}>{value} %</span>
+				<span className={styles.metricValue}>
+					<span className={styles.metricDetail}>{detail}</span> {value} %
+				</span>
 			</div>
 			<div className={styles.track}>
 				<div
@@ -216,11 +240,13 @@ const Dashboard = () => {
 							<Metric
 								label="dashboard.system-health.cpu"
 								value={health?.cpuPct ?? 0}
+								detail={health ? `${health.cpuCores} ${health.cpuCores === 1 ? "Kern" : "Kerne"}` : ""}
 								color="var(--np-brand-tint)"
 							/>
 							<Metric
 								label="dashboard.system-health.memory"
 								value={health?.memPct ?? 0}
+								detail={health ? `${formatBytes(health.memUsedBytes)} / ${formatBytes(health.memTotalBytes)}` : ""}
 								color={(health?.memPct ?? 0) >= 80 ? "var(--np-accent)" : "var(--np-brand-tint)"}
 							/>
 							{/* Nur anzeigen, wenn der Wert wirklich ermittelt werden konnte —
@@ -229,22 +255,17 @@ const Dashboard = () => {
 								<Metric
 									label="dashboard.system-health.disk"
 									value={health.diskPct}
+									detail={
+										health.diskUsedBytes && health.diskTotalBytes
+											? `${formatBytes(health.diskUsedBytes)} / ${formatBytes(health.diskTotalBytes)}`
+											: ""
+									}
 									color={health.diskPct >= 80 ? "var(--np-accent)" : "var(--np-brand-tint)"}
 								/>
 							)}
 						</div>
-						<div className={styles.healthFooter}>
-							<span
-								className={cn(styles.dot, health?.nginxRunning && styles.dotActive)}
-								style={{ marginLeft: 0 }}
-								aria-hidden="true"
-							/>
-							{health?.nginxRunning ? (
-								<T id="dashboard.system-health.nginx-running" data={{ days: health.uptimeDays }} />
-							) : (
-								<T id="dashboard.system-health.nginx-stopped" />
-							)}
-						</div>
+					{/* Fusszeile entfaellt komplett: die Karte zeigt nur noch echte
+						    Messwerte, keine Statusmeldungen. */}
 					</div>
 
 					<HasPermission section={CERTIFICATES} permission={VIEW} hideError>

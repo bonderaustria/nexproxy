@@ -13,25 +13,92 @@ const router = express.Router({
 	mergeParams: true,
 });
 
+const readNum = (file) => {
+	try {
+		const raw = fs.readFileSync(file, "utf8").trim();
+		if (raw === "max") return null; // cgroup v2: kein Limit gesetzt
+		const n = Number(raw);
+		return Number.isFinite(n) ? n : null;
+	} catch (_e) {
+		return null;
+	}
+};
+
 /**
- * CPU load as a percentage.
+ * Memory of THIS container, not of the host.
  *
- * Uses the 1-minute load average divided by the core count rather than sampling
- * /proc/stat twice: the dashboard polls every 30s, and a sampling approach would
- * either block the request for its sample window or report a figure from a
- * window nobody asked about. Load average is already the OS's own smoothed view.
- * Capped at 100 because load can legitimately exceed the core count.
+ * os.totalmem()/os.freemem() read /proc/meminfo, and inside a container that is
+ * the host's memory — a 2 GB node would report the host's 31 GB, which is worse
+ * than showing nothing because an operator would trust the free space. The
+ * cgroup files describe the container's actual limit; the os.* values are only
+ * the last resort for a bare-metal install.
  */
-function cpuPercent() {
-	const cores = os.cpus()?.length || 1;
-	const [oneMinute] = os.loadavg();
-	return Math.min(100, Math.round((oneMinute / cores) * 100));
+function memory() {
+	const total =
+		readNum("/sys/fs/cgroup/memory.max") ?? // cgroup v2
+		readNum("/sys/fs/cgroup/memory/memory.limit_in_bytes") ?? // cgroup v1
+		os.totalmem();
+	let used = readNum("/sys/fs/cgroup/memory.current") ?? readNum("/sys/fs/cgroup/memory/memory.usage_in_bytes");
+
+	if (used === null) {
+		used = os.totalmem() - os.freemem();
+	}
+	// Ein absurd hohes cgroup-Limit bedeutet "unbegrenzt" — dann ist der
+	// physische Speicher die ehrlichere Obergrenze.
+	const effectiveTotal = total > os.totalmem() ? os.totalmem() : total;
+	return {
+		memPct: effectiveTotal ? Math.min(100, Math.round((used / effectiveTotal) * 100)) : 0,
+		memUsedBytes: used,
+		memTotalBytes: effectiveTotal,
+	};
 }
 
-function memoryPercent() {
-	const total = os.totalmem();
-	if (!total) return 0;
-	return Math.round(((total - os.freemem()) / total) * 100);
+/** Kerne, die diesem Container tatsaechlich zur Verfuegung stehen. */
+function cpuCores() {
+	try {
+		const raw = fs.readFileSync("/sys/fs/cgroup/cpu.max", "utf8").trim().split(/\s+/);
+		const quota = raw[0] === "max" ? null : Number(raw[0]);
+		const period = Number(raw[1]);
+		if (quota && period) return Math.max(1, Math.round(quota / period));
+	} catch (_e) {
+		/* kein cgroup-v2-Limit */
+	}
+	return os.cpus()?.length || 1;
+}
+
+/**
+ * CPU usage of THIS container over a short sample window.
+ *
+ * os.loadavg() is the host's load — identical on every node of a cluster that
+ * shares a hypervisor, which is exactly the symptom that gave this away. The
+ * cgroup counter cpu.stat/usage_usec is per container; two readings 200 ms apart
+ * give the current usage. The dashboard polls every 30 s, so the extra 200 ms
+ * per request are irrelevant.
+ */
+async function cpuPercent(cores) {
+	const usage = () => {
+		try {
+			const stat = fs.readFileSync("/sys/fs/cgroup/cpu.stat", "utf8");
+			const match = stat.match(/usage_usec\s+(\d+)/);
+			return match ? Number(match[1]) : null;
+		} catch (_e) {
+			return null;
+		}
+	};
+
+	const first = usage();
+	if (first === null) {
+		// Kein cgroup v2 — dann bleibt nur der Load des Wirts, klar begrenzt.
+		return Math.min(100, Math.round((os.loadavg()[0] / cores) * 100));
+	}
+	const windowMs = 200;
+	await new Promise((r) => setTimeout(r, windowMs));
+	const second = usage();
+	if (second === null || second < first) return 0;
+
+	const usedUsec = second - first;
+	const availableUsec = windowMs * 1000 * cores;
+	return Math.min(100, Math.round((usedUsec / availableUsec) * 100));
 }
 
 /**
@@ -40,12 +107,22 @@ function memoryPercent() {
  * Returns null when it cannot be determined, so the GUI can hide the row instead
  * of showing a fabricated value.
  */
-async function diskPercent() {
+async function disk() {
 	try {
-		const { stdout } = await execAsync("df -P /data 2>/dev/null || df -P /", { timeout: 4000 });
+		// -P erzwingt das POSIX-Format (eine Zeile je Dateisystem), -k Bloecke zu
+		// 1 KiB — ohne beides variiert die Ausgabe je nach Umgebung.
+		const { stdout } = await execAsync("df -Pk /data 2>/dev/null || df -Pk /", { timeout: 4000 });
 		const line = stdout.trim().split("\n").pop() || "";
-		const match = line.match(/(\d+)%/);
-		return match ? Number(match[1]) : null;
+		// Filesystem  1024-blocks  Used  Available  Capacity  Mounted
+		const cols = line.split(/\s+/);
+		const totalKb = Number(cols[1]);
+		const usedKb = Number(cols[2]);
+		if (!Number.isFinite(totalKb) || !Number.isFinite(usedKb) || totalKb <= 0) return null;
+		return {
+			diskPct: Math.round((usedKb / totalKb) * 100),
+			diskUsedBytes: usedKb * 1024,
+			diskTotalBytes: totalKb * 1024,
+		};
 	} catch (_e) {
 		return null;
 	}
@@ -96,11 +173,17 @@ router
 	 */
 	.get(async (_req, res) => {
 		try {
-			const [disk, nginx] = await Promise.all([diskPercent(), nginxRunning()]);
+			const cores = cpuCores();
+			const [diskInfo, nginx, cpuPct] = await Promise.all([disk(), nginxRunning(), cpuPercent(cores)]);
 			res.status(200).send({
-				cpuPct: cpuPercent(),
-				memPct: memoryPercent(),
-				diskPct: disk,
+				cpuPct,
+				// Absolute Werte neben den Prozenten: "49 %" sagt nichts darueber
+				// aus, ob das 2 GB oder 60 GB sind.
+				cpuCores: cores,
+				...memory(),
+				diskPct: diskInfo ? diskInfo.diskPct : null,
+				diskUsedBytes: diskInfo ? diskInfo.diskUsedBytes : null,
+				diskTotalBytes: diskInfo ? diskInfo.diskTotalBytes : null,
 				nginxRunning: nginx,
 				// os.uptime() is the container's uptime, which is what an operator
 				// actually cares about here — not the host's.

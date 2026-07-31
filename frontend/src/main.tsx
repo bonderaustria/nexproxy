@@ -7,6 +7,9 @@ import "@tabler/core/dist/js/tabler.min.js";
 // Nach Tabler, damit die Tokens des neuen Designs gewinnen. Tabler bleibt nur so
 // lange eingebunden, wie es noch nicht migrierte Seiten gibt.
 import "./styles/tokens.css";
+// Legt Tablers Variablen auf die Tokens, damit die noch nicht migrierten Seiten
+// mitziehen. Muss nach tokens.css stehen.
+import "./styles/tabler-bridge.css";
 import "./App.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
