@@ -1,9 +1,9 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconHelp } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteStream, toggleStream } from "src/api/backend";
-import { Button, HasPermission, LoadingPage } from "src/components";
+import { HasPermission, LoadingPage, PageCard, PageCardAction, PageCardIconButton } from "src/components";
 import { useStreams } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showStreamModal } from "src/modals";
@@ -52,47 +52,27 @@ export default function TableWrapper() {
 	}
 
 	return (
-		<div className="card mt-4">
-			<div className="card-status-top bg-blue" />
-			<div className="card-table">
-				<div className="card-header">
-					<div className="row w-full">
-						<div className="col">
-							<h2 className="mt-1 mb-0">
-								<T id="streams" />
-							</h2>
-						</div>
-						<div className="col-md-auto col-sm-12">
-							<div className="ms-auto d-flex flex-wrap btn-list">
-								{data?.length ? (
-									<div className="input-group input-group-flat w-auto">
-										<span className="input-group-text input-group-text-sm">
-											<IconSearch size={16} />
-										</span>
-										<input
-											id="advanced-table-search"
-											type="text"
-											className="form-control form-control-sm"
-											autoComplete="off"
-											onChange={(e: any) => setSearch(e.target.value.toLowerCase().trim())}
-										/>
-									</div>
-								) : null}
-								<Button size="sm" onClick={() => showHelpModal("Streams", "blue")}>
-									<IconHelp size={20} />
-								</Button>
-								<HasPermission section={STREAMS} permission={MANAGE} hideError>
-									{data?.length ? (
-										<Button size="sm" className="btn-blue" onClick={() => showStreamModal("new")}>
-											<T id="object.add" tData={{ object: "stream" }} />
-										</Button>
-									) : null}
-								</HasPermission>
-							</div>
-						</div>
-					</div>
-				</div>
-				<Table
+		<PageCard
+			title="streams"
+			search={
+				data?.length
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					: undefined
+			}
+			actions={
+				<>
+					<PageCardIconButton onClick={() => showHelpModal("Streams", "blue")} label="Hilfe">
+						<IconHelp size={18} />
+					</PageCardIconButton>
+					<HasPermission section={STREAMS} permission={MANAGE} hideError>
+						<PageCardAction onClick={() => showStreamModal("new")}>
+							+ <T id="object.add" tData={{ object: "stream" }} />
+						</PageCardAction>
+					</HasPermission>
+				</>
+			}
+		>
+			<Table
 					data={filtered ?? data ?? []}
 					isFetching={isFetching}
 					isFiltered={!!filtered}
@@ -106,9 +86,8 @@ export default function TableWrapper() {
 						})
 					}
 					onDisableToggle={handleDisableToggle}
-					onNew={() => showStreamModal("new")}
-				/>
-			</div>
-		</div>
+				onNew={() => showStreamModal("new")}
+			/>
+		</PageCard>
 	);
 }

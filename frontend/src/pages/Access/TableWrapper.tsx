@@ -1,8 +1,8 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconHelp } from "@tabler/icons-react";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteAccessList } from "src/api/backend";
-import { Button, HasPermission, LoadingPage } from "src/components";
+import { HasPermission, LoadingPage, PageCard, PageCardAction, PageCardIconButton } from "src/components";
 import { useAccessLists } from "src/hooks";
 import { T } from "src/locale";
 import { showAccessListModal, showDeleteConfirmModal, showHelpModal } from "src/modals";
@@ -38,52 +38,27 @@ export default function TableWrapper() {
 	}
 
 	return (
-		<div className="card mt-4">
-			<div className="card-status-top bg-cyan" />
-			<div className="card-table">
-				<div className="card-header">
-					<div className="row w-full">
-						<div className="col">
-							<h2 className="mt-1 mb-0">
-								<T id="access-lists" />
-							</h2>
-						</div>
-
-						<div className="col-md-auto col-sm-12">
-							<div className="ms-auto d-flex flex-wrap btn-list">
-								{data?.length ? (
-									<div className="input-group input-group-flat w-auto">
-										<span className="input-group-text input-group-text-sm">
-											<IconSearch size={16} />
-										</span>
-										<input
-											id="advanced-table-search"
-											type="text"
-											className="form-control form-control-sm"
-											autoComplete="off"
-											onChange={(e: any) => setSearch(e.target.value.toLowerCase().trim())}
-										/>
-									</div>
-								) : null}
-								<Button size="sm" onClick={() => showHelpModal("AccessLists", "cyan")}>
-									<IconHelp size={20} />
-								</Button>
-								<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
-									{data?.length ? (
-										<Button
-											size="sm"
-											className="btn-cyan"
-											onClick={() => showAccessListModal("new")}
-										>
-											<T id="object.add" tData={{ object: "access-list" }} />
-										</Button>
-									) : null}
-								</HasPermission>
-							</div>
-						</div>
-					</div>
-				</div>
-				<Table
+		<PageCard
+			title="access-lists"
+			search={
+				data?.length
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					: undefined
+			}
+			actions={
+				<>
+					<PageCardIconButton onClick={() => showHelpModal("AccessLists", "cyan")} label="Hilfe">
+						<IconHelp size={18} />
+					</PageCardIconButton>
+					<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>
+						<PageCardAction onClick={() => showAccessListModal("new")}>
+							+ <T id="object.add" tData={{ object: "access-list" }} />
+						</PageCardAction>
+					</HasPermission>
+				</>
+			}
+		>
+			<Table
 					data={filtered ?? data ?? []}
 					isFetching={isFetching}
 					isFiltered={!!filtered}
@@ -97,8 +72,7 @@ export default function TableWrapper() {
 						})
 					}
 					onNew={() => showAccessListModal("new")}
-				/>
-			</div>
-		</div>
+			/>
+		</PageCard>
 	);
 }

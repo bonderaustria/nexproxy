@@ -1,8 +1,8 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconHelp } from "@tabler/icons-react";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteCertificate, downloadCertificate } from "src/api/backend";
-import { Button, HasPermission, LoadingPage } from "src/components";
+import { HasPermission, LoadingPage, PageCard, PageCardIconButton } from "src/components";
 import { useCertificates } from "src/hooks";
 import { T } from "src/locale";
 import {
@@ -61,45 +61,25 @@ export default function TableWrapper() {
 	}
 
 	return (
-		<div className="card mt-4">
-			<div className="card-status-top bg-pink" />
-			<div className="card-table">
-				<div className="card-header">
-					<div className="row w-full">
-						<div className="col">
-							<h2 className="mt-1 mb-0">
-								<T id="certificates" />
-							</h2>
-						</div>
-						<div className="col-md-auto col-sm-12">
-							<div className="ms-auto d-flex flex-wrap btn-list">
-								{data?.length ? (
-									<div className="input-group input-group-flat w-auto">
-										<span className="input-group-text input-group-text-sm">
-											<IconSearch size={16} />
-										</span>
-										<input
-											id="advanced-table-search"
-											type="text"
-											className="form-control form-control-sm"
-											autoComplete="off"
-											onChange={(e: any) => setSearch(e.target.value.toLowerCase().trim())}
-										/>
-									</div>
-								) : null}
-								<Button size="sm" onClick={() => showHelpModal("Certificates", "pink")}>
-									<IconHelp size={20} />
-								</Button>
-								<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
-									{data?.length ? (
-										<div className="dropdown">
-											<button
-												type="button"
-												className="btn btn-sm dropdown-toggle btn-pink mt-1"
-												data-bs-toggle="dropdown"
-											>
-												<T id="object.add" tData={{ object: "certificate" }} />
-											</button>
+		<PageCard
+			title="certificates"
+			search={
+				data?.length
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					: undefined
+			}
+			actions={
+				<>
+					<PageCardIconButton onClick={() => showHelpModal("Certificates", "pink")} label="Hilfe">
+						<IconHelp size={18} />
+					</PageCardIconButton>
+					<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
+						{/* Bleibt ein Aufklappmenue, weil hier drei Ausstellungsarten zur
+						    Wahl stehen — als drei Knoepfe waere die Kopfzeile ueberladen. */}
+						<div className="dropdown">
+							<button type="button" className="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+								+ <T id="object.add" tData={{ object: "certificate" }} />
+							</button>
 											<div className="dropdown-menu">
 												<a
 													className="dropdown-item"
@@ -131,16 +111,14 @@ export default function TableWrapper() {
 													}}
 												>
 													<T id="certificates.custom" />
-												</a>
-											</div>
-										</div>
-									) : null}
-								</HasPermission>
+								</a>
 							</div>
 						</div>
-					</div>
-				</div>
-				<Table
+					</HasPermission>
+				</>
+			}
+		>
+			<Table
 					data={filtered ?? data ?? []}
 					isFiltered={!!search}
 					isFetching={isFetching}
@@ -153,9 +131,8 @@ export default function TableWrapper() {
 							invalidations: [["certificates"], ["certificate", id]],
 							children: <T id="object.delete.content" tData={{ object: "certificate" }} />,
 						})
-					}
-				/>
-			</div>
-		</div>
+				}
+			/>
+		</PageCard>
 	);
 }

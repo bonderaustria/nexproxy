@@ -404,6 +404,9 @@
 	"proxy-hosts.add": {
 		"defaultMessage": "Proxy-Host anlegen"
 	},
+	"proxy-hosts.subtitle": {
+		"defaultMessage": "Eingehende Domains und ihre Ziele"
+	},
 	"footer.github-fork": {
 		"defaultMessage": "Fork me on Github"
 	},

@@ -1,9 +1,8 @@
-import { IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteUser, toggleUser } from "src/api/backend";
-import { Button, LoadingPage } from "src/components";
+import { LoadingPage, PageCard, PageCardAction } from "src/components";
 import { useAuthState } from "src/context";
 import { useUser, useUsers } from "src/hooks";
 import { T } from "src/locale";
@@ -63,41 +62,22 @@ export default function TableWrapper() {
 	}
 
 	return (
-		<div className="card mt-4">
-			<div className="card-status-top bg-orange" />
-			<div className="card-table">
-				<div className="card-header">
-					<div className="row w-full">
-						<div className="col">
-							<h2 className="mt-1 mb-0">
-								<T id="users" />
-							</h2>
-						</div>
-						{data?.length ? (
-							<div className="col-md-auto col-sm-12">
-								<div className="ms-auto d-flex flex-wrap btn-list">
-									<div className="input-group input-group-flat w-auto">
-										<span className="input-group-text input-group-text-sm">
-											<IconSearch size={16} />
-										</span>
-										<input
-											id="advanced-table-search"
-											type="text"
-											className="form-control form-control-sm"
-											autoComplete="off"
-											onChange={(e: any) => setSearch(e.target.value.toLowerCase().trim())}
-										/>
-									</div>
-
-									<Button size="sm" className="btn-orange" onClick={() => showUserModal("new")}>
-										<T id="object.add" tData={{ object: "user" }} />
-									</Button>
-								</div>
-							</div>
-						) : null}
-					</div>
-				</div>
-				<Table
+		<PageCard
+			title="users"
+			search={
+				data?.length
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Name oder E-Mail …" }
+					: undefined
+			}
+			actions={
+				data?.length ? (
+					<PageCardAction onClick={() => showUserModal("new")}>
+						+ <T id="object.add" tData={{ object: "user" }} />
+					</PageCardAction>
+				) : undefined
+			}
+		>
+			<Table
 					data={filtered ?? data ?? []}
 					isFiltered={!!search}
 					isFetching={isFetching}
@@ -115,9 +95,8 @@ export default function TableWrapper() {
 					}
 					onDisableToggle={handleDisableToggle}
 					onNewUser={() => showUserModal("new")}
-					onLoginAs={handleLoginAs}
-				/>
-			</div>
-		</div>
+				onLoginAs={handleLoginAs}
+			/>
+		</PageCard>
 	);
 }

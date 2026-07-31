@@ -10,9 +10,12 @@ export * from "./LoadingPage";
 export * from "./LocalePicker";
 export * from "./NavLink";
 export * from "./Page";
+export * from "./PageCard";
 export * from "./SiteContainer";
 export * from "./SiteFooter";
-export * from "./SiteHeader";
+// SiteHeader ist mit dem Wegfall des klebenden Kopfbereichs nicht mehr im
+// Einsatz — die Datei bleibt vorerst liegen, falls Teile davon noch gebraucht
+// werden, wird aber nicht mehr exportiert.
 export * from "./SiteSidebar";
 export * from "./Table";
 // SiteMenu (obere Navigationsleiste) und ThemeSwitcher sind mit dem Redesign

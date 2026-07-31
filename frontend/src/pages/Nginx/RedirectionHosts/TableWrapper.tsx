@@ -1,9 +1,9 @@
-import { IconHelp, IconSearch } from "@tabler/icons-react";
+import { IconHelp } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteRedirectionHost, toggleRedirectionHost } from "src/api/backend";
-import { Button, HasPermission, LoadingPage } from "src/components";
+import { HasPermission, LoadingPage, PageCard, PageCardAction, PageCardIconButton } from "src/components";
 import { useRedirectionHosts } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showRedirectionHostModal } from "src/modals";
@@ -50,51 +50,27 @@ export default function TableWrapper() {
 	}
 
 	return (
-		<div className="card mt-4">
-			<div className="card-status-top bg-yellow" />
-			<div className="card-table">
-				<div className="card-header">
-					<div className="row w-full">
-						<div className="col">
-							<h2 className="mt-1 mb-0">
-								<T id="redirection-hosts" />
-							</h2>
-						</div>
-						<div className="col-md-auto col-sm-12">
-							<div className="ms-auto d-flex flex-wrap btn-list">
-								{data?.length ? (
-									<div className="input-group input-group-flat w-auto">
-										<span className="input-group-text input-group-text-sm">
-											<IconSearch size={16} />
-										</span>
-										<input
-											id="advanced-table-search"
-											type="text"
-											className="form-control form-control-sm"
-											autoComplete="off"
-											onChange={(e: any) => setSearch(e.target.value.toLowerCase().trim())}
-										/>
-									</div>
-								) : null}
-								<Button size="sm" onClick={() => showHelpModal("RedirectionHosts", "yellow")}>
-									<IconHelp size={20} />
-								</Button>
-								<HasPermission section={REDIRECTION_HOSTS} permission={MANAGE} hideError>
-									{data?.length ? (
-										<Button
-											size="sm"
-											className="btn-yellow"
-											onClick={() => showRedirectionHostModal("new")}
-										>
-											<T id="object.add" tData={{ object: "redirection-host" }} />
-										</Button>
-									) : null}
-								</HasPermission>
-							</div>
-						</div>
-					</div>
-				</div>
-				<Table
+		<PageCard
+			title="redirection-hosts"
+			search={
+				data?.length
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					: undefined
+			}
+			actions={
+				<>
+					<PageCardIconButton onClick={() => showHelpModal("RedirectionHosts", "yellow")} label="Hilfe">
+						<IconHelp size={18} />
+					</PageCardIconButton>
+					<HasPermission section={REDIRECTION_HOSTS} permission={MANAGE} hideError>
+						<PageCardAction onClick={() => showRedirectionHostModal("new")}>
+							+ <T id="object.add" tData={{ object: "redirection-host" }} />
+						</PageCardAction>
+					</HasPermission>
+				</>
+			}
+		>
+			<Table
 					data={filtered ?? data ?? []}
 					isFiltered={!!search}
 					isFetching={isFetching}
@@ -108,9 +84,8 @@ export default function TableWrapper() {
 						})
 					}
 					onDisableToggle={handleDisableToggle}
-					onNew={() => showRedirectionHostModal("new")}
-				/>
-			</div>
-		</div>
+				onNew={() => showRedirectionHostModal("new")}
+			/>
+		</PageCard>
 	);
 }

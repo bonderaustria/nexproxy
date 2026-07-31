@@ -668,6 +668,9 @@
 	"proxy-hosts.add": {
 		"defaultMessage": "Add Proxy Host"
 	},
+	"proxy-hosts.subtitle": {
+		"defaultMessage": "Incoming domains and their destinations"
+	},
 	"proxy-hosts.count": {
 		"defaultMessage": "{count} {count, plural, one {Proxy Host} other {Proxy Hosts}}"
 	},

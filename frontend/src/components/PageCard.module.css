@@ -1,0 +1,121 @@
+.card {
+	background: var(--np-card);
+	border: 1px solid var(--np-muted);
+	border-radius: var(--np-radius-card);
+	box-shadow: var(--np-shadow-card);
+	overflow: hidden;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 18px 20px;
+	border-bottom: 1px solid var(--np-muted);
+	flex-wrap: wrap;
+}
+
+.title {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--np-text-strong);
+	line-height: 1.3;
+}
+
+.subtitle {
+	font-size: 12px;
+	color: var(--np-text-muted-dim);
+}
+
+.actions {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.search {
+	width: 220px;
+	padding: 8px 12px;
+	background: var(--np-hover);
+	border: 1px solid var(--np-control);
+	border-radius: var(--np-radius-control);
+	color: var(--np-text);
+	font: inherit;
+	font-size: 13px;
+}
+
+.search::placeholder {
+	color: var(--np-text-muted-dim);
+}
+
+.search:focus {
+	outline: none;
+	border-color: var(--np-brand-tint);
+}
+
+.iconButton {
+	width: 36px;
+	height: 36px;
+	display: grid;
+	place-items: center;
+	border-radius: var(--np-radius-control);
+	border: 1px solid var(--np-control);
+	background: transparent;
+	color: var(--np-text-secondary-dim);
+	cursor: pointer;
+	transition: var(--np-motion-bg);
+}
+
+.iconButton:hover {
+	background: var(--np-hover);
+	color: var(--np-text-strong);
+}
+
+.primary {
+	background: var(--np-accent);
+	color: var(--np-brand-navy);
+	font-size: 13px;
+	font-weight: 600;
+	padding: 9px 16px;
+	border-radius: var(--np-radius-control);
+	border: 0;
+	cursor: pointer;
+	transition: var(--np-motion-bg);
+	white-space: nowrap;
+}
+
+.primary:hover {
+	background: var(--np-accent-hover);
+}
+
+.iconButton:focus-visible,
+.primary:focus-visible,
+.search:focus-visible {
+	outline: 2px solid var(--np-brand-tint);
+	outline-offset: 2px;
+}
+
+/* Der Tabellenkoerper sitzt randlos in der Karte — die Trennlinien der Zeilen
+   uebernehmen die Gliederung, ein zusaetzlicher Innenabstand wuerde die
+   Kopfzeile von den Daten abkoppeln. */
+.body {
+	min-width: 0;
+	overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+	.header {
+		padding: 16px;
+	}
+
+	.search {
+		width: 100%;
+	}
+
+	.actions {
+		width: 100%;
+		margin-left: 0;
+	}
+}

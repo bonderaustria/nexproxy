@@ -132,6 +132,17 @@ const Dashboard = () => {
 
 	return (
 		<div className={styles.page}>
+			{/* Traegt den Seitentitel, seit der klebende Kopfbereich entfallen ist.
+			    Die Listenseiten bekommen ihn stattdessen aus der Seitenkarte. */}
+			<div>
+				<span className={styles.pageEyebrow}>
+					<T id="nav.group.overview" />
+				</span>
+				<h1 className={styles.pageTitle}>
+					<T id="dashboard" />
+				</h1>
+			</div>
+
 			<section className={styles.stats}>
 				<HasPermission section={PROXY_HOSTS} permission={VIEW} hideError>
 					<StatCard

@@ -1,6 +1,6 @@
 import cn from "classnames";
 import { NavLink, useLocation } from "react-router-dom";
-import { HasPermission } from "src/components";
+import { HasPermission, LocalePicker } from "src/components";
 import { useAuthState } from "src/context";
 import { useHostReport, useUser } from "src/hooks";
 import { T } from "src/locale";
@@ -83,9 +83,11 @@ const groups: Group[] = [
 interface Props {
 	open: boolean;
 	onNavigate: () => void;
+	/** Oeffnet die Schublade auf schmalen Fenstern. */
+	onOpenMenu: () => void;
 }
 
-export function SiteSidebar({ open, onNavigate }: Props) {
+export function SiteSidebar({ open, onNavigate, onOpenMenu }: Props) {
 	const { data: currentUser } = useUser("me");
 	const { data: hostReport } = useHostReport();
 	const { logout } = useAuthState();
@@ -96,6 +98,11 @@ export function SiteSidebar({ open, onNavigate }: Props) {
 
 	return (
 		<>
+		{/* Ausserhalb der Sidebar, weil sie auf schmalen Fenstern selbst
+			    ausgeblendet ist — sonst gaebe es keinen Weg, sie zu oeffnen. */}
+			<button type="button" className={styles.burger} aria-label="Menü öffnen" onClick={onOpenMenu}>
+				<span aria-hidden="true">☰</span>
+			</button>
 			{open && (
 				<button type="button" className={styles.scrim} aria-label="Menü schließen" onClick={onNavigate} />
 			)}
@@ -166,7 +173,12 @@ export function SiteSidebar({ open, onNavigate }: Props) {
 							</span>
 						</span>
 					</summary>
-					<div className={styles.accountMenu}>
+						<div className={styles.accountMenu}>
+						{/* Die Sprachwahl sass frueher im Kopfbereich; mit dessen Wegfall
+						    ist der Kontoblock der passende Ort. */}
+						<div className={styles.localeRow}>
+							<LocalePicker />
+						</div>
 						<button type="button" className={styles.accountAction} onClick={() => showUserModal("me")}>
 							<T id="user.edit-profile" />
 						</button>
