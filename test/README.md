@@ -3,7 +3,7 @@
 ## Running Locally
 
 ```
-cd nginxproxymanager/test
+cd nexproxy/test
 yarn install
 yarn run cypress
 ```

@@ -147,7 +147,7 @@
 		"defaultMessage": "Bu bölüm Certbot ve DNS eklentileri hakkında bazı bilgiler gerektirir. Lütfen ilgili eklenti dokümantasyonuna bakın."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "Bu alan adında bir sunucu bulundu ancak Nginx Proxy Manager gibi görünmüyor. Lütfen alan adınızın NPM örneğinizin çalıştığı IP'ye işaret ettiğinden emin olun."
+		"defaultMessage": "Bu alan adında bir sunucu bulundu ancak NexProxy gibi görünmüyor. Lütfen alan adınızın NPM örneğinizin çalıştığı IP'ye işaret ettiğinden emin olun."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "site24x7.com ile iletişim hatası nedeniyle erişilebilirlik kontrolü başarısız oldu."

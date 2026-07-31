@@ -25,7 +25,7 @@ services:
       retries: 10
 
   node-a:
-    image: jc21/nginx-proxy-manager:latest   # spaeter: dein eigenes Fork-Image
+    image: ghcr.io/bonderaustria/nexproxy:latest   # spaeter: dein eigenes Fork-Image
     depends_on:
       db:
         condition: service_healthy
@@ -43,7 +43,7 @@ services:
       - node_a_data:/data
 
   node-b:
-    image: jc21/nginx-proxy-manager:latest
+    image: ghcr.io/bonderaustria/nexproxy:latest
     depends_on:
       db:
         condition: service_healthy

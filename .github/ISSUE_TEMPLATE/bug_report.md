@@ -16,7 +16,7 @@ Are you in the right place?
 -->
 
 **Checklist**
-- Have you pulled and found the error with `jc21/nginx-proxy-manager:latest` docker image?
+- Have you pulled and found the error with `ghcr.io/bonderaustria/nexproxy:latest` docker image?
   - Yes / No
 - Are you sure you're not using someone else's docker image?
   - Yes / No
@@ -27,8 +27,8 @@ Are you in the right place?
 <!-- A clear and concise description of what the bug is. -->
 
 
-**Nginx Proxy Manager Version**
-<!-- What version of Nginx Proxy Manager is reported on the login page? -->
+**NexProxy Version**
+<!-- What version of NexProxy is reported on the login page? -->
 
 
 **To Reproduce**

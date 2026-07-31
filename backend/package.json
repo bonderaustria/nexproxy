@@ -1,8 +1,8 @@
 {
-	"name": "nginx-proxy-manager",
+	"name": "nexproxy",
 	"version": "1.0.27",
 	"description": "A beautiful interface for creating Nginx endpoints",
-	"author": "Jamie Curnow <jc@jc21.com>",
+	"author": "Justin Troebinger",
 	"license": "MIT",
 	"main": "index.js",
 	"type": "module",

@@ -27,7 +27,7 @@ NexProxy builds on the well-loved [Nginx Proxy Manager](https://github.com/Nginx
   over the IP in seconds. No more single point of failure. *(Enterprise)*
 - **True multi-tenancy** — real per-user isolation, so every user only sees and manages their own hosts. *(Enterprise)*
 - **Fast fixes** — known, tested community fixes that sit unreleased upstream ship here immediately.
-  Example: the [UDP stream packet-loss fix (#5000)](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/5000)
+  Example: the [UDP stream packet-loss fix (#5000)](https://github.com/bonderaustria/nexproxy/issues/5000)
   that breaks TeamSpeak, Factorio and other UDP services is already included.
 
 ### Core features

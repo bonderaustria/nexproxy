@@ -5,7 +5,7 @@ import errs from "../lib/error.js";
 import authModel from "../models/auth.js";
 import internalUser from "./user.js";
 
-const APP_NAME = "Nginx Proxy Manager";
+const APP_NAME = "NexProxy";
 const BACKUP_CODE_COUNT = 8;
 
 /**

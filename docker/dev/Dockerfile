@@ -1,6 +1,6 @@
 FROM nginxproxymanager/testca AS testca
 FROM nginxproxymanager/nginx-full:certbot-node
-LABEL maintainer="Jamie Curnow <jc@jc21.com>"
+LABEL maintainer="NexProxy"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -26,15 +26,15 @@ COPY rootfs /
 
 COPY scripts/install-s6 /tmp/install-s6
 RUN rm -f /etc/nginx/conf.d/production.conf \
-	&& chmod 644 /etc/logrotate.d/nginx-proxy-manager \
+	&& chmod 644 /etc/logrotate.d/nexproxy \
 	&& /tmp/install-s6 "${TARGETPLATFORM}" \
 	&& rm -f /tmp/install-s6 \
 	&& chmod 644 -R /root/.cache
 
 # Copy test CA cert for use in container and add to trusted certs from a self-signed CA
-COPY --from=testca /home/step/certs/root_ca.crt /etc/ssl/certs/NginxProxyManager.crt
+COPY --from=testca /home/step/certs/root_ca.crt /etc/ssl/certs/testca.crt
 WORKDIR /etc/ssl/certs
-RUN ln -s NginxProxyManager.crt 1d0e3f10.0 && update-ca-certificates
+RUN ln -s testca.crt 1d0e3f10.0 && update-ca-certificates
 
 WORKDIR /root
 

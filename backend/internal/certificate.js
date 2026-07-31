@@ -685,9 +685,9 @@ const internalCertificate = {
 			const result = await utils.execFile("openssl", ["x509", "-in", certificateFile, "-subject", "-noout"]);
 
 			// Examples:
-			// subject=CN = *.jc21.com
+			// subject=CN = *.example.com
 			// subject=CN = something.example.com
-			// subject=CN=*.jc21.com
+			// subject=CN=*.example.com
 			const regex = /(?:subject=)?[^=]+=\s*(\S+)/gim;
 			const match = regex.exec(result);
 			if (match && typeof match[1] !== "undefined") {
@@ -698,7 +698,7 @@ const internalCertificate = {
 			// Examples:
 			// issuer=C = US, O = Let's Encrypt, CN = Let's Encrypt Authority X3
 			// issuer=C = US, O = Let's Encrypt, CN = E5
-			// issuer=O = NginxProxyManager, CN = NginxProxyManager Intermediate CA","O = NginxProxyManager, CN = NginxProxyManager Intermediate CA
+			// issuer=O = ExampleCA, CN = ExampleCA Intermediate CA","O = ExampleCA, CN = ExampleCA Intermediate CA
 			const regex2 = /^(?:issuer=)?(.*)$/gim;
 			const match2 = regex2.exec(result2);
 			if (match2 && typeof match2[1] !== "undefined") {

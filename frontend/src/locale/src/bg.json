@@ -147,7 +147,7 @@
 		"defaultMessage": "Този раздел изисква познания за Certbot и неговите DNS плъгини. Моля, консултирайте се с документацията."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "Сървър е намерен на този домейн, но не изглежда да е Nginx Proxy Manager. Уверете се, че домейнът сочи към IP адреса, където работи NPM."
+		"defaultMessage": "Сървър е намерен на този домейн, но не изглежда да е NexProxy. Уверете се, че домейнът сочи към IP адреса, където работи NPM."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "Неуспешна проверка поради грешка в комуникацията със site24x7.com."

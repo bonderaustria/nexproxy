@@ -14,7 +14,7 @@ use by the project.
 ## Can I run it on a Raspberry Pi?
 
 Yes! The docker image is multi-arch and is built for a variety of architectures. If yours is
-[not listed](https://hub.docker.com/r/jc21/nginx-proxy-manager/tags) please open a
+[not listed](https://hub.docker.com/r/ghcr.io/bonderaustria/nexproxy/tags) please open a
 [GitHub issue](https://github.com/bonderaustria/nexproxy/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=).
 
 ## I can't get my service to proxy properly?

@@ -4,4 +4,4 @@ En Proxy‑host er inngangspunktet (innkommende endepunkt) for en webtjeneste du
 
 Den tilbyr valgfri SSL‑terminering for tjenesten din hvis tjenesten ikke har innebygd støtte for SSL.
 
-Proxy‑hosts er den vanligste bruken av Nginx Proxy Manager.
+Proxy‑hosts er den vanligste bruken av NexProxy.

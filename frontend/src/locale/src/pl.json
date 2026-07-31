@@ -138,7 +138,7 @@
 		"defaultMessage": "Ta sekcja wymaga pewnej wiedzy na temat Certbot i jego wtyczek DNS. Zapoznaj się z dokumentacją odpowiednich wtyczek."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "Znaleziono serwer pod tą domeną, ale nie wygląda na to, że jest to Nginx Proxy Manager. Upewnij się, że twoja domena wskazuje na adres IP, gdzie działa twoja instancja NPM."
+		"defaultMessage": "Znaleziono serwer pod tą domeną, ale nie wygląda na to, że jest to NexProxy. Upewnij się, że twoja domena wskazuje na adres IP, gdzie działa twoja instancja NPM."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "Nie udało się sprawdzić dostępności z powodu błędu komunikacji z site24x7.com."

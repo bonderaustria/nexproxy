@@ -55,7 +55,6 @@ export default defineConfig({
 					{ text: "Aktualisieren", link: "/upgrading/" },
 					{ text: "Häufige Fragen", link: "/faq/" },
 					{ text: "Certbot", link: "/certbot/" },
-					{ text: "Drittanbieter", link: "/third-party/" },
 				],
 			},
 		],

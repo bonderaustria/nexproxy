@@ -29,7 +29,7 @@
 			"type": "string",
 			"description": "Email",
 			"minLength": 3,
-			"example": "jc@jc21.com"
+			"example": "admin@example.com"
 		},
 		"name": {
 			"type": "string",

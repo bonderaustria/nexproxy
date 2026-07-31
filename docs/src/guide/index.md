@@ -4,70 +4,57 @@ outline: deep
 
 # Guide
 
-::: raw
-<p align="center">
-	<a href="https://hub.docker.com/repository/docker/jc21/nginx-proxy-manager" style="display:inline;margin-right:5px;">
-		<img src="https://img.shields.io/docker/stars/jc21/nginx-proxy-manager.svg?style=for-the-badge" style="display:inline;">
-	</a>
-	<a href="https://hub.docker.com/repository/docker/jc21/nginx-proxy-manager" style="display:inline;margin-right:5px;">
-		<img src="https://img.shields.io/docker/pulls/jc21/nginx-proxy-manager.svg?style=for-the-badge" style="display:inline;">
-	</a>
-</p>
-:::
+NexProxy is a reverse proxy with a web interface. It forwards traffic to the
+services running on your network, terminates SSL for them, and takes care of
+certificates — without you having to write Nginx configuration by hand.
 
-This project comes as a pre-built docker image that enables you to easily forward to your websites
-running at home or otherwise, including free SSL, without having to know too much about Nginx or Letsencrypt.
+It ships as a single Docker image.
 
 - [Quick Setup](#quick-setup)
 - [Full Setup](/setup/)
 - [Screenshots](/screenshots/)
 
-## Project Goal
-
-I created this project to fill a personal need to provide users with an easy way to accomplish reverse
-proxying hosts with SSL termination and it had to be so easy that a monkey could do it. This goal hasn't changed.
-While there might be advanced options they are optional and the project should be as simple as possible
-so that the barrier for entry here is low.
-
-::: raw
-<a href="https://www.buymeacoffee.com/jc21" target="_blank"><img src="http://public.jc21.com/github/by-me-a-coffee.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
-:::
-
 ## Features
 
-- Beautiful and Secure Admin Interface based on [Tabler](https://tabler.io/)
-- Easily create forwarding domains, redirections, streams and 404 hosts without knowing anything about Nginx
-- Free SSL using Let's Encrypt or provide your own custom SSL certificates
-- Access Lists and basic HTTP Authentication for your hosts
-- Advanced Nginx configuration available for super users
-- User management, permissions and audit log
+- Proxy hosts, redirections, TCP/UDP streams and 404 hosts — created in the interface, no Nginx knowledge required
+- Free SSL through Let's Encrypt (HTTP or DNS challenge) and support for your own certificates, with automatic renewal
+- Access lists with HTTP authentication and IP rules
+- Advanced Nginx configuration for those who want it
+- User management, per-user permissions and an audit log
+- Migration from Nginx Proxy Manager that carries over hosts, certificates, access lists and users
 
+Two features belong to the Enterprise edition, which is
+[free for private and non-commercial use](/#editionen):
+
+- **High availability** — floating-IP failover across two nodes
+- **True multi-tenancy** — hosts isolated per user
 
 ## Hosting your home network
 
-I won't go in to too much detail here but here are the basics for someone new to this self-hosted world.
+The basics for anyone new to self-hosting:
 
-1. Your home router will have a Port Forwarding section somewhere. Log in and find it
-2. Add port forwarding for port 80 and 443 to the server hosting this project
-3. Configure your domain name details to point to your home, either with a static ip or a service like DuckDNS or [Amazon Route53](https://github.com/jc21/route53-ddns)
-4. Use NexProxy as your gateway to forward to your other web based services
+1. Your home router has a port forwarding section somewhere. Log in and find it.
+2. Forward ports 80 and 443 to the machine running NexProxy.
+3. Point your domain at your connection — either a static IP, or a dynamic DNS
+   service such as DuckDNS.
+4. Use NexProxy as the gateway that forwards to your other web services.
 
 ## Quick Setup
 
-1. Install Docker and Docker-Compose
+1. Install Docker and Docker Compose
 
-- [Docker Install documentation](https://docs.docker.com/get-docker/)
-- [Docker-Compose Install documentation](https://docs.docker.com/compose/install/)
+- [Docker install documentation](https://docs.docker.com/get-docker/)
+- [Docker Compose install documentation](https://docs.docker.com/compose/install/)
 
-2. Create a docker-compose.yml file similar to this:
+2. Create a `docker-compose.yml` file similar to this:
 
 ```yml
 services:
   app:
-    image: 'jc21/nginx-proxy-manager:{{VERSION}}'
+    image: 'ghcr.io/bonderaustria/nexproxy:latest'
     restart: unless-stopped
     environment:
-      TZ: "Australia/Brisbane"
+      TZ: "Europe/Vienna"
     ports:
       - '80:80'
       - '81:81'
@@ -77,36 +64,26 @@ services:
       - ./letsencrypt:/etc/letsencrypt
 ```
 
-This is the bare minimum configuration required. See the [documentation](https://nexproxy.de/setup/) for more.
+This is the bare minimum configuration. See the [setup documentation](/setup/) for more.
 
-3. Bring up your stack by running
+3. Bring up your stack:
 
 ```bash
 docker compose up -d
 ```
 
-4. Log in to the Admin UI
+4. Log in to the admin interface
 
-When your docker container is running, connect to it on port `81` for the admin interface.
+Once the container is running, connect to it on port `81`:
 
 [http://127.0.0.1:81](http://127.0.0.1:81)
 
-This startup can take a minute depending on your hardware.
-
+The first startup can take a minute depending on your hardware.
 
 ## Contributing
 
-All are welcome to create pull requests for this project, against the `develop` branch. Official releases are created from the `master` branch.
-
-CI is used in this project. All PR's must pass before being considered. After passing,
-docker builds for PR's are available on dockerhub for manual verifications.
-
-
-
-### Contributors
-
-Special thanks to [all of our contributors](https://github.com/bonderaustria/nexproxy/graphs/contributors).
-
+Pull requests are welcome. CI runs on every pull request and must pass before a
+change is considered.
 
 ## Getting Support
 

@@ -41,7 +41,7 @@ services:
       # DISABLE_IPV6: "true"
       # Required for DNS Certificate provisioning testing:
       LE_SERVER: "https://ca.internal/acme/acme/directory"
-      REQUESTS_CA_BUNDLE: "/etc/ssl/certs/NginxProxyManager.crt"
+      REQUESTS_CA_BUNDLE: "/etc/ssl/certs/testca.crt"
     volumes:
       - npm_data:/data
       - le_data:/etc/letsencrypt

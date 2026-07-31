@@ -204,7 +204,7 @@
 		"defaultMessage": "Tato sekce vyžaduje znalost Certbotu a jeho DNS doplňků. Prosím, podívejte se do dokumentace příslušného doplňku."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "Na této doméně byl nalezen server, ale nezdá se, že jde o Nginx Proxy Manager. Ujistěte se, že vaše doména směřuje na IP, kde běží vaše instance NPM."
+		"defaultMessage": "Na této doméně byl nalezen server, ale nezdá se, že jde o NexProxy. Ujistěte se, že vaše doména směřuje na IP, kde běží vaše instance NPM."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "Nepodařilo se ověřit dostupnost kvůli chybě komunikace se službou site24x7.com."

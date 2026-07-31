@@ -147,7 +147,7 @@
 		"defaultMessage": "Bagian ini memerlukan pengetahuan tentang Certbot dan plugin DNS-nya. Silakan merujuk dokumentasi plugin terkait."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "Ada server yang ditemukan pada domain ini tetapi tampaknya bukan Nginx Proxy Manager. Pastikan domain Anda mengarah ke IP tempat instance NPM berjalan."
+		"defaultMessage": "Ada server yang ditemukan pada domain ini tetapi tampaknya bukan NexProxy. Pastikan domain Anda mengarah ke IP tempat instance NPM berjalan."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "Gagal memeriksa keterjangkauan karena kesalahan komunikasi dengan site24x7.com."

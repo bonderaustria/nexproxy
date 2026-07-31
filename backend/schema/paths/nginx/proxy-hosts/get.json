@@ -38,7 +38,7 @@
 									"modified_on": "2025-10-28T04:07:16.000Z",
 									"owner_user_id": 1,
 									"domain_names": [
-										"test.jc21com"
+										"test.example.com"
 									],
 									"forward_host": "127.0.0.1",
 									"forward_port": 8081,

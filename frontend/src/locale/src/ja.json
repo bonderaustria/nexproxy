@@ -132,7 +132,7 @@
 		"defaultMessage": "このセクションはCertbotとそのDNSプラグインの知識が必要です。各プラグインのドキュメントを参照してください。"
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "このドメインはNginx Proxy Managerではないサーバーを指しているようです。ドメインがこのNPMインスタンスを指していることを確認してください。"
+		"defaultMessage": "このドメインはNexProxyではないサーバーを指しているようです。ドメインがこのNPMインスタンスを指していることを確認してください。"
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "site24x7.comへの接続でエラーが発生し、到達性チェックに失敗しました"

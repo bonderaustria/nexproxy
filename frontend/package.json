@@ -1,8 +1,8 @@
 {
-	"name": "nginx-proxy-manager",
+	"name": "nexproxy",
 	"version": "1.0.27",
 	"type": "module",
-	"author": "Jamie Curnow <jc@jc21.com>",
+	"author": "Justin Troebinger",
 	"license": "MIT",
 	"scripts": {
 		"dev": "vite",

@@ -6,8 +6,8 @@ It's highly recommended that you spin up a development instance of this project
 on your docker capable server. It's pretty easy:
 
 ```bash
-git clone https://github.com/NginxProxyManager/nginx-proxy-manager.git
-cd nginx-proxy-manager
+git clone https://github.com/bonderaustria/nexproxy.git
+cd nexproxy
 ./scripts/start-dev -f
 ```
 

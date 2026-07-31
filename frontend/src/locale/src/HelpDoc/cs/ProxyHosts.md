@@ -4,4 +4,4 @@ Proxy hostitel je příchozí koncový bod pro webovou službu, kterou chcete p�
 
 Poskytuje volitelné ukončení SSL pro vaši službu, která nemusí mít zabudovanou podporu SSL.
 
-Proxy hostitelé jsou nejběžnějším použitím pro Nginx Proxy Manager.
+Proxy hostitelé jsou nejběžnějším použitím pro NexProxy.

@@ -4,4 +4,4 @@ Un Hôte Proxy est le point de terminaison entrant d'un service web que vous sou
 
 Il assure la terminaison SSL optionnelle pour votre service qui ne prend pas en charge SSL nativement.
 
-Les Hôtes Proxy constituent l'utilisation la plus courante du Nginx Proxy Manager.
+Les Hôtes Proxy constituent l'utilisation la plus courante du NexProxy.

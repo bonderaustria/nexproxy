@@ -204,7 +204,7 @@
 		"defaultMessage": "Ez a szakasz némi ismeretet igényel a Certbot-ról és a DNS plugin-jeiről. Kérjük, olvassa el a megfelelő plugin dokumentációját."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "Található szerver ezen a domain-en, de nem úgy tűnik, hogy Nginx Proxy Manager lenne. Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPM példánya fut."
+		"defaultMessage": "Található szerver ezen a domain-en, de nem úgy tűnik, hogy NexProxy lenne. Kérjük, győződjön meg róla, hogy a domain arra az IP címre mutat, ahol az NPM példánya fut."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "Az elérhetőség ellenőrzése sikertelen a site24x7.com kommunikációs hiba miatt."

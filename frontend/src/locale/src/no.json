@@ -204,7 +204,7 @@
 		"defaultMessage": "Denne seksjonen krever noe kunnskap om Certbot og dets DNS-plugins. Vennligst konsulter dokumentasjonen for de respektive pluginene."
 	},
 	"certificates.http.reachability-404": {
-		"defaultMessage": "Det finnes en server på dette domenet, men det ser ikke ut til å være Nginx Proxy Manager. Vennligst sørg for at domenet ditt peker til IP-en der NPM-instansen kjører."
+		"defaultMessage": "Det finnes en server på dette domenet, men det ser ikke ut til å være NexProxy. Vennligst sørg for at domenet ditt peker til IP-en der NPM-instansen kjører."
 	},
 	"certificates.http.reachability-failed-to-check": {
 		"defaultMessage": "Kunne ikke sjekke tilgjengeligheten på grunn av en kommunikasjonsfeil med site24x7.com."

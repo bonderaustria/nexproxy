@@ -14,7 +14,7 @@ on the `data` and `letsencrypt` folders at startup.
 ```yml
 services:
   app:
-    image: 'jc21/nginx-proxy-manager:{{VERSION}}'
+    image: 'ghcr.io/bonderaustria/nexproxy:{{VERSION}}'
     environment:
       PUID: 1000
       PGID: 1000
@@ -101,7 +101,7 @@ secrets:
 
 services:
   app:
-    image: 'jc21/nginx-proxy-manager:{{VERSION}}'
+    image: 'ghcr.io/bonderaustria/nexproxy:{{VERSION}}'
     restart: unless-stopped
     ports:
       # Public HTTP Port:
@@ -213,10 +213,10 @@ You can customise the logrotate configuration through a mount (if your custom co
 ```yml
   volumes:
     ...
-    - ./logrotate.custom:/etc/logrotate.d/nginx-proxy-manager
+    - ./logrotate.custom:/etc/logrotate.d/nexproxy
 ```
 
-For reference, the default configuration can be found [here](https://github.com/bonderaustria/nexproxy/blob/master/docker/rootfs/etc/logrotate.d/nginx-proxy-manager).
+For reference, the default configuration can be found [here](https://github.com/bonderaustria/nexproxy/blob/master/docker/rootfs/etc/logrotate.d/nexproxy).
 
 ## Enabling the geoip2 module
 
