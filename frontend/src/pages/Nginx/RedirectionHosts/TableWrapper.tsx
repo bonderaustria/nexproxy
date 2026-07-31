@@ -54,12 +54,12 @@ export default function TableWrapper() {
 			title="redirection-hosts"
 			search={
 				data?.length
-					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Search …" }
 					: undefined
 			}
 			actions={
 				<>
-					<PageCardIconButton onClick={() => showHelpModal("RedirectionHosts", "yellow")} label="Hilfe">
+					<PageCardIconButton onClick={() => showHelpModal("RedirectionHosts", "yellow")} label="Help">
 						<IconHelp size={18} />
 					</PageCardIconButton>
 					<HasPermission section={REDIRECTION_HOSTS} permission={MANAGE} hideError>

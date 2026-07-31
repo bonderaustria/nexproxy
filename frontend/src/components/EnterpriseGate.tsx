@@ -36,7 +36,7 @@ export function EnterpriseGate({ feature, children }: Props) {
 					<IconCrown size={40} style={{ color: "#F0A93B" }} className="mb-2" />
 					<h3>Enterprise-Funktion</h3>
 					<p className="text-muted">
-						<strong>{feature}</strong> gehört zu NexProxy Enterprise und benötigt einen Lizenzschlüssel.
+						<strong>{feature}</strong> is part of NexProxy Enterprise and needs a licence key.
 					</p>
 					<div
 						style={{
@@ -48,7 +48,7 @@ export function EnterpriseGate({ feature, children }: Props) {
 							maxWidth: 560,
 						}}
 					>
-						<strong>Nutzt du NexProxy privat / im Homelab?</strong> Dann bekommst du einen Lizenzschlüssel{" "}
+						<strong>Running NexProxy privately or in a homelab?</strong> Then you get a licence key{" "}
 						<strong>kostenlos</strong> — schreib an{" "}
 						<a href="mailto:justin@justfuture.at?subject=NexProxy%20Enterprise%20Key%20(Homelab)">
 							justin@justfuture.at
@@ -56,7 +56,7 @@ export function EnterpriseGate({ feature, children }: Props) {
 						.
 					</div>
 					<a href="/license" className="btn btn-primary">
-						Lizenzschlüssel eingeben
+						Enter licence key
 					</a>
 				</div>
 			</div>

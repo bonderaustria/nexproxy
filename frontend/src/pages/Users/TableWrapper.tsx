@@ -66,7 +66,7 @@ export default function TableWrapper() {
 			title="users"
 			search={
 				data?.length
-					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Name oder E-Mail …" }
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Name or email …" }
 					: undefined
 			}
 			actions={

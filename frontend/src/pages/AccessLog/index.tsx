@@ -132,10 +132,10 @@ const AccessLog = () => {
 			{/* stat strip */}
 			<div className="row row-cards mb-3">
 				{[
-					{ label: "Anfragen · 24 h", value: stats?.requests24h, color: "#fff" },
-					{ label: "Eindeutige IPs", value: stats?.uniqueIps, color: "#fff" },
-					{ label: "4xx / 5xx-Fehler", value: stats?.errors, color: "#F0A93B" },
-					{ label: "Blockiert (403)", value: stats?.blocked, color: "#FF6B6B" },
+					{ label: "Requests · 24 h", value: stats?.requests24h, color: "#fff" },
+					{ label: "Unique IPs", value: stats?.uniqueIps, color: "#fff" },
+					{ label: "4xx / 5xx errors", value: stats?.errors, color: "#F0A93B" },
+					{ label: "Blocked (403)", value: stats?.blocked, color: "#FF6B6B" },
 				].map((s) => (
 					<div className="col-sm-6 col-lg-3" key={s.label}>
 						<div className="card card-sm">
@@ -155,24 +155,24 @@ const AccessLog = () => {
 				<div className="card-body">
 					<div className="row g-2 align-items-end">
 						<div className="col-md-5">
-							<label className="form-label">Suche (IP, Host oder Pfad)</label>
-							<input className="form-control" value={search} onChange={set(setSearch)} placeholder="z. B. 203.0.113. oder /api" />
+							<label className="form-label">Search (IP, host or path)</label>
+							<input className="form-control" value={search} onChange={set(setSearch)} placeholder="e.g. 203.0.113. or /api" />
 						</div>
 						<div className="col-md-3">
 							<label className="form-label">Status</label>
 							<select className="form-select" value={status} onChange={set(setStatus)}>
-								<option value="">Alle</option>
-								<option value="ok">Nur OK (2xx/3xx)</option>
-								<option value="error">Nur Fehler (4xx/5xx)</option>
+								<option value="">All</option>
+								<option value="ok">Successful only (2xx/3xx)</option>
+								<option value="error">Errors only (4xx/5xx)</option>
 							</select>
 						</div>
 						<div className="col-md-2">
-							<label className="form-label">Zeitraum</label>
+							<label className="form-label">Time range</label>
 							<select className="form-select" value={hours} onChange={set(setHours)}>
 								<option value="1">1 h</option>
 								<option value="24">24 h</option>
-								<option value="168">7 Tage</option>
-								<option value="720">30 Tage</option>
+								<option value="168">7 days</option>
+								<option value="720">30 days</option>
 							</select>
 						</div>
 						<div className="col-md-2">
@@ -181,7 +181,7 @@ const AccessLog = () => {
 								className={live ? "btn btn-success w-100" : "btn w-100"}
 								onClick={() => setLive((v) => !v)}
 							>
-								{live ? "● Live an" : "Live aus"}
+								{live ? "● Live on" : "Live off"}
 							</button>
 						</div>
 					</div>
@@ -194,11 +194,11 @@ const AccessLog = () => {
 					<table className="table card-table table-vcenter">
 						<thead>
 							<tr>
-								<th>Zeit</th>
-								<th>Öffentliche IP</th>
+								<th>Time</th>
+								<th>Public IP</th>
 								<th>Host</th>
-								<th>Methode</th>
-								<th>Pfad</th>
+								<th>Method</th>
+								<th>Path</th>
 								<th>Status</th>
 							</tr>
 						</thead>
@@ -223,7 +223,7 @@ const AccessLog = () => {
 							) : (
 								<tr>
 									<td colSpan={6} className="text-muted">
-										Keine Einträge. Sobald Traffic über deine Proxy-Hosts läuft, erscheint er hier.
+										No entries yet. As soon as traffic passes through your proxy hosts it shows up here.
 									</td>
 								</tr>
 							)}
@@ -234,8 +234,8 @@ const AccessLog = () => {
 					<div className="card-footer d-flex align-items-center justify-content-between">
 						<span className="text-muted">
 							{total > 0
-								? `Zeige ${offset + 1}–${Math.min(offset + PAGE_SIZE, total)} von ${total.toLocaleString()}`
-								: "0 Einträge"}
+								? `Showing ${offset + 1}–${Math.min(offset + PAGE_SIZE, total)} of ${total.toLocaleString()}`
+								: "0 entries"}
 						</span>
 						<div>
 							<button
@@ -244,7 +244,7 @@ const AccessLog = () => {
 								disabled={offset === 0}
 								onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
 							>
-								‹ Zurück
+								‹ Back
 							</button>
 							<button
 								type="button"
@@ -255,7 +255,7 @@ const AccessLog = () => {
 									refetch();
 								}}
 							>
-								Weiter ›
+								Next ›
 							</button>
 						</div>
 					</div>
@@ -265,7 +265,7 @@ const AccessLog = () => {
 			{/* retention */}
 			<div className="card mt-3" style={{ maxWidth: 520 }}>
 				<div className="card-body">
-					<label className="form-label">Aufbewahrung (Tage)</label>
+					<label className="form-label">Retention (days)</label>
 					<div className="input-group">
 						<input
 							className="form-control"
@@ -275,11 +275,11 @@ const AccessLog = () => {
 							placeholder="30"
 						/>
 						<button type="button" className="btn btn-primary" onClick={saveRetention}>
-							Speichern
+						Save
 						</button>
 					</div>
 					{savedRetention && <span className="text-green small">Gespeichert</span>}
-					<div className="text-muted small mt-1">Ältere Einträge werden automatisch gelöscht.</div>
+					<div className="text-muted small mt-1">Older entries are deleted automatically.</div>
 				</div>
 			</div>
 		</div>

@@ -65,12 +65,12 @@ export default function TableWrapper() {
 			title="certificates"
 			search={
 				data?.length
-					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Search …" }
 					: undefined
 			}
 			actions={
 				<>
-					<PageCardIconButton onClick={() => showHelpModal("Certificates", "pink")} label="Hilfe">
+					<PageCardIconButton onClick={() => showHelpModal("Certificates", "pink")} label="Help">
 						<IconHelp size={18} />
 					</PageCardIconButton>
 					<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>

@@ -150,7 +150,7 @@ const Dashboard = () => {
 						value={hostReport?.proxy}
 						active={(hostReport?.proxy ?? 0) > 0}
 						to="/nginx/proxy"
-						context={`${onlineCount} online · ${disabledCount} deaktiviert`}
+						context={`${onlineCount} online · ${disabledCount} disabled`}
 					/>
 				</HasPermission>
 				<HasPermission section={REDIRECTION_HOSTS} permission={VIEW} hideError>
@@ -159,7 +159,7 @@ const Dashboard = () => {
 						value={hostReport?.redirection}
 						active={(hostReport?.redirection ?? 0) > 0}
 						to="/nginx/redirection"
-						context={(hostReport?.redirection ?? 0) > 0 ? "Weiterleitungen aktiv" : "Keine Weiterleitungen"}
+						context={(hostReport?.redirection ?? 0) > 0 ? "Redirections active" : "No redirection rules"}
 					/>
 				</HasPermission>
 				<HasPermission section={STREAMS} permission={VIEW} hideError>
@@ -168,7 +168,7 @@ const Dashboard = () => {
 						value={hostReport?.stream}
 						active={(hostReport?.stream ?? 0) > 0}
 						to="/nginx/stream"
-						context={(hostReport?.stream ?? 0) > 0 ? "TCP/UDP weitergeleitet" : "Keine Streams"}
+						context={(hostReport?.stream ?? 0) > 0 ? "TCP/UDP forwarded" : "No streams"}
 					/>
 				</HasPermission>
 				<HasPermission section={DEAD_HOSTS} permission={VIEW} hideError>
@@ -177,7 +177,7 @@ const Dashboard = () => {
 						value={hostReport?.dead}
 						active={(hostReport?.dead ?? 0) > 0}
 						to="/nginx/404"
-						context={(hostReport?.dead ?? 0) > 0 ? "404-Hosts konfiguriert" : "Kein Catch-all konfiguriert"}
+						context={(hostReport?.dead ?? 0) > 0 ? "404 hosts configured" : "No catch-all configured"}
 					/>
 				</HasPermission>
 			</section>
@@ -208,9 +208,9 @@ const Dashboard = () => {
 
 						<div className={styles.head}>
 							<span>Domain</span>
-							<span>Ziel</span>
+							<span>Destination</span>
 							<span>SSL</span>
-							<span>Zugriff</span>
+							<span>Access</span>
 							<span>Status</span>
 						</div>
 
@@ -231,10 +231,10 @@ const Dashboard = () => {
 										{host.forwardHost}:{host.forwardPort}
 									</span>
 									<span className={styles.cell}>{host.certificateId ? "SSL" : "—"}</span>
-									<span className={styles.cell}>{host.accessListId ? "Liste" : "Öffentlich"}</span>
+									<span className={styles.cell}>{host.accessListId ? "List" : "Public"}</span>
 									{/* Der Status steht als Text in der Pille, nicht nur als Farbe. */}
 									<span className={host.enabled ? styles.pillOnline : styles.pillDisabled}>
-										{host.enabled ? "Online" : "Deaktiviert"}
+										{host.enabled ? "Online" : "Disabled"}
 									</span>
 								</button>
 							))
@@ -251,7 +251,7 @@ const Dashboard = () => {
 							<Metric
 								label="dashboard.system-health.cpu"
 								value={health?.cpuPct ?? 0}
-								detail={health ? `${health.cpuCores} ${health.cpuCores === 1 ? "Kern" : "Kerne"}` : ""}
+								detail={health ? `${health.cpuCores} ${health.cpuCores === 1 ? "core" : "cores"}` : ""}
 								color="var(--np-brand-tint)"
 							/>
 							<Metric

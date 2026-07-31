@@ -51,12 +51,12 @@ export default function TableWrapper() {
 			title="dead-hosts"
 			search={
 				data?.length
-					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Search …" }
 					: undefined
 			}
 			actions={
 				<>
-					<PageCardIconButton onClick={() => showHelpModal("DeadHosts", "red")} label="Hilfe">
+					<PageCardIconButton onClick={() => showHelpModal("DeadHosts", "red")} label="Help">
 						<IconHelp size={18} />
 					</PageCardIconButton>
 					<HasPermission section={DEAD_HOSTS} permission={MANAGE} hideError>

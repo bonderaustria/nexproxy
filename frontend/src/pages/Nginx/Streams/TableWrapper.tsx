@@ -56,12 +56,12 @@ export default function TableWrapper() {
 			title="streams"
 			search={
 				data?.length
-					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Search …" }
 					: undefined
 			}
 			actions={
 				<>
-					<PageCardIconButton onClick={() => showHelpModal("Streams", "blue")} label="Hilfe">
+					<PageCardIconButton onClick={() => showHelpModal("Streams", "blue")} label="Help">
 						<IconHelp size={18} />
 					</PageCardIconButton>
 					<HasPermission section={STREAMS} permission={MANAGE} hideError>

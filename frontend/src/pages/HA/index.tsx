@@ -22,9 +22,9 @@ const cmpVersion = (a: string, b: string): number => {
 const relativeSeen = (ts: number): string => {
 	if (!ts) return "—";
 	const secs = Math.floor((Date.now() - ts) / 1000);
-	if (secs < 60) return `vor ${secs}s`;
-	if (secs < 3600) return `vor ${Math.floor(secs / 60)}min`;
-	return `vor ${Math.floor(secs / 3600)}h`;
+	if (secs < 60) return `${secs}s ago`;
+	if (secs < 3600) return `${Math.floor(secs / 60)}min ago`;
+	return `${Math.floor(secs / 3600)}h ago`;
 };
 
 const roleBadge = (role: string) => {
@@ -56,10 +56,10 @@ const HA = () => {
 		setBusy(true);
 		try {
 			await updateHANode(node);
-			setActionMsg(`Update auf „${node}" gestartet — der Node startet gleich mit dem neuen Stand neu.`);
+			setActionMsg(`Update started on “${node}” — the node will restart on the new build shortly.`);
 			setUpdatingNode(node);
 		} catch (e) {
-			setActionMsg(e instanceof Error ? e.message : "Update fehlgeschlagen");
+			setActionMsg(e instanceof Error ? e.message : "Update failed");
 		} finally {
 			setBusy(false);
 		}
@@ -69,9 +69,9 @@ const HA = () => {
 		setBusy(true);
 		try {
 			const r = await forceHAFailover();
-			setActionMsg(`Failover ausgelöst — VIP wandert weg von „${r.failedOverFrom}".`);
+			setActionMsg(`Failover triggered — the floating IP is moving away from “${r.failedOverFrom}”.`);
 		} catch (e) {
-			setActionMsg(e instanceof Error ? e.message : "Failover fehlgeschlagen");
+			setActionMsg(e instanceof Error ? e.message : "Failover failed");
 		} finally {
 			setBusy(false);
 		}
@@ -146,7 +146,7 @@ const HA = () => {
 			});
 			setProvisioning(true);
 		} catch (e) {
-			setStartError(e instanceof Error ? e.message : "Start fehlgeschlagen");
+			setStartError(e instanceof Error ? e.message : "Could not start");
 		}
 	};
 
@@ -168,7 +168,7 @@ const HA = () => {
 			await changeHAVip(newVip);
 			setVipChanging(true);
 		} catch (e) {
-			setVipStartError(e instanceof Error ? e.message : "Start fehlgeschlagen");
+			setVipStartError(e instanceof Error ? e.message : "Could not start");
 		}
 	};
 
@@ -176,13 +176,13 @@ const HA = () => {
 		<div className="col-md-4">
 			<div className="fw-bold">{label}</div>
 			<div className="text-muted small mb-2">{hint}</div>
-			<label className="form-label">IP-Adresse</label>
+			<label className="form-label">IP address</label>
 			<input className="form-control mb-2" value={(prov as any)[`${prefix}Host`]} onChange={setP(`${prefix}Host`)} placeholder="192.168.20.x" />
-			<label className="form-label">SSH-Benutzer</label>
+			<label className="form-label">SSH user</label>
 			<input className="form-control mb-2" value={(prov as any)[`${prefix}User`]} onChange={setP(`${prefix}User`)} />
-			<label className="form-label">SSH-Key (bevorzugt)</label>
+			<label className="form-label">SSH key (preferred)</label>
 			<textarea className="form-control mb-2" rows={3} value={(prov as any)[`${prefix}Key`]} onChange={setP(`${prefix}Key`)} placeholder="-----BEGIN OPENSSH PRIVATE KEY-----" />
-			<label className="form-label">…oder Passwort</label>
+			<label className="form-label">… or password</label>
 			<input className="form-control" type="password" value={(prov as any)[`${prefix}Password`]} onChange={setP(`${prefix}Password`)} />
 		</div>
 	);
@@ -194,18 +194,18 @@ const HA = () => {
 			{/* How it works */}
 			<div className="card mb-3">
 				<div className="card-header">
-					<h3 className="card-title">So funktioniert Hochverfügbarkeit</h3>
+					<h3 className="card-title">How high availability works</h3>
 				</div>
 				<div className="card-body">
 					<p>
-						NexProxy erreicht Hochverfügbarkeit über zwei Nodes, die sich eine <strong>Floating-IP</strong>{" "}
-						teilen. Fällt der aktive Node aus, übernimmt der zweite die IP in Sekunden — für deine Clients
-						bleibt die Adresse gleich. Beide Nodes nutzen <strong>dieselbe PostgreSQL</strong> (Config synchron)
-						und teilen sich die Zertifikate über NFS.
+						NexProxy achieves high availability with two nodes sharing a <strong>floating IP</strong>{" "}
+						. If the active node fails, the second takes the IP over within seconds — for your clients
+						the address stays the same. Both nodes use <strong>the same PostgreSQL</strong> (configuration in sync)
+						and share their certificates over NFS.
 					</p>
 					<div className="alert alert-info mb-0">
-						Am einfachsten: 3 leere LXCs anlegen, NexProxy auf einem starten, unten die Zugänge der beiden
-						anderen eintragen — der Rest passiert automatisch.
+						Easiest path: create three empty containers, start NexProxy on one, enter the credentials of the
+						other two below — the rest happens automatically.
 					</div>
 				</div>
 			</div>
@@ -249,8 +249,8 @@ const HA = () => {
 							{status?.standalone ? (
 								<tr>
 									<td colSpan={7} className="text-muted">
-										Diese Instanz läuft <strong>standalone</strong> — noch kein HA-Cluster. Richte unten
-										„HA automatisch einrichten" aus, um ein Cluster zu bilden.
+										This instance runs <strong>standalone</strong> — no HA cluster yet. Use
+										“Set up HA automatically” below to form a cluster.
 									</td>
 								</tr>
 							) : isLoading && !status ? (
@@ -262,7 +262,7 @@ const HA = () => {
 							) : isError && !status ? (
 								<tr>
 									<td colSpan={7} className="text-danger">
-										Cluster-Status konnte nicht geladen werden (Failover im Gange?).
+										Cluster status could not be loaded (failover in progress?).
 									</td>
 								</tr>
 							) : status?.nodes?.length ? (
@@ -286,9 +286,9 @@ const HA = () => {
 											)}
 											{n.holdUntil > now && (
 												<div className="text-orange small mt-1">
-													⏱ Auto-Rückkehr in {Math.max(0, Math.ceil((n.holdUntil - now) / 1000))}s
+													⏱ Automatic reclaim in {Math.max(0, Math.ceil((n.holdUntil - now) / 1000))}s
 													<br />
-													<span className="text-muted">jetzt „Update“ klicken, um es zu verhindern</span>
+													<span className="text-muted">click “Update” now to prevent it</span>
 												</div>
 											)}
 										</td>
@@ -296,7 +296,7 @@ const HA = () => {
 										<td>{relativeSeen(n.lastSeen)}</td>
 										<td>
 											{latest && n.version === latest ? (
-												<span className="text-green small">✓ aktuell ({latest})</span>
+												<span className="text-green small">✓ up to date ({latest})</span>
 											) : (
 												<button
 													type="button"
@@ -309,8 +309,8 @@ const HA = () => {
 													onClick={() => doUpdate(n.name)}
 													title={
 														n.name === status.activeNode
-															? "Aktiver Node — mach zuerst Force Failover"
-															: "Auf den neuesten Stand aktualisieren"
+															? "Active node — force a failover first"
+															: "Update to the latest build"
 													}
 												>
 													{latest && n.version && cmpVersion(n.version, latest) < 0
@@ -324,7 +324,7 @@ const HA = () => {
 							) : (
 								<tr>
 									<td colSpan={7} className="text-muted">
-										Noch kein Cluster — aktuell läuft nur diese Instanz.
+										No cluster yet — only this instance is running.
 									</td>
 								</tr>
 							)}
@@ -334,29 +334,29 @@ const HA = () => {
 				{!status?.standalone && (status?.nodes?.length ?? 0) > 1 && (
 					<div className="card-body pt-2">
 						<div className="text-muted small">
-							<strong>Rolling-Update:</strong> erst den <strong>Standby</strong> updaten, dann{" "}
-							<strong>Force Failover</strong>, dann den alten Master updaten. Nach Force Failover hast du{" "}
-							<strong>60 Sekunden</strong>, um „Update" am alten Master zu klicken — tust du das nicht, holt er
-							sich die Floating-IP nach Ablauf automatisch zurück (verhindert, dass die VIP versehentlich
-							nirgends aktiv ist).
+							<strong>Rolling update:</strong> update the <strong>standby</strong> first, then{" "}
+							<strong>force failover</strong>, then update the old master. After a force failover you have{" "}
+							<strong>60 seconds</strong> to click “Update” on the old master — if you do not, it reclaims
+							the floating IP automatically once the window expires (which prevents the IP from ending up
+							active nowhere).
 						</div>
 						{actionMsg && <div className="alert alert-info mt-2 mb-0">{actionMsg}</div>}
 						{updatingNode && (
 							<div className="card mt-3">
 								<div className="card-header">
 									<h3 className="card-title">
-										Live-Log: Update auf „{updatingNode}"
+										Live log: update on “{updatingNode}”
 										<span className="spinner-border spinner-border-sm ms-2" />
 									</h3>
 									<div className="card-actions">
 										<button type="button" className="btn btn-sm" onClick={() => setUpdatingNode(null)}>
-											Schließen
+							Close
 										</button>
 									</div>
 								</div>
 								<div className="card-body">
 									<pre className="text-muted small mb-0" style={{ maxHeight: 260, overflowY: "auto" }}>
-										{updateLog?.log || "Warte auf Log…"}
+										{updateLog?.log || "Waiting for log …"}
 									</pre>
 								</div>
 							</div>
@@ -372,8 +372,8 @@ const HA = () => {
 				</div>
 				<div className="card-body">
 					<p className="text-muted">
-						Trage die Zugänge der drei LXCs ein. NexProxy verbindet sich per SSH und richtet alles
-						automatisch ein. SSH-Key wird bevorzugt, Passwort ist möglich.
+						Enter the credentials of the three containers. NexProxy connects over SSH and sets everything
+						up automatically. An SSH key is preferred; a password works too.
 					</p>
 					<div
 						style={{
@@ -386,20 +386,20 @@ const HA = () => {
 					>
 						<div className="fw-bold mb-1">Warum braucht NexProxy SSH-Zugang?</div>
 						<p className="mb-2 text-secondary">
-							NexProxy installiert die Bausteine direkt auf den Hosts — das ist nur per SSH möglich. Den
-							Primär-Host (diesen Server) braucht es, weil das Failover (keepalived) und der Umstieg auf die
-							gemeinsame Datenbank außerhalb des Containers laufen; nur per SSH kann NexProxy die Floating-IP
-							einrichten und diese Instanz umstellen und neu starten.
+							NexProxy installs the components directly on the hosts, which is only possible over SSH. The
+							primary host (this server) is needed because failover (keepalived) and the switch to the shared
+							database run outside the container; only over SSH can NexProxy set up the floating IP and
+							reconfigure and restart this instance.
 						</p>
 						<p className="mb-0 text-muted small">
-							Optional: Lässt du den Primär-Host leer, richtet NexProxy nur Datenbank und zweiten Node ein —
-							die Master-Konfiguration machst du dann selbst.
+							Optional: leave the primary host empty and NexProxy only sets up the database and the second node —
+							you then configure the master yourself.
 						</p>
 					</div>
 					<div className="row g-3">
-						{sshFields("db", "1. Datenbank-Host", "Hier installiert NexProxy PostgreSQL + die NFS-Freigabe für gemeinsame Zertifikate.")}
-						{sshFields("node", "2. Zweiter Node", "Hier wird die zweite NexProxy-Instanz + keepalived (Standby) aufgesetzt.")}
-						{sshFields("primary", "3. Primär-Host (dieser Server)", "Dieser Server wird Master: keepalived + Umstieg auf die gemeinsame DB.")}
+						{sshFields("db", "1. Database host", "NexProxy installs PostgreSQL here, plus the NFS share for the shared certificates.")}
+						{sshFields("node", "2. Second node", "The second NexProxy instance and keepalived (standby) are set up here.")}
+						{sshFields("primary", "3. Primary host (this server)", "This server becomes the master: keepalived plus the switch to the shared database.")}
 					</div>
 					<div className="row g-2 mt-2">
 						<div className="col-md-4">
@@ -421,7 +421,7 @@ const HA = () => {
 						onClick={startProvision}
 						disabled={provisioning}
 					>
-						{provisioning ? "Richte ein…" : "HA automatisch einrichten"}
+						{provisioning ? "Setting up …" : "Set up HA automatically"}
 					</button>
 					{startError && <div className="text-danger mt-2">{startError}</div>}
 
@@ -450,32 +450,31 @@ const HA = () => {
 			</div>
 
 			{/*
-				Der Block "Datenbank-Konfiguration" wird bewusst nicht mehr gerendert.
+				The "database configuration" block is deliberately no longer rendered.
 
-				Er sah aus wie ein Formular, das die Datenbankverbindung umstellt, tat
-				das aber nicht: die laufenden Nodes ziehen ihre Zugangsdaten aus den
-				Container-Umgebungsvariablen. Ein Formular, das eine Wirkung vortaeuscht,
-				die es nicht hat, ist schlimmer als keines.
+				It looked like a form that switches the database connection, but it did
+				not: the running nodes read their credentials from the container
+				environment. A form that pretends to have an effect it does not have is
+				worse than no form at all.
 
-				Die Daten selbst bleiben erhalten: sie werden beim automatischen
-				Einrichten in ha_config geschrieben und von generateConfig() gelesen,
-				das die fertige docker-compose.yml fuer einen manuell hinzugefuegten
-				Node erzeugt. Die Endpunkte GET/POST /api/ha/db-config bestehen
-				unveraendert weiter — entfernt ist nur die Oberflaeche.
+				The data itself is kept: auto-provisioning writes it to ha_config, and
+				generateConfig() reads it to produce the ready-made docker-compose.yml
+				for a manually added node. The GET/POST /api/ha/db-config endpoints are
+				unchanged — only the user interface is gone.
 			*/}
 
 			{/* Change floating IP */}
 			{!status?.standalone && (
 				<div className="card mt-3">
 					<div className="card-header">
-						<h3 className="card-title">Floating-IP ändern</h3>
+						<h3 className="card-title">Change the floating IP</h3>
 					</div>
 					<div className="card-body">
 						<p className="text-muted mb-2">
-							Ändert die VIP auf <strong>allen Nodes gleichzeitig</strong> (keepalived, Container-Umgebung und
-							VIP-Watcher) und speichert sie in der Konfiguration. Anders als beim Rolling-Update gibt es
-							hier keinen unterbrechungsfreien Weg — die Adresse selbst ändert sich, also kurz mit einer
-							Downtime für Clients rechnen. Denk danach an DNS/Router-Einträge, die auf die alte VIP
+							Changes the floating IP on <strong>all nodes at once</strong> (keepalived, container environment and
+							the IP watcher) and stores it in the configuration. Unlike a rolling update there is no
+							interruption-free path here — the address itself changes, so expect a short outage for
+							clients. Afterwards remember any DNS or router entries pointing at the old address
 							zeigten.
 						</p>
 						<div className="row g-2 align-items-end">
@@ -496,7 +495,7 @@ const HA = () => {
 									onClick={startVipChange}
 									disabled={vipChanging || !newVip}
 								>
-									{vipChanging ? "Wird umgestellt…" : "Floating-IP ändern"}
+									{vipChanging ? "Switching …" : "Change the floating IP"}
 								</button>
 							</div>
 						</div>
@@ -521,7 +520,7 @@ const HA = () => {
 						{vipJob?.error && <div className="alert alert-danger mt-2 mb-0">Fehler: {vipJob.error}</div>}
 						{vipJob?.done && (
 							<div className="alert alert-success mt-2 mb-0">
-								Floating-IP erfolgreich auf {newVip} umgestellt.
+								Floating IP successfully changed to {newVip}.
 							</div>
 						)}
 					</div>

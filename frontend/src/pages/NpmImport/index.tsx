@@ -10,12 +10,12 @@ import { PageTitle } from "src/components";
 import { useNpmImportStatus } from "src/hooks";
 
 const HEADLINE_LABELS: Record<string, string> = {
-	users: "Nutzer",
-	certificates: "Zertifikate",
-	accessLists: "Zugriffslisten",
-	proxyHosts: "Proxy-Hosts",
-	redirectionHosts: "Weiterleitungen",
-	deadHosts: "404-Hosts",
+	users: "Users",
+	certificates: "Certificates",
+	accessLists: "Access lists",
+	proxyHosts: "Proxy hosts",
+	redirectionHosts: "Redirections",
+	deadHosts: "404 hosts",
 	streams: "Streams",
 };
 
@@ -53,7 +53,7 @@ const NpmImport = () => {
 			});
 			setPreview(p);
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Vorschau fehlgeschlagen");
+			setError(e instanceof Error ? e.message : "Preview failed");
 		} finally {
 			setBusy(false);
 		}
@@ -72,7 +72,7 @@ const NpmImport = () => {
 			});
 			setRunning(true);
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Import konnte nicht gestartet werden");
+			setError(e instanceof Error ? e.message : "Import could not be started");
 		} finally {
 			setBusy(false);
 		}
@@ -86,7 +86,7 @@ const NpmImport = () => {
 			await startNpmImportUpload(file);
 			setRunning(true);
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Import konnte nicht gestartet werden");
+			setError(e instanceof Error ? e.message : "Import could not be started");
 		} finally {
 			setBusy(false);
 		}
@@ -104,9 +104,9 @@ const NpmImport = () => {
 			<div className="card mb-3">
 				<div className="card-body">
 					<p className="text-muted mb-0">
-						Proxy-Hosts, Zertifikate, Zugriffslisten und Nutzer deiner alten Instanz können direkt
-						übernommen werden. Schon vorhandene Daten in NexProxy bleiben erhalten, die importierten Daten
-						werden ergänzt (keine Duplikate bei Kollisionen, neue IDs werden automatisch vergeben).
+						Proxy hosts, certificates, access lists and users from your old instance can be carried over
+						directly. Data already present in NexProxy is kept; imported data is added alongside it
+						(no duplicates on collisions, new ids are assigned automatically).
 					</p>
 				</div>
 			</div>
@@ -120,7 +120,7 @@ const NpmImport = () => {
 								className={`nav-link ${mode === "ssh" ? "active" : ""}`}
 								onClick={() => setMode("ssh")}
 							>
-								Von laufender Instanz (SSH)
+								From a running instance (SSH)
 							</button>
 						</li>
 						<li className="nav-item">
@@ -129,7 +129,7 @@ const NpmImport = () => {
 								className={`nav-link ${mode === "upload" ? "active" : ""}`}
 								onClick={() => setMode("upload")}
 							>
-								Aus Datenbank-Datei
+								From a database file
 							</button>
 						</li>
 					</ul>
@@ -138,48 +138,48 @@ const NpmImport = () => {
 					{mode === "ssh" ? (
 						<>
 							<p className="text-muted">
-								Zugangsdaten der alten Instanz (Nginx Proxy Manager oder NexProxy). Certifikate werden bei
-								diesem Weg automatisch mit übernommen.
+								Credentials of the old instance (Nginx Proxy Manager or NexProxy). Certificates are carried over
+								automatically on this path.
 							</p>
 							<div className="row g-2">
 								<div className="col-md-6">
-									<label className="form-label">IP-Adresse / Host</label>
+									<label className="form-label">IP address / host</label>
 									<input className="form-control" value={target.host} onChange={set("host")} placeholder="192.168.20.x" />
 								</div>
 								<div className="col-md-3">
-									<label className="form-label">SSH-Port</label>
+									<label className="form-label">SSH port</label>
 									<input className="form-control" value={target.port} onChange={set("port")} />
 								</div>
 								<div className="col-md-3">
-									<label className="form-label">SSH-Benutzer</label>
+									<label className="form-label">SSH user</label>
 									<input className="form-control" value={target.username} onChange={set("username")} />
 								</div>
 								<div className="col-md-6">
-									<label className="form-label">SSH-Key (bevorzugt)</label>
+									<label className="form-label">SSH key (preferred)</label>
 									<textarea className="form-control" rows={3} value={target.privateKey} onChange={set("privateKey")} placeholder="-----BEGIN OPENSSH PRIVATE KEY-----" />
 								</div>
 								<div className="col-md-6">
-									<label className="form-label">…oder Passwort</label>
+									<label className="form-label">… or password</label>
 									<input className="form-control" type="password" value={target.password} onChange={set("password")} />
 								</div>
 							</div>
 							<div className="mt-3">
 								<button type="button" className="btn me-2" onClick={doPreview} disabled={busy || running}>
-									1. Vorschau
+									1. Preview
 								</button>
 								<button
 									type="button"
 									className="btn btn-primary"
 									onClick={startSsh}
 									disabled={busy || running || !preview}
-									title={!preview ? "Erst Vorschau laden" : ""}
+									title={!preview ? "Load the preview first" : ""}
 								>
-									2. Import starten
+									2. Start import
 								</button>
 								{!preview && !busy && (
 									<div className="text-muted small mt-2">
-										„Import starten" wird aktiv, sobald die Vorschau erfolgreich geladen wurde — klicke
-										zuerst auf „Vorschau".
+										“Start import” becomes available once the preview has loaded — click
+										“Preview” first.
 									</div>
 								)}
 							</div>
@@ -187,10 +187,10 @@ const NpmImport = () => {
 					) : (
 						<>
 							<p className="text-muted">
-								Lade die <code>database.sqlite</code> der alten Instanz hoch (Pfad dort meist{" "}
-								<code>/data/database.sqlite</code>). Zertifikate werden auf diesem Weg{" "}
-								<strong>nicht</strong> automatisch übernommen — entweder manuell nach{" "}
-								<code>/etc/letsencrypt</code> kopieren oder nach dem Import neu ausstellen lassen.
+								Upload the <code>database.sqlite</code> of the old instance (usually at{" "}
+								<code>/data/database.sqlite</code>). Certificates are{" "}
+								<strong>not</strong> carried over on this path — either copy them manually to{" "}
+								<code>/etc/letsencrypt</code> or reissue them after the import.
 							</p>
 							<input
 								type="file"
@@ -199,7 +199,7 @@ const NpmImport = () => {
 								onChange={(e) => setFile(e.target.files?.[0] || null)}
 							/>
 							<button type="button" className="btn btn-primary" onClick={startUpload} disabled={busy || running || !file}>
-								Import starten
+								Start import
 							</button>
 						</>
 					)}
@@ -244,10 +244,10 @@ const NpmImport = () => {
 								</li>
 							))}
 						</ul>
-						{job.error && <div className="alert alert-danger mt-2 mb-0">Fehler: {job.error}</div>}
+						{job.error && <div className="alert alert-danger mt-2 mb-0">Error: {job.error}</div>}
 						{job.done && (
 							<div className="alert alert-success mt-2 mb-0">
-								Import abgeschlossen.{" "}
+								Import complete.{" "}
 								{job.summary &&
 									Object.entries(job.summary)
 										.filter(([, n]) => n > 0)

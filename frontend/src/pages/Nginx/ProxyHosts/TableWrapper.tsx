@@ -52,12 +52,12 @@ export default function TableWrapper() {
 			subtitle="proxy-hosts.subtitle"
 			search={
 				data?.length
-					? { value: search, onChange: setSearch, placeholder: "Domain oder Ziel …" }
+					? { value: search, onChange: setSearch, placeholder: "Domain or destination …" }
 					: undefined
 			}
 			actions={
 				<>
-					<PageCardIconButton onClick={() => showHelpModal("ProxyHosts", "lime")} label="Hilfe">
+					<PageCardIconButton onClick={() => showHelpModal("ProxyHosts", "lime")} label="Help">
 						<IconHelp size={18} />
 					</PageCardIconButton>
 					<HasPermission section={PROXY_HOSTS} permission={MANAGE} hideError>

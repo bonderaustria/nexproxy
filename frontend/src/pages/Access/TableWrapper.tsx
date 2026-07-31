@@ -42,12 +42,12 @@ export default function TableWrapper() {
 			title="access-lists"
 			search={
 				data?.length
-					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Suchen …" }
+					? { value: search, onChange: (v) => setSearch(v.toLowerCase().trim()), placeholder: "Search …" }
 					: undefined
 			}
 			actions={
 				<>
-					<PageCardIconButton onClick={() => showHelpModal("AccessLists", "cyan")} label="Hilfe">
+					<PageCardIconButton onClick={() => showHelpModal("AccessLists", "cyan")} label="Help">
 						<IconHelp size={18} />
 					</PageCardIconButton>
 					<HasPermission section={ACCESS_LISTS} permission={MANAGE} hideError>

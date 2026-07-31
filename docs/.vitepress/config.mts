@@ -2,13 +2,13 @@ import { defineConfig } from "vitepress";
 
 const SITE = "https://nexproxy.de";
 const DESCRIPTION =
-	"Reverse Proxy mit Weboberfläche: Proxy-Hosts, kostenloses SSL über Let's Encrypt, Zugriffslisten und Hochverfügbarkeit — als Docker-Image in Minuten eingerichtet.";
+	"Reverse proxy with a web interface: proxy hosts, free SSL via Let's Encrypt, access lists and high availability — set up in minutes as a Docker image.";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
 	title: "NexProxy",
 	description: DESCRIPTION,
-	lang: "de-DE",
+	lang: "en",
 	head: [
 		["link", { rel: "icon", href: "/icon.png" }],
 		["meta", { name: "description", content: DESCRIPTION }],
@@ -41,19 +41,19 @@ export default defineConfig({
 		// https://vitepress.dev/reference/default-theme-config
 		logo: { src: "/logo.svg", width: 24, height: 24 },
 		nav: [
-			{ text: "Einrichtung", link: "/setup/" },
-			{ text: "Anleitung", link: "/guide/" },
-			{ text: "Editionen", link: "/#editionen" },
+			{ text: "Setup", link: "/setup/" },
+			{ text: "Guide", link: "/guide/" },
+			{ text: "Editions", link: "/#editions" },
 		],
 		sidebar: [
 			{
 				items: [
-					{ text: "Anleitung", link: "/guide/" },
+					{ text: "Guide", link: "/guide/" },
 					{ text: "Screenshots", link: "/screenshots/" },
-					{ text: "Einrichtung", link: "/setup/" },
-					{ text: "Erweiterte Konfiguration", link: "/advanced-config/" },
-					{ text: "Aktualisieren", link: "/upgrading/" },
-					{ text: "Häufige Fragen", link: "/faq/" },
+					{ text: "Setup", link: "/setup/" },
+					{ text: "Advanced configuration", link: "/advanced-config/" },
+					{ text: "Upgrading", link: "/upgrading/" },
+					{ text: "FAQ", link: "/faq/" },
 					{ text: "Certbot", link: "/certbot/" },
 				],
 			},
@@ -67,7 +67,7 @@ export default defineConfig({
 			// und die MIT-Lizenz verlangt, dass der urspruengliche Copyright-Hinweis
 			// erhalten bleibt (siehe LICENSE).
 			message:
-				'Veröffentlicht unter der MIT-Lizenz. Fork von <a href="https://github.com/NginxProxyManager/nginx-proxy-manager">Nginx Proxy Manager</a>.',
+				'Released under the MIT licence. Fork of <a href="https://github.com/NginxProxyManager/nginx-proxy-manager">Nginx Proxy Manager</a>.',
 			copyright: "Copyright © 2026 NexProxy",
 		},
 	},

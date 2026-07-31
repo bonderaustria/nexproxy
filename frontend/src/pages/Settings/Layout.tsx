@@ -6,7 +6,7 @@ export default function Layout() {
 		<div>
 			<PageTitle eyebrow="nav.group.system" title="settings" />
 
-			{/* Die frühere Rubrikenspalte links enthielt genau einen Eintrag, der
+			{/* The former category column on the left held exactly one entry, which
 			    zugleich der Titel der Karte war — sie ist entfallen. Kommen weitere
 			    Rubriken dazu, gehoeren sie als Reiter in die Kopfzeile der Karte. */}
 			<PageCard title="settings.default-site">

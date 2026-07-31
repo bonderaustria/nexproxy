@@ -17,11 +17,11 @@ const License = () => {
 		setBusy(true);
 		try {
 			const info = await setLicense(key.trim());
-			setMsg(`Enterprise aktiviert — lizenziert für ${info.licensedTo || "dich"}.`);
+			setMsg(`Enterprise activated — licensed to ${info.licensedTo || "you"}.`);
 			setKey("");
 			refetch();
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Aktivierung fehlgeschlagen");
+			setError(e instanceof Error ? e.message : "Activation failed");
 		} finally {
 			setBusy(false);
 		}
@@ -49,22 +49,22 @@ const License = () => {
 							<div className="d-flex align-items-center mb-2">
 								<span className="badge bg-yellow-lt me-2">
 									<IconCrown size={14} className="me-1" />
-									Enterprise aktiv
+									Enterprise active
 								</span>
 								<span className="text-muted">
-									lizenziert für <strong>{license.licensedTo}</strong>
+									licensed to <strong>{license.licensedTo}</strong>
 									{license.email ? ` (${license.email})` : ""}
 									{license.expires
-										? ` · gültig bis ${new Date(license.expires).toLocaleDateString()}`
-										: " · unbegrenzt"}
+										? ` · valid until ${new Date(license.expires).toLocaleDateString()}`
+										: " · unlimited"}
 								</span>
 							</div>
 							<p className="text-muted">
-								Alle Enterprise-Funktionen (Hochverfügbarkeit, Mehrbenutzer, Zugriffsprotokoll) sind
-								freigeschaltet.
+								All Enterprise features (high availability, multi-tenancy, access log) are
+								unlocked.
 							</p>
 							<button type="button" className="btn btn-outline-danger" onClick={remove} disabled={busy}>
-								Lizenz entfernen
+								Remove licence
 							</button>
 						</>
 					) : (
@@ -73,8 +73,8 @@ const License = () => {
 								<span className="badge bg-secondary-lt">Free</span>
 							</div>
 							<p className="text-muted mb-2">
-								Enterprise-Funktionen (Hochverfügbarkeit, Mehrbenutzer, Zugriffsprotokoll) sind gesperrt.
-								Gib deinen Lizenzschlüssel ein, um sie freizuschalten.
+								Enterprise features (high availability, multi-tenancy, access log) are locked.
+								Enter your licence key to unlock them.
 							</p>
 							<div
 								style={{
@@ -85,20 +85,20 @@ const License = () => {
 									marginBottom: "14px",
 								}}
 							>
-								<strong>Nutzt du NexProxy privat / im Homelab?</strong> Dann bekommst du einen Lizenzschlüssel{" "}
-								<strong>kostenlos</strong>. Schreib einfach an{" "}
+								<strong>Running NexProxy privately or in a homelab?</strong> Then you get a licence key{" "}
+								<strong>free of charge</strong>. Just write to{" "}
 								<a href="mailto:justin@justfuture.at?subject=NexProxy%20Enterprise%20Key%20(Homelab)">
 									justin@justfuture.at
 								</a>{" "}
-								mit dem Hinweis, dass du ihn fürs Homelab brauchst.
+								mentioning that you need it for your homelab.
 							</div>
-							<label className="form-label">Lizenzschlüssel</label>
+							<label className="form-label">Licence key</label>
 							<textarea
 								className="form-control mb-2"
 								rows={3}
 								value={key}
 								onChange={(e) => setKey(e.target.value)}
-								placeholder="Hier den Schlüssel einfügen…"
+								placeholder="Paste your key here …"
 							/>
 							<button
 								type="button"
@@ -106,7 +106,7 @@ const License = () => {
 								onClick={activate}
 								disabled={busy || !key.trim()}
 							>
-								Aktivieren
+								Activate
 							</button>
 						</>
 					)}

@@ -222,7 +222,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																			<option value="http">http</option>
 																			<option value="https">https</option>
 																		</select>
-																		<div className="form-text">Schema, mit dem NexProxy die Ziele anspricht (gilt auch für Load Balancing).</div>
+																		<div className="form-text">Scheme NexProxy uses to reach the destinations (also applies to load balancing).</div>
 																	</div>
 																)}
 															</Field>
@@ -278,7 +278,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																	</div>
 																</div>
 																<div className="text-muted small mb-2">
-																	Jedes Ziel wird automatisch per Health-Check überwacht (TCP-Verbindungstest alle 45s) — fällt eines aus, nimmt NexProxy es sofort aus der Rotation und holt es zurück, sobald es wieder erreichbar ist. Zertifikate werden nicht pro Ziel benötigt: SSL läuft am Proxy-Host (siehe Schema-Feld oben und den SSL-Tab).
+																	Every destination is health-checked automatically (TCP connection test every 45s) — if one fails, NexProxy takes itfort aus der Rotation und holt es zurück, sobald es wieder erreichbar ist. Zertifikate werden nicht pro Ziel benötigt: SSL läuft am Proxy-Host (siehe Schema-Feld oben und den SSL-Tab).
 																</div>
 																<label className="form-label">Backend-Ziele</label>
 																{(values.lbServers || []).map((s: any, idx: number) => (
@@ -303,7 +303,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 																	</div>
 																))}
 																<button type="button" className="btn btn-sm" onClick={() => setFieldValue("lbServers", [...(values.lbServers || []), { host: "", port: 80, weight: 1 }])}>
-																	+ Ziel hinzufügen
+																	+ Add destination
 																</button>
 															</div>
 														</div>

@@ -100,11 +100,11 @@ export function SiteSidebar({ open, onNavigate, onOpenMenu }: Props) {
 		<>
 		{/* Ausserhalb der Sidebar, weil sie auf schmalen Fenstern selbst
 			    ausgeblendet ist — sonst gaebe es keinen Weg, sie zu oeffnen. */}
-			<button type="button" className={styles.burger} aria-label="Menü öffnen" onClick={onOpenMenu}>
+			<button type="button" className={styles.burger} aria-label="Open menu" onClick={onOpenMenu}>
 				<span aria-hidden="true">☰</span>
 			</button>
 			{open && (
-				<button type="button" className={styles.scrim} aria-label="Menü schließen" onClick={onNavigate} />
+				<button type="button" className={styles.scrim} aria-label="Close menu" onClick={onNavigate} />
 			)}
 			<aside className={cn(styles.sidebar, open && styles.sidebarOpen)}>
 				<NavLink to="/" className={styles.brand} onClick={onNavigate}>

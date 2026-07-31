@@ -4,63 +4,63 @@ layout: home
 
 hero:
   name: "NexProxy"
-  text: "Reverse Proxy mit Weboberfläche"
-  tagline: Dienste sicher veröffentlichen — mit kostenlosem SSL, Zugriffslisten und Hochverfügbarkeit. In Minuten eingerichtet.
+  text: "Reverse proxy with a web interface"
+  tagline: Expose your services safely — free SSL, access control and high availability. Up and running in minutes.
   image:
     src: /logo.svg
     alt: NexProxy
   actions:
     - theme: brand
-      text: Loslegen
+      text: Get started
       link: /setup/
     - theme: alt
-      text: Anleitung
+      text: Guide
       link: /guide/
     - theme: alt
       text: GitHub
       link: https://github.com/bonderaustria/nexproxy
 
 features:
-  - title: Proxy-Hosts in Minuten
-    details: Domain eintragen, Ziel angeben, fertig. Weiterleitungen, TCP- und UDP-Streams sowie 404-Hosts gehören dazu.
-  - title: Kostenloses SSL
-    details: Zertifikate über Let's Encrypt, per HTTP- oder DNS-Prüfung. Die Verlängerung läuft von selbst.
-  - title: Hochverfügbarkeit
-    details: Zwei Nodes, eine Floating-IP. Fällt einer aus, übernimmt der andere — ohne dass jemand eingreifen muss.
-  - title: Zugriff steuern
-    details: Zugriffslisten mit HTTP-Authentifizierung und IP-Regeln, Benutzerverwaltung mit Rechten und Prüfprotokoll.
-  - title: Ein Docker-Image
-    details: Kein Baukasten aus Diensten. Ein Container, eine Datenbank, läuft auf allem von Raspberry Pi bis Serverschrank.
-  - title: Umstieg ohne Datenverlust
-    details: Kommst du von Nginx Proxy Manager, übernimmt die Migration Hosts, Zertifikate, Zugriffslisten und Benutzer.
+  - title: Proxy hosts in minutes
+    details: Enter a domain, point it at a destination, done. Redirections, TCP and UDP streams and 404 hosts are included.
+  - title: Free SSL
+    details: Certificates from Let's Encrypt via HTTP or DNS challenge. Renewal happens on its own.
+  - title: High availability
+    details: Two nodes, one floating IP. If one fails the other takes over — without anyone stepping in.
+  - title: Control who gets in
+    details: Access lists with HTTP authentication and IP rules, user management with permissions and an audit log.
+  - title: One Docker image
+    details: Not a stack of services. One container, one database, runs on anything from a Raspberry Pi to a rack server.
+  - title: Migrate without losing data
+    details: Coming from Nginx Proxy Manager? The migration carries over hosts, certificates, access lists and users.
 ---
 
-## Editionen {#editionen}
+## Editions {#editions}
 
-NexProxy ist quelloffen unter der MIT-Lizenz. Die Enterprise-Funktionen liegen im
-Verzeichnis [`enterprise/`](https://github.com/bonderaustria/nexproxy/tree/master/enterprise)
-und sind für private, nicht-kommerzielle Nutzung **kostenlos**.
+NexProxy is open source under the MIT licence. The Enterprise features live in
+[`enterprise/`](https://github.com/bonderaustria/nexproxy/tree/master/enterprise)
+and are **free for private, non-commercial use**.
 
 | | Core | Enterprise |
 | --- | :---: | :---: |
-| Proxy-Hosts, Weiterleitungen, Streams, 404-Hosts | ✅ | ✅ |
-| Kostenloses SSL (Let's Encrypt) und eigene Zertifikate | ✅ | ✅ |
-| Zugriffslisten und HTTP-Authentifizierung | ✅ | ✅ |
-| Erweiterte Nginx-Konfiguration | ✅ | ✅ |
-| Benutzer, Rechte und Prüfprotokoll | ✅ | ✅ |
-| **Hochverfügbarkeit** — Floating-IP-Failover über mehrere Nodes | — | ✅ |
-| **Echte Mandantentrennung** — Hosts je Benutzer isoliert | — | ✅ |
+| Proxy hosts, redirections, streams, 404 hosts | ✅ | ✅ |
+| Free SSL (Let's Encrypt) and your own certificates | ✅ | ✅ |
+| Access lists and HTTP authentication | ✅ | ✅ |
+| Advanced Nginx configuration | ✅ | ✅ |
+| Users, permissions and audit log | ✅ | ✅ |
+| **High availability** — floating-IP failover across nodes | — | ✅ |
+| **True multi-tenancy** — hosts isolated per user | — | ✅ |
 
-### Im Homelab kostenlos
+### Free for your homelab
 
-Betreibst du NexProxy privat oder nicht-kommerziell, bekommst du einen
-Enterprise-Lizenzschlüssel **gratis** — schreib einfach an
+Running NexProxy privately or non-commercially? You get an Enterprise licence
+key at **no cost** — just write to
 [justin@justfuture.at](mailto:justin@justfuture.at).
 
-Für den kommerziellen Einsatz braucht Enterprise eine Lizenz. Der Core-Teil
-bleibt in jedem Fall frei und ohne Einschränkung nutzbar.
+Commercial use of the Enterprise features requires a licence. The core stays
+free and unrestricted either way.
 
-## Schnellstart
+## Quick start
 
 ```yml
 services:
@@ -69,7 +69,7 @@ services:
     restart: unless-stopped
     ports:
       - '80:80'    # HTTP
-      - '81:81'    # Verwaltungsoberfläche
+      - '81:81'    # Admin interface
       - '443:443'  # HTTPS
     volumes:
       - ./data:/data
@@ -80,5 +80,5 @@ services:
 docker compose up -d
 ```
 
-Danach die Oberfläche auf Port `81` öffnen. Die ausführliche Anleitung steht
-unter [Einrichtung](/setup/).
+Then open the admin interface on port `81`. The full walkthrough is in
+[Setup](/setup/).

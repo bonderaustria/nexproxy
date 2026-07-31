@@ -24,7 +24,7 @@ It ships as a single Docker image.
 - Migration from Nginx Proxy Manager that carries over hosts, certificates, access lists and users
 
 Two features belong to the Enterprise edition, which is
-[free for private and non-commercial use](/#editionen):
+[free for private and non-commercial use](/#editions):
 
 - **High availability** — floating-IP failover across two nodes
 - **True multi-tenancy** — hosts isolated per user

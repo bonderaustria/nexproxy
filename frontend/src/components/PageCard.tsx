@@ -45,8 +45,8 @@ export function PageCard({ title, subtitle, search, actions, children }: Props) 
 								type="search"
 								className={styles.search}
 								value={search.value}
-								placeholder={search.placeholder ?? "Suchen …"}
-								aria-label="Suchen"
+								placeholder={search.placeholder ?? "Search …"}
+								aria-label="Search"
 								onChange={(e) => search.onChange(e.target.value)}
 							/>
 						)}
