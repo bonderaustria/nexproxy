@@ -1,71 +1,35 @@
 import { defineConfig } from "vitepress";
 
+const SITE = "https://nexproxy.de";
+const DESCRIPTION =
+	"Reverse Proxy mit Weboberfläche: Proxy-Hosts, kostenloses SSL über Let's Encrypt, Zugriffslisten und Hochverfügbarkeit — als Docker-Image in Minuten eingerichtet.";
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-	title: "Nginx Proxy Manager",
-	description: "Expose your services easily and securely",
+	title: "NexProxy",
+	description: DESCRIPTION,
+	lang: "de-DE",
 	head: [
 		["link", { rel: "icon", href: "/icon.png" }],
-		[
-			"meta",
-			{
-				name: "description",
-				content:
-					"Docker container and built in Web Application for managing Nginx proxy hosts with a simple, powerful interface, providing free SSL support via Let's Encrypt",
-			},
-		],
-		["meta", { property: "og:title", content: "Nginx Proxy Manager" }],
-		[
-			"meta",
-			{
-				property: "og:description",
-				content:
-					"Docker container and built in Web Application for managing Nginx proxy hosts with a simple, powerful interface, providing free SSL support via Let's Encrypt",
-			},
-		],
+		["meta", { name: "description", content: DESCRIPTION }],
+		["meta", { property: "og:title", content: "NexProxy" }],
+		["meta", { property: "og:description", content: DESCRIPTION }],
 		["meta", { property: "og:type", content: "website" }],
-		["meta", { property: "og:url", content: "https://nginxproxymanager.com/" }],
-		[
-			"meta",
-			{
-				property: "og:image",
-				content: "https://nginxproxymanager.com/icon.png",
-			},
-		],
-		["meta", { name: "twitter:card", content: "summary" }],
-		["meta", { name: "twitter:title", content: "Nginx Proxy Manager" }],
-		[
-			"meta",
-			{
-				name: "twitter:description",
-				content:
-					"Docker container and built in Web Application for managing Nginx proxy hosts with a simple, powerful interface, providing free SSL support via Let's Encrypt",
-			},
-		],
-		[
-			"meta",
-			{
-				name: "twitter:image",
-				content: "https://nginxproxymanager.com/icon.png",
-			},
-		],
-		["meta", { name: "twitter:alt", content: "Nginx Proxy Manager" }],
-		// GA
-		[
-			"script",
-			{
-				async: "true",
-				src: "https://www.googletagmanager.com/gtag/js?id=G-TXT8F5WY5B",
-			},
-		],
-		[
-			"script",
-			{},
-			"window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-TXT8F5WY5B');",
-		],
+		["meta", { property: "og:url", content: `${SITE}/` }],
+		["meta", { property: "og:image", content: `${SITE}/icon.png` }],
+		["meta", { name: "twitter:card", content: "summary_large_image" }],
+		["meta", { name: "twitter:title", content: "NexProxy" }],
+		["meta", { name: "twitter:description", content: DESCRIPTION }],
+		["meta", { name: "twitter:image", content: `${SITE}/icon.png` }],
+		["meta", { name: "twitter:alt", content: "NexProxy" }],
+		// Bewusst KEIN Analytics-Schnipsel: hier stand die Tracking-ID des
+		// Ursprungsprojekts, die Besucherdaten an fremde Konten geschickt haette.
+		// Wenn Statistiken gewuenscht sind, gehoert eine eigene, datensparsame
+		// Loesung her (z. B. Plausible) — und dann mit Hinweis in der
+		// Datenschutzerklaerung.
 	],
 	sitemap: {
-		hostname: "https://nginxproxymanager.com",
+		hostname: SITE,
 	},
 	metaChunk: true,
 	srcDir: "./src",
@@ -73,34 +37,36 @@ export default defineConfig({
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
 		logo: { src: "/logo.svg", width: 24, height: 24 },
-		nav: [{ text: "Setup", link: "/setup/" }],
+		nav: [
+			{ text: "Einrichtung", link: "/setup/" },
+			{ text: "Anleitung", link: "/guide/" },
+			{ text: "Editionen", link: "/#editionen" },
+		],
 		sidebar: [
 			{
 				items: [
-					// { text: 'Home', link: '/' },
-					{ text: "Guide", link: "/guide/" },
+					{ text: "Anleitung", link: "/guide/" },
 					{ text: "Screenshots", link: "/screenshots/" },
-					{ text: "Setup Instructions", link: "/setup/" },
-					{ text: "Advanced Configuration", link: "/advanced-config/" },
-					{ text: "Upgrading", link: "/upgrading/" },
-					{ text: "Frequently Asked Questions", link: "/faq/" },
+					{ text: "Einrichtung", link: "/setup/" },
+					{ text: "Erweiterte Konfiguration", link: "/advanced-config/" },
+					{ text: "Aktualisieren", link: "/upgrading/" },
+					{ text: "Häufige Fragen", link: "/faq/" },
 					{ text: "Certbot", link: "/certbot/" },
-					{ text: "Third Party", link: "/third-party/" },
+					{ text: "Drittanbieter", link: "/third-party/" },
 				],
 			},
 		],
-		socialLinks: [
-			{
-				icon: "github",
-				link: "https://github.com/NginxProxyManager/nginx-proxy-manager",
-			},
-		],
+		socialLinks: [{ icon: "github", link: "https://github.com/bonderaustria/nexproxy" }],
 		search: {
 			provider: "local",
 		},
 		footer: {
-			message: "Released under the MIT License.",
-			copyright: "Copyright © 2016-present jc21.com",
+			// Der Hinweis auf das Ursprungsprojekt bleibt: NexProxy ist ein Fork,
+			// und die MIT-Lizenz verlangt, dass der urspruengliche Copyright-Hinweis
+			// erhalten bleibt (siehe LICENSE).
+			message:
+				'Veröffentlicht unter der MIT-Lizenz. Fork von <a href="https://github.com/NginxProxyManager/nginx-proxy-manager">Nginx Proxy Manager</a>.',
+			copyright: "Copyright © 2026 NexProxy",
 		},
 	},
 });

@@ -13,4 +13,4 @@ This project will automatically update any databases or other requirements so yo
 any crazy instructions. These steps above will pull the latest updates and recreate the docker
 containers.
 
-See the [list of releases](https://github.com/NginxProxyManager/nginx-proxy-manager/releases) for any upgrade steps specific to each release.
+See the [list of releases](https://github.com/bonderaustria/nexproxy/releases) for any upgrade steps specific to each release.

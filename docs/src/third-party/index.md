@@ -4,8 +4,13 @@ outline: deep
 
 # Third Party
 
-As this software gains popularity it's common to see it integrated with other platforms. Please be aware that unless specifically mentioned in the documentation of those
-integrations, they are *not supported* by me.
+Integrations built by other people. Unless stated otherwise in their own
+documentation, they are *not supported* by us.
+
+Most of the tools below were written for Nginx Proxy Manager. Because NexProxy
+is a fork and keeps the same database format and API, many of them work
+unchanged — but none of them are tested by us, and the names below are theirs,
+not ours.
 
 Known integrations:
 
@@ -19,4 +24,4 @@ Known integrations:
 
 
 If you would like your integration of NPM listed, please open a
-[Github issue](https://github.com/NginxProxyManager/nginx-proxy-manager/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=)
+[Github issue](https://github.com/bonderaustria/nexproxy/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=)

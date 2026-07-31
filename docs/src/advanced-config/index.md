@@ -152,7 +152,7 @@ On some Docker hosts IPv6 may not be enabled. In these cases, the following mess
 
 > Address family not supported by protocol
 
-The easy fix is to add a Docker environment variable to the Nginx Proxy Manager stack:
+The easy fix is to add a Docker environment variable to the NexProxy stack:
 
 ```yml
     environment:
@@ -216,7 +216,7 @@ You can customise the logrotate configuration through a mount (if your custom co
     - ./logrotate.custom:/etc/logrotate.d/nginx-proxy-manager
 ```
 
-For reference, the default configuration can be found [here](https://github.com/NginxProxyManager/nginx-proxy-manager/blob/develop/docker/rootfs/etc/logrotate.d/nginx-proxy-manager).
+For reference, the default configuration can be found [here](https://github.com/bonderaustria/nexproxy/blob/master/docker/rootfs/etc/logrotate.d/nginx-proxy-manager).
 
 ## Enabling the geoip2 module
 

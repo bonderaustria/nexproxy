@@ -50,7 +50,7 @@ I won't go in to too much detail here but here are the basics for someone new to
 1. Your home router will have a Port Forwarding section somewhere. Log in and find it
 2. Add port forwarding for port 80 and 443 to the server hosting this project
 3. Configure your domain name details to point to your home, either with a static ip or a service like DuckDNS or [Amazon Route53](https://github.com/jc21/route53-ddns)
-4. Use the Nginx Proxy Manager as your gateway to forward to your other web based services
+4. Use NexProxy as your gateway to forward to your other web based services
 
 ## Quick Setup
 
@@ -77,7 +77,7 @@ services:
       - ./letsencrypt:/etc/letsencrypt
 ```
 
-This is the bare minimum configuration required. See the [documentation](https://nginxproxymanager.com/setup/) for more.
+This is the bare minimum configuration required. See the [documentation](https://nexproxy.de/setup/) for more.
 
 3. Bring up your stack by running
 
@@ -101,17 +101,14 @@ All are welcome to create pull requests for this project, against the `develop` 
 CI is used in this project. All PR's must pass before being considered. After passing,
 docker builds for PR's are available on dockerhub for manual verifications.
 
-Documentation within the `develop` branch is available for preview at
-[https://develop.nginxproxymanager.com](https://develop.nginxproxymanager.com)
 
 
 ### Contributors
 
-Special thanks to [all of our contributors](https://github.com/NginxProxyManager/nginx-proxy-manager/graphs/contributors).
+Special thanks to [all of our contributors](https://github.com/bonderaustria/nexproxy/graphs/contributors).
 
 
 ## Getting Support
 
-1. [Found a bug?](https://github.com/NginxProxyManager/nginx-proxy-manager/issues)
-2. [Discussions](https://github.com/NginxProxyManager/nginx-proxy-manager/discussions)
-3. [Reddit](https://reddit.com/r/nginxproxymanager)
+1. [Found a bug?](https://github.com/bonderaustria/nexproxy/issues)
+2. [Discussions](https://github.com/bonderaustria/nexproxy/discussions)
