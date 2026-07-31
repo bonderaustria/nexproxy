@@ -39,4 +39,7 @@ mkdir -p \
 touch /var/log/nginx/error.log || true
 chmod 777 /var/log/nginx/error.log || true
 chmod -R 777 /var/cache/nginx || true
-chmod 644 /etc/logrotate.d/nginx-proxy-manager
+# Mit || true, wie die Zeilen darueber: Protokollrotation ist Nebensache. Ohne
+# das brach dieser Schritt den gesamten prepare-Dienst ab, und der Container
+# startete gar nicht mehr.
+chmod 644 /etc/logrotate.d/nexproxy || true
