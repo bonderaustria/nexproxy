@@ -1,4 +1,5 @@
 import { exec } from "node:child_process";
+import fs from "node:fs";
 import os from "node:os";
 import { promisify } from "node:util";
 import express from "express";
@@ -51,18 +52,36 @@ async function diskPercent() {
 }
 
 /**
- * Whether nginx is actually serving. Checking the process table rather than
- * asking nginx over HTTP keeps this honest even when a config error has nginx
- * running but refusing connections — the dashboard's own request already proves
- * the API is up, so the interesting question is the proxy itself.
+ * Whether nginx is actually running.
+ *
+ * Reads the pid file and confirms the process exists in /proc. Deliberately not
+ * `pgrep` or `ps`: neither is present in the production image, so those would
+ * always throw and report "not running" — a failure of the check would be
+ * indistinguishable from a genuine outage, which is the worst kind of health
+ * indicator. /proc always exists on Linux.
  */
 async function nginxRunning() {
+	const pidFiles = [];
+	// The authoritative location is nginx's own `pid` directive — guessing common
+	// paths misses the image's actual /run/nginx/nginx.pid.
 	try {
-		await execAsync("pgrep -x nginx", { timeout: 4000 });
-		return true;
+		const conf = fs.readFileSync("/etc/nginx/nginx.conf", "utf8");
+		const match = conf.match(/^\s*pid\s+([^;]+);/m);
+		if (match) pidFiles.push(match[1].trim());
 	} catch (_e) {
-		return false;
+		/* fall back to the usual suspects below */
 	}
+	pidFiles.push("/run/nginx/nginx.pid", "/run/nginx.pid", "/var/run/nginx.pid");
+
+	for (const file of pidFiles) {
+		try {
+			const pid = Number(fs.readFileSync(file, "utf8").trim());
+			if (pid > 0 && fs.existsSync(`/proc/${pid}`)) return true;
+		} catch (_e) {
+			/* try the next location */
+		}
+	}
+	return false;
 }
 
 router
