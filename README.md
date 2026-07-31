@@ -38,7 +38,7 @@ NexProxy builds on the well-loved [Nginx Proxy Manager](https://github.com/Nginx
 - Access lists and HTTP authentication
 - Advanced Nginx configuration for power users
 - User management, permissions and audit log
-- SQLite, MySQL/MariaDB **or PostgreSQL** backends
+- SQLite out of the box, **PostgreSQL** for multi-node setups
 
 ## Editions
 

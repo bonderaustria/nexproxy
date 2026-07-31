@@ -11,7 +11,7 @@ Create a `docker-compose.yml` file:
 ```yml
 services:
   app:
-    image: 'ghcr.io/bonderaustria/nexproxy:{{VERSION}}'
+    image: 'ghcr.io/bonderaustria/nexproxy:latest'
     restart: unless-stopped
 
     ports:
@@ -23,7 +23,7 @@ services:
       # - '21:21' # FTP
 
     environment:
-      TZ: "Australia/Brisbane"
+      TZ: "Europe/Vienna"
 
       # Uncomment this if you want to change the location of
       # the SQLite DB file within the container
@@ -43,19 +43,14 @@ Then:
 docker compose up -d
 ```
 
-## Using MySQL / MariaDB Database
+## Using PostgreSQL
 
-If you opt for the MySQL configuration you will have to provide the database server yourself.
-
-It's easy to use another docker container for your database also and link it as part of the docker stack, so that's what the following examples
-are going to use.
-
-Here is an example of what your `docker-compose.yml` will look like when using a MariaDB container:
+Instead of the built-in SQLite database you can run NexProxy against PostgreSQL — recommended for multiple nodes, and required for high availability:
 
 ```yml
 services:
   app:
-    image: 'ghcr.io/bonderaustria/nexproxy:{{VERSION}}'
+    image: 'ghcr.io/bonderaustria/nexproxy:latest'
     restart: unless-stopped
     ports:
       # These ports are in format <host-port>:<container-port>
@@ -65,70 +60,7 @@ services:
       # Add any other Stream port you want to expose
       # - '21:21' # FTP
     environment:
-      TZ: "Australia/Brisbane"
-      # Mysql/Maria connection parameters:
-      DB_MYSQL_HOST: "db"
-      DB_MYSQL_PORT: 3306
-      DB_MYSQL_USER: "npm"
-      DB_MYSQL_PASSWORD: "npm"
-      DB_MYSQL_NAME: "npm"
-      # Optional SSL (see section below)
-      # DB_MYSQL_SSL: 'true'
-      # DB_MYSQL_SSL_REJECT_UNAUTHORIZED: 'true'
-      # DB_MYSQL_SSL_VERIFY_IDENTITY: 'true'
-      # Uncomment this if IPv6 is not enabled on your host
-      # DISABLE_IPV6: 'true'
-    volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
-    depends_on:
-      - db
-
-  db:
-    image: 'linuxserver/mariadb'
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: 'npm'
-      MYSQL_DATABASE: 'npm'
-      MYSQL_USER: 'npm'
-      MYSQL_PASSWORD: 'npm'
-      TZ: 'Australia/Brisbane'
-    volumes:
-      - ./mariadb:/config
-```
-
-::: warning
-Please note, that `DB_MYSQL_*` environment variables will take precedent over `DB_SQLITE_*` variables. So if you keep the MySQL variables, you will not be able to use SQLite.
-:::
-
-### Optional: MySQL / MariaDB SSL
-
-You can enable TLS for the MySQL/MariaDB connection with these environment variables:
-
-- `DB_MYSQL_SSL`: Enable SSL when set to true. If unset or false, SSL disabled (previous default behaviour).
-- `DB_MYSQL_SSL_REJECT_UNAUTHORIZED`: (default: true) Validate the server certificate chain. Set to false to allow self‑signed/unknown CA.
-- `DB_MYSQL_SSL_VERIFY_IDENTITY`: (default: true) Performs host name / identity verification.
-
-Enabling SSL using a self-signed cert (not recommended for production).
-
-## Using Postgres database
-
-Similar to the MySQL server setup:
-
-```yml
-services:
-  app:
-    image: 'ghcr.io/bonderaustria/nexproxy:{{VERSION}}'
-    restart: unless-stopped
-    ports:
-      # These ports are in format <host-port>:<container-port>
-      - '80:80' # Public HTTP Port
-      - '443:443' # Public HTTPS Port
-      - '81:81' # Admin Web Port
-      # Add any other Stream port you want to expose
-      # - '21:21' # FTP
-    environment:
-      TZ: "Australia/Brisbane"
+      TZ: "Europe/Vienna"
       # Postgres parameters:
       DB_POSTGRES_HOST: 'db'
       DB_POSTGRES_PORT: '5432'

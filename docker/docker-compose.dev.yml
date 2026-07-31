@@ -17,7 +17,7 @@ services:
           - website2.example.com
           - website3.example.com
     environment:
-      TZ: "${TZ:-Australia/Brisbane}"
+      TZ: "${TZ:-Europe/Vienna}"
       PUID: 1000
       PGID: 1000
       FORCE_COLOR: 1
@@ -69,7 +69,7 @@ services:
     networks:
       - nginx_proxy_manager
     environment:
-      TZ: "${TZ:-Australia/Brisbane}"
+      TZ: "${TZ:-Europe/Vienna}"
       MYSQL_ROOT_PASSWORD: "npm"
       MYSQL_DATABASE: "npm"
       MYSQL_USER: "npm"

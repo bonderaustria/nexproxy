@@ -14,7 +14,7 @@ on the `data` and `letsencrypt` folders at startup.
 ```yml
 services:
   app:
-    image: 'ghcr.io/bonderaustria/nexproxy:{{VERSION}}'
+    image: 'ghcr.io/bonderaustria/nexproxy:latest'
     environment:
       PUID: 1000
       PGID: 1000
@@ -92,16 +92,14 @@ You can set any environment variable from a file by appending `__FILE` (double-u
 
 ```yml
 secrets:
-  # Secrets are single-line text files where the sole content is the secret
-  # Paths in this example assume that secrets are kept in local folder called ".secrets"
-  DB_ROOT_PWD:
-    file: .secrets/db_root_pwd.txt
-  MYSQL_PWD:
-    file: .secrets/mysql_pwd.txt
+  # Secrets are single-line text files where the sole content is the secret.
+  # Paths in this example assume the secrets live in a local folder named ".secrets"
+  POSTGRES_PWD:
+    file: .secrets/postgres_pwd.txt
 
 services:
   app:
-    image: 'ghcr.io/bonderaustria/nexproxy:{{VERSION}}'
+    image: 'ghcr.io/bonderaustria/nexproxy:latest'
     restart: unless-stopped
     ports:
       # Public HTTP Port:
@@ -111,38 +109,36 @@ services:
       # Admin Web Port:
       - '81:81'
     environment:
-      # These are the settings to access your db
-      DB_MYSQL_HOST: "db"
-      DB_MYSQL_PORT: 3306
-      DB_MYSQL_USER: "npm"
-      # DB_MYSQL_PASSWORD: "npm"  # use secret instead
-      DB_MYSQL_PASSWORD__FILE: /run/secrets/MYSQL_PWD
-      DB_MYSQL_NAME: "npm"
-      # If you would rather use Sqlite, remove all DB_MYSQL_* lines above
+      # Settings to reach your database
+      DB_POSTGRES_HOST: "db"
+      DB_POSTGRES_PORT: 5432
+      DB_POSTGRES_USER: "npm"
+      # DB_POSTGRES_PASSWORD: "npm"  # use the secret below instead
+      DB_POSTGRES_PASSWORD__FILE: /run/secrets/POSTGRES_PWD
+      DB_POSTGRES_NAME: "npm"
+      # Remove all DB_POSTGRES_* lines above to fall back to the built-in SQLite database
       # Uncomment this if IPv6 is not enabled on your host
       # DISABLE_IPV6: 'true'
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
     secrets:
-      - MYSQL_PWD
+      - POSTGRES_PWD
     depends_on:
       - db
 
   db:
-    image: 'linuxserver/mariadb'
+    image: 'postgres:16'
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD__FILE: /run/secrets/DB_ROOT_PWD
-      MYSQL_DATABASE: 'npm'
-      MYSQL_USER: 'npm'
-      MYSQL_PASSWORD__FILE: /run/secrets/MYSQL_PWD
-      TZ: 'Australia/Brisbane'
+      POSTGRES_DB: 'npm'
+      POSTGRES_USER: 'npm'
+      POSTGRES_PASSWORD_FILE: /run/secrets/POSTGRES_PWD
+      TZ: 'Europe/Vienna'
     volumes:
-      - ./mariadb:/config
+      - ./postgres:/var/lib/postgresql/data
     secrets:
-      - DB_ROOT_PWD
-      - MYSQL_PWD
+      - POSTGRES_PWD
 ```
 
 

@@ -6,7 +6,7 @@ services:
   fullstack:
     image: "${IMAGE}:${BRANCH_LOWER}-ci-${BUILD_NUMBER}"
     environment:
-      TZ: "${TZ:-Australia/Brisbane}"
+      TZ: "${TZ:-Europe/Vienna}"
       DEBUG: "true"
       CI: "true"
       FORCE_COLOR: 1
