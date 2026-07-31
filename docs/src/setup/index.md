@@ -6,6 +6,10 @@ outline: deep
 
 ## Running the App
 
+The image is published for **amd64** and **arm64**, so the same instructions work on a
+Raspberry Pi 4 or 5 as on a regular server — Docker picks the right architecture
+automatically.
+
 Create a `docker-compose.yml` file:
 
 ```yml
@@ -90,27 +94,6 @@ services:
 Custom Postgres schema is not supported, as such `public` will be used.
 
 :::
-
-## Running on Raspberry PI / ARM devices
-
-The docker images support the following architectures:
-- amd64
-- arm64
-
-::: warning
-`armv7` is no longer supported in version 2.14+. This is due to Nodejs dropping support for armhf. Please
-use the `2.13.7` image tag if this applies to you.
-:::
-
-The docker images are a manifest of all the architecture docker builds supported, so this means
-you don't have to worry about doing anything special and you can follow the common instructions above.
-
-Check out the [dockerhub tags](https://hub.docker.com/r/ghcr.io/bonderaustria/nexproxy/tags)
-for a list of supported architectures and if you want one that doesn't exist,
-[create a feature request](https://github.com/bonderaustria/nexproxy/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=).
-
-Also, if you don't know how to already, follow [this guide to install docker and docker-compose](https://manre-universe.net/how-to-run-docker-and-docker-compose-on-raspbian/)
-on Raspbian.
 
 ## Initial Run
 
