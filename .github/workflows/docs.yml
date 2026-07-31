@@ -5,10 +5,13 @@ name: Website
 # S3-Bucket des Ursprungsprojekts geladen hat.
 on:
   push:
-    branches: [master]
+    # Beide Namen: auf GitHub heisst der Standard-Branch main, im Gitea-Spiegel
+    # master. Ohne den passenden Namen laeuft der Workflow nie an.
+    branches: [main, master]
     paths:
       - "docs/**"
       - ".github/workflows/docs.yml"
+  # Erlaubt das Veroeffentlichen von Hand, ohne dass sich etwas geaendert hat.
   workflow_dispatch:
 
 permissions:
