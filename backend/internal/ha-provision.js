@@ -472,7 +472,11 @@ curl -s -m2 "http://127.0.0.1:81/api/ha/vip-notify?state=$1" >/dev/null 2>&1 || 
 `;
 		const keepalived = `vrrp_script chk_nexproxy {
     script "/etc/keepalived/check_nexproxy.sh"
-    interval 2
+    # Every 5s rather than 2s: with fall 2 a dead node is still detected within
+    # about ten seconds, while producing less than half the background requests.
+    # At 2s this check was the single largest source of traffic on an otherwise
+    # idle installation.
+    interval 5
     fall 2
     rise 2
     weight -60

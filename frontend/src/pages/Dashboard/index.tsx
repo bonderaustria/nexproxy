@@ -75,7 +75,10 @@ function TrafficCard() {
 				<T id="dashboard.traffic" />
 			</span>
 
-			<div className={styles.trafficMain}>
+			<div
+				className={styles.trafficMain}
+				title="Requests passing through your proxy hosts. The admin interface, health checks and certificate renewals are not counted."
+			>
 				<span className={styles.trafficValue}>{data?.requestsPerSecond?.toFixed(1) ?? "0.0"}</span>
 				<span className={styles.trafficUnit}>req/s</span>
 			</div>
@@ -87,7 +90,10 @@ function TrafficCard() {
 				</svg>
 			)}
 
-			<div className={styles.trafficRow}>
+			<div
+				className={styles.trafficRow}
+				title="Every connection nginx currently holds open — including this admin interface and the cluster health check. nginx reports this as a single figure and cannot break it down."
+			>
 				<span className={styles.metricName}>
 					<T id="dashboard.traffic.connections" />
 				</span>
