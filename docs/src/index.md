@@ -35,6 +35,10 @@ features:
     details: Coming from Nginx Proxy Manager? The migration carries over hosts, certificates, access lists and users.
 ---
 
+<div class="home-shot">
+  <a href="/screenshots/"><img src="/screenshots/dashboard.png" alt="The NexProxy dashboard" /></a>
+</div>
+
 ## Editions {#editions}
 
 NexProxy is open source under the MIT licence. The Enterprise features live in
