@@ -10,7 +10,7 @@
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	padding: 12px 16px;
+	padding: 12px 14px;
 	background: var(--np-chrome, #1a222d);
 	border: 0;
 	color: var(--np-text-strong, #fff);
@@ -25,7 +25,25 @@
 	background: var(--np-hover, #232d3a);
 }
 
+.caret {
+	flex: none;
+	width: 12px;
+	color: var(--np-text-muted-dim, #7f8ea3);
+	font-size: 10px;
+}
+
+.groupTitle {
+	flex: none;
+}
+
+/* Der Hinweis darf schrumpfen und abschneiden — im engen Dialog konkurrierte er
+   sonst mit dem Zaehler um den Platz, wodurch dieser umbrach. */
 .groupHint {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	font-weight: 400;
 	font-size: 12px;
 	color: var(--np-text-muted-dim, #7f8ea3);
@@ -35,17 +53,29 @@
    sonst muesste man jede Gruppe aufklappen, um das herauszufinden. */
 .badge {
 	margin-left: auto;
+	flex: none;
+	white-space: nowrap;
 	font-size: 11px;
-	font-weight: 700;
-	padding: 2px 8px;
+	font-weight: 600;
+	line-height: 1;
+	padding: 5px 10px;
 	border-radius: 9999px;
 	background: var(--np-control, #313c4d);
-	color: var(--np-text-secondary, #cfd8e3);
+	color: var(--np-text-muted-dim, #7f8ea3);
 }
 
 .badgeActive {
 	background: rgba(234, 166, 51, 0.18);
 	color: #fcd9a0;
+	font-weight: 700;
+}
+
+/* Unter 460px ist der Dialog zu schmal fuer Titel, Hinweis und Zaehler
+   nebeneinander — der Hinweis entfaellt, er steht ohnehin im Tooltip. */
+@media (max-width: 460px) {
+	.groupHint {
+		display: none;
+	}
 }
 
 .groupBody {
@@ -128,11 +158,23 @@
 	margin-bottom: 6px;
 }
 
+.presetsLabel {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--np-text-subtle, #6b7a90);
+	margin-bottom: 8px;
+}
+
 .presets {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
-	margin-bottom: 14px;
+	margin-bottom: 18px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--np-muted, #273140);
 }
 
 .preset {

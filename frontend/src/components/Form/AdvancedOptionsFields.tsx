@@ -205,6 +205,7 @@ export function AdvancedOptionsFields() {
 
 	return (
 		<div className="mt-3">
+			<span className={styles.presetsLabel}>Presets</span>
 			<div className={styles.presets}>
 				{PRESETS.map((p) => (
 					<button type="button" key={p.label} className={styles.preset} title={p.help} onClick={() => applyPreset(p)}>
@@ -223,13 +224,23 @@ export function AdvancedOptionsFields() {
 						<button
 							type="button"
 							className={styles.groupHead}
+							aria-expanded={open}
 							onClick={() => setOpenGroups((g) => ({ ...g, [group.key]: !g[group.key] }))}
 						>
-							<span aria-hidden="true">{open ? "▾" : "▸"}</span>
-							<span>{group.label}</span>
-							{group.help && <span className={styles.groupHint}>{group.help}</span>}
-							<span className={active ? `${styles.badge} ${styles.badgeActive}` : styles.badge}>
-								{active ? `${active} set` : "default"}
+							<span className={styles.caret} aria-hidden="true">
+								{open ? "▾" : "▸"}
+							</span>
+							<span className={styles.groupTitle}>{group.label}</span>
+							{group.help && (
+								<span className={styles.groupHint} title={group.help}>
+									{group.help}
+								</span>
+							)}
+							<span
+								className={active ? `${styles.badge} ${styles.badgeActive}` : styles.badge}
+								title={active ? `${active} of ${fields.length} options changed` : "All options at their nginx defaults"}
+							>
+								{active ? `${active} changed` : "Default"}
 							</span>
 						</button>
 						{open && (
