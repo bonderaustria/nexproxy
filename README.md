@@ -4,7 +4,7 @@
   <b>NexProxy</b><br>
   <i>Self-hosted reverse-proxy manager with a web UI — built for home labs and small teams.</i>
   <br><br>
-  <img src="https://img.shields.io/badge/version-1.0.0-005FF6.svg?style=for-the-badge">
+  <a href="https://github.com/bonderaustria/nexproxy/releases"><img src="https://img.shields.io/github/v/release/bonderaustria/nexproxy?style=for-the-badge&label=version&color=005FF6"></a>
   <img src="https://img.shields.io/badge/license-MIT%20core%20%2F%20commercial%20enterprise-0F1929.svg?style=for-the-badge">
 </p>
 

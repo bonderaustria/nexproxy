@@ -16,7 +16,7 @@ See all releases: https://github.com/bonderaustria/nexproxy/releases
 ## Upstream fixes
 
 NexProxy tracks security-relevant fixes from the upstream
-[NexProxy](https://github.com/bonderaustria/nexproxy) project and backports
+[Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager) project and backports
 them promptly — including fixes that are merged upstream but not yet in an upstream stable release.
 
 ## Reporting a Vulnerability
