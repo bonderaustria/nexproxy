@@ -121,6 +121,8 @@ export interface ProxyHost {
 	cachingEnabled: boolean;
 	blockExploits: boolean;
 	advancedConfig: string;
+	/** Form-based nginx directives. Rendered before advancedConfig, which therefore wins on conflict. */
+	advancedOptions?: Record<string, any>;
 	meta: Record<string, any>;
 	allowWebsocketUpgrade: boolean;
 	http2Support: boolean;

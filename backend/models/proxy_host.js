@@ -70,7 +70,9 @@ class ProxyHost extends Model {
 	}
 
 	static get jsonAttributes() {
-		return ["domain_names", "meta", "locations"];
+		// advanced_options belongs here, otherwise Objection hands the raw JSON
+		// string to the template instead of an object.
+		return ["domain_names", "meta", "locations", "advanced_options"];
 	}
 
 	static get defaultAllowGraph() {

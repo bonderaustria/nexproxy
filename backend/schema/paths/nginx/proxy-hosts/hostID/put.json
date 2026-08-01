@@ -80,6 +80,9 @@
 						"advanced_config": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/advanced_config"
 						},
+						"advanced_options": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/advanced_options"
+						},
 						"enabled": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/enabled"
 						},

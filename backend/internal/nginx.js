@@ -2,12 +2,21 @@ import fs from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import _ from "lodash";
+import advancedOptions from "../lib/advanced-options.js";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, nginx as logger } from "../logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+/**
+ * Rate-limit and cache zones cannot live in a server block; nginx only accepts
+ * them at http level. They go into one file per host in this directory, which
+ * nginx.conf includes before the host configs.
+ */
+const ZONES_DIR = "/data/nginx/zones";
+const zoneFileFor = (hostId) => `${ZONES_DIR}/proxy_host_${hostId}.conf`;
 
 const internalNginx = {
 	/**
@@ -221,6 +230,18 @@ const internalNginx = {
 				host.forward_scheme = "$scheme";
 			}
 
+			// Form-based advanced options. Rendered BEFORE advanced_config in the
+			// template, so a directive set in both places is won by the free text —
+			// that keeps the free-text field usable as the final override.
+			if (nice_host_type === "proxy_host") {
+				const opts =
+					typeof host.advanced_options === "string"
+						? JSON.parse(host.advanced_options || "{}")
+						: host.advanced_options || {};
+				host.advanced_options_rendered = advancedOptions.renderServer(opts, host.id);
+				internalNginx.writeZoneFile(host.id, advancedOptions.renderZones(opts, host.id));
+			}
+
 			if (host.locations) {
 				//logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
 				origLocations = [].concat(host.locations);
@@ -346,6 +367,34 @@ const internalNginx = {
 	 * @param   {Boolean} [delete_err_file]
 	 * @returns {Promise}
 	 */
+	/**
+	 * Write (or remove) the http-context zone file for a host.
+	 *
+	 * Removing it when empty matters: a leftover limit_req_zone for a host that
+	 * no longer uses rate limiting is harmless on its own, but it keeps a shared
+	 * memory zone allocated and shows up confusingly in nginx -T output.
+	 *
+	 * @param {Number} hostId
+	 * @param {String} contents  Empty string removes the file
+	 */
+	writeZoneFile: (hostId, contents) => {
+		try {
+			if (!contents) {
+				if (fs.existsSync(zoneFileFor(hostId))) {
+					fs.unlinkSync(zoneFileFor(hostId));
+				}
+				return;
+			}
+			fs.mkdirSync(ZONES_DIR, { recursive: true });
+			fs.writeFileSync(zoneFileFor(hostId), contents, { encoding: "utf8" });
+		} catch (err) {
+			// A failure here must not abort config generation — the host still
+			// works, it just loses its rate limit or cache. The subsequent
+			// nginx -t reports the real consequence.
+			logger.error(`Could not write zone file for host ${hostId}: ${err.message}`);
+		}
+	},
+
 	deleteConfig: (host_type, host, delete_err_file) => {
 		const config_file = internalNginx.getConfigName(
 			internalNginx.getFileFriendlyHostType(host_type),
@@ -355,6 +404,11 @@ const internalNginx = {
 
 		return new Promise((resolve /*, reject*/) => {
 			internalNginx.deleteFile(config_file);
+			// The zone file lives outside the host config directory, so it would
+			// otherwise survive the host it belongs to.
+			if (internalNginx.getFileFriendlyHostType(host_type) === "proxy_host" && host?.id) {
+				internalNginx.writeZoneFile(host.id, "");
+			}
 			if (delete_err_file) {
 				internalNginx.deleteFile(config_file_err);
 			}

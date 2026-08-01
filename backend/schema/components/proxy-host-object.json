@@ -77,6 +77,16 @@
 			"type": "string",
 			"example": ""
 		},
+		"advanced_options": {
+			"type": "object",
+			"description": "Form-based nginx options. Rendered before advanced_config, so a directive set in both places is won by the free text. The field catalogue is served by GET /api/nginx/advanced-options.",
+			"additionalProperties": true,
+			"example": {
+				"clientMaxBodySize": 512,
+				"proxyReadTimeout": 300,
+				"proxyBuffering": false
+			}
+		},
 		"meta": {
 			"type": "object",
 			"example": {

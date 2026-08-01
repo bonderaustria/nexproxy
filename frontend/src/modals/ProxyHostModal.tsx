@@ -7,6 +7,7 @@ import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {
 	AccessField,
+	AdvancedOptionsFields,
 	Button,
 	DomainNamesField,
 	HasPermission,
@@ -51,7 +52,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 			if (values.loadBalancingEnabled) {
 				const validServers = (values.lbServers || []).filter((s: any) => s.host?.trim() && s.port);
 				if (!validServers.length) {
-					setErrorMsg("Mindestens ein Backend-Ziel ist erforderlich");
+					setErrorMsg("At least one backend destination is required");
 					setIsSubmitting(false);
 					setSubmitting(false);
 					return;
@@ -94,7 +95,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 				},
 			});
 		} catch (e: any) {
-			setErrorMsg(e?.message || "Load Balancer konnte nicht gespeichert werden");
+			setErrorMsg(e?.message || "The load balancer could not be saved");
 			setIsSubmitting(false);
 			setSubmitting(false);
 		}
@@ -139,6 +140,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							trustForwardedProto: data?.trustForwardedProto || false,
 							// Advanced tab
 							advancedConfig: data?.advancedConfig || "",
+							advancedOptions: data?.advancedOptions || {},
 							meta: data?.meta || {},
 						} as any
 					}
@@ -398,6 +400,10 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 												<SSLOptionsFields color="bg-lime" forProxyHost={true} />
 											</div>
 											<div className="tab-pane" id="tab-advanced" role="tabpanel">
+												{/* Form first, free text below — that is also the order in
+												    which both are written to the configuration, so the free
+												    text stays the final override. */}
+												<AdvancedOptionsFields />
 												<NginxConfigField />
 											</div>
 										</div>

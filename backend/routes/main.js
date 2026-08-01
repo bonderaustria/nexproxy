@@ -21,6 +21,7 @@ import streamsRoutes from "./nginx/streams.js";
 import reportsRoutes from "./reports.js";
 import schemaRoutes from "./schema.js";
 import settingsRoutes from "./settings.js";
+import nginxAdvancedRoutes from "./nginx-advanced.js";
 import systemHealthRoutes from "./system-health.js";
 import tokensRoutes from "./tokens.js";
 import upstreamRoutes from "./upstream.js";
@@ -94,6 +95,8 @@ router.use("/license", licenseRoutes);
 router.use("/access-log", accessLogRoutes);
 router.use("/upstreams", upstreamRoutes);
 router.use("/npm-import", npmImportRoutes);
+// Must come before the host routes so /nginx/advanced-options is not swallowed.
+router.use("/nginx", nginxAdvancedRoutes);
 router.use("/nginx/proxy-hosts", proxyHostsRoutes);
 router.use("/nginx/redirection-hosts", redirectionHostsRoutes);
 router.use("/nginx/dead-hosts", deadHostsRoutes);
