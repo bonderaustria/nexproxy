@@ -365,26 +365,23 @@
 	"dashboard.hosts.empty": {
 		"defaultMessage": "Noch keine Proxy-Hosts."
 	},
+	"dashboard.traffic": {
+		"defaultMessage": "Live-Verkehr"
+	},
+	"dashboard.traffic.connections": {
+		"defaultMessage": "Aktive Verbindungen"
+	},
+	"dashboard.traffic.peak": {
+		"defaultMessage": "Spitze (2 Min.)"
+	},
+	"dashboard.traffic.unavailable": {
+		"defaultMessage": "nginx-Statusendpunkt nicht erreichbar — Werte koennen veraltet sein."
+	},
 	"dashboard.hosts.subtitle": {
 		"defaultMessage": "Zuletzt geändert"
 	},
 	"dashboard.hosts.view-all": {
 		"defaultMessage": "Alle anzeigen →"
-	},
-	"dashboard.system-health": {
-		"defaultMessage": "Systemzustand"
-	},
-	"dashboard.system-health.cpu": {
-		"defaultMessage": "CPU"
-	},
-	"dashboard.system-health.disk": {
-		"defaultMessage": "Festplatte"
-	},
-	"dashboard.system-health.memory": {
-		"defaultMessage": "Speicher"
-	},
-	"dashboard.system-health.uptime": {
-		"defaultMessage": "Laufzeit {days} T"
 	},
 	"footer.documentation": {
 		"defaultMessage": "Dokumentation"

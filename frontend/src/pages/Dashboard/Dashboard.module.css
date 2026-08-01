@@ -236,6 +236,13 @@
 	border: 1px solid transparent;
 }
 
+.pillDanger {
+	composes: pill;
+	color: #fca5a5;
+	background: rgba(220, 38, 38, 0.16);
+	border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
 .empty {
 	padding: 32px 20px;
 	text-align: center;
@@ -244,6 +251,55 @@
 }
 
 /* ── Systemzustand ─────────────────────────────────── */
+/* ── Live-Verkehr ──────────────────────────────────── */
+.trafficMain {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	margin-top: 12px;
+}
+
+.trafficValue {
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--np-text-strong);
+	/* Tabellenziffern: ohne sie zappelt die Zahl bei jedem Wechsel, weil die
+	   Ziffern unterschiedlich breit sind — bei einer Aktualisierung pro Sekunde
+	   ist das sehr auffaellig. */
+	font-variant-numeric: tabular-nums;
+}
+
+.trafficUnit {
+	font-size: 13px;
+	color: var(--np-text-muted-dim);
+}
+
+.spark {
+	width: 100%;
+	height: 46px;
+	margin: 12px 0 4px;
+	display: block;
+	overflow: visible;
+}
+
+.trafficRow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 7px 0;
+	border-top: 1px solid var(--np-muted);
+}
+
+.trafficWarn {
+	margin-top: 12px;
+	font-size: 12px;
+	color: var(--np-pill-warn-text);
+	background: var(--np-pill-warn-bg);
+	padding: 8px 10px;
+	border-radius: 8px;
+}
+
 .metrics {
 	display: flex;
 	flex-direction: column;

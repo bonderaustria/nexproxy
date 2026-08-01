@@ -26,6 +26,7 @@ export * from "./getDeadHost";
 export * from "./getDeadHosts";
 export * from "./advancedOptions";
 export * from "./generateHAConfig";
+export * from "./getTraffic";
 export * from "./haDbConfig";
 export * from "./haProvision";
 export * from "./accessLog";

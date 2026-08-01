@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { HasPermission } from "src/components";
 import { useShellSearch } from "src/context/ShellSearch";
-import { useAuditLogs, useCertificates, useHostReport, useProxyHosts, useSystemHealth } from "src/hooks";
+import { useAuditLogs, useCertificates, useHostReport, useProxyHosts, useTraffic } from "src/hooks";
 import { T } from "src/locale";
 import { CERTIFICATES, DEAD_HOSTS, PROXY_HOSTS, REDIRECTION_HOSTS, STREAMS, VIEW } from "src/modules/Permissions";
 import styles from "./Dashboard.module.css";
@@ -46,45 +46,65 @@ function StatCard({ eyebrow, value, context, active, to }: StatProps) {
 	);
 }
 
-/** Bytes in eine lesbare Groesse, damit neben dem Prozentwert etwas Greifbares steht. */
-const formatBytes = (bytes: number) => {
-	const units = ["B", "KB", "MB", "GB", "TB"];
-	let value = bytes;
-	let unit = 0;
-	while (value >= 1024 && unit < units.length - 1) {
-		value /= 1024;
-		unit++;
-	}
-	return `${value >= 10 || unit === 0 ? Math.round(value) : value.toFixed(1)} ${units[unit]}`;
-};
+/**
+ * Live traffic. The single number people actually look at on a reverse proxy —
+ * how much is going through right now.
+ *
+ * The curve matters as much as the number: a bare "3 req/s" says nothing about
+ * whether that is normal for this installation. Two minutes of history turn it
+ * into something you can judge at a glance.
+ */
+function TrafficCard() {
+	const { data } = useTraffic();
+	const history = data?.history ?? [];
+	const peak = Math.max(1, ...history.map((h) => h.rps));
 
-function Metric({
-	label,
-	value,
-	detail,
-	color,
-}: {
-	label: string;
-	value: number;
-	detail: string;
-	color: string;
-}) {
+	// Plain SVG rather than a charting library: one sparkline does not justify
+	// pulling in a dependency, and this redraws once a second.
+	const points = history
+		.map((h, i) => {
+			const x = history.length > 1 ? (i / (history.length - 1)) * 100 : 0;
+			const y = 100 - (h.rps / peak) * 100;
+			return `${x.toFixed(2)},${y.toFixed(2)}`;
+		})
+		.join(" ");
+
 	return (
-		<div>
-			<div className={styles.metricLabel}>
+		<div className={styles.railCard}>
+			<span className={styles.eyebrow}>
+				<T id="dashboard.traffic" />
+			</span>
+
+			<div className={styles.trafficMain}>
+				<span className={styles.trafficValue}>{data?.requestsPerSecond?.toFixed(1) ?? "0.0"}</span>
+				<span className={styles.trafficUnit}>req/s</span>
+			</div>
+
+			{history.length > 1 && (
+				<svg className={styles.spark} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+					<title>Requests per second over the last two minutes</title>
+					<polyline points={points} fill="none" stroke="var(--np-brand-tint)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+				</svg>
+			)}
+
+			<div className={styles.trafficRow}>
 				<span className={styles.metricName}>
-					<T id={label} />
+					<T id="dashboard.traffic.connections" />
 				</span>
-				<span className={styles.metricValue}>
-					<span className={styles.metricDetail}>{detail}</span> {value} %
+				<span className={styles.metricValue}>{data?.activeConnections ?? 0}</span>
+			</div>
+			<div className={styles.trafficRow}>
+				<span className={styles.metricName}>
+					<T id="dashboard.traffic.peak" />
 				</span>
+				<span className={styles.metricValue}>{peak.toFixed(1)} req/s</span>
 			</div>
-			<div className={styles.track}>
-				<div
-					className={styles.fill}
-					style={{ width: `${Math.min(100, Math.max(0, value))}%`, background: color }}
-				/>
-			</div>
+
+			{data && !data.available && (
+				<div className={styles.trafficWarn}>
+					<T id="dashboard.traffic.unavailable" />
+				</div>
+			)}
 		</div>
 	);
 }
@@ -93,7 +113,6 @@ const Dashboard = () => {
 	const navigate = useNavigate();
 	const { debouncedQuery } = useShellSearch();
 	const { data: hostReport } = useHostReport();
-	const { data: health } = useSystemHealth();
 	const { data: proxyHosts } = useProxyHosts();
 	const { data: certificates } = useCertificates();
 	const { data: auditLogs } = useAuditLogs();
@@ -243,41 +262,7 @@ const Dashboard = () => {
 				</HasPermission>
 
 				<div className={styles.rail}>
-					<div className={styles.railCard}>
-						<span className={styles.eyebrow}>
-							<T id="dashboard.system-health" />
-						</span>
-						<div className={styles.metrics}>
-							<Metric
-								label="dashboard.system-health.cpu"
-								value={health?.cpuPct ?? 0}
-								detail={health ? `${health.cpuCores} ${health.cpuCores === 1 ? "core" : "cores"}` : ""}
-								color="var(--np-brand-tint)"
-							/>
-							<Metric
-								label="dashboard.system-health.memory"
-								value={health?.memPct ?? 0}
-								detail={health ? `${formatBytes(health.memUsedBytes)} / ${formatBytes(health.memTotalBytes)}` : ""}
-								color={(health?.memPct ?? 0) >= 80 ? "var(--np-accent)" : "var(--np-brand-tint)"}
-							/>
-							{/* Nur anzeigen, wenn der Wert wirklich ermittelt werden konnte —
-							    eine erfundene Festplattenauslastung waere schlimmer als keine. */}
-							{typeof health?.diskPct === "number" && (
-								<Metric
-									label="dashboard.system-health.disk"
-									value={health.diskPct}
-									detail={
-										health.diskUsedBytes && health.diskTotalBytes
-											? `${formatBytes(health.diskUsedBytes)} / ${formatBytes(health.diskTotalBytes)}`
-											: ""
-									}
-									color={health.diskPct >= 80 ? "var(--np-accent)" : "var(--np-brand-tint)"}
-								/>
-							)}
-						</div>
-					{/* Fusszeile entfaellt komplett: die Karte zeigt nur noch echte
-						    Messwerte, keine Statusmeldungen. */}
-					</div>
+					<TrafficCard />
 
 					<HasPermission section={CERTIFICATES} permission={VIEW} hideError>
 						<div className={styles.railCard}>
@@ -299,9 +284,18 @@ const Dashboard = () => {
 							{certs.map((c) => (
 								<div className={styles.certRow} key={c.name}>
 									<span>{c.name}</span>
-									<span className={c.days <= EXPIRY_WARN_DAYS ? styles.pillWarn : styles.pillOnline}>
-										{c.days} d
-									</span>
+									{/* Ein abgelaufenes Zertifikat als "-6 d" zu zeigen verlangt vom
+									    Leser, das Minuszeichen zu bemerken und zu deuten. Der Zustand
+									    ist ein anderer, also bekommt er eine eigene Beschriftung. */}
+									{c.days < 0 ? (
+										<span className={styles.pillDanger} title={`Expired ${Math.abs(c.days)} days ago`}>
+											Expired
+										</span>
+									) : (
+										<span className={c.days <= EXPIRY_WARN_DAYS ? styles.pillWarn : styles.pillOnline}>
+											{c.days} d
+										</span>
+									)}
 								</div>
 							))}
 						</div>

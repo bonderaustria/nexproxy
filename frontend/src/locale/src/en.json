@@ -443,26 +443,23 @@
 	"dashboard.hosts.empty": {
 		"defaultMessage": "No proxy hosts yet."
 	},
+	"dashboard.traffic": {
+		"defaultMessage": "Live traffic"
+	},
+	"dashboard.traffic.connections": {
+		"defaultMessage": "Active connections"
+	},
+	"dashboard.traffic.peak": {
+		"defaultMessage": "Peak (2 min)"
+	},
+	"dashboard.traffic.unavailable": {
+		"defaultMessage": "nginx status endpoint not reachable — figures may be stale."
+	},
 	"dashboard.hosts.subtitle": {
 		"defaultMessage": "Most recently updated"
 	},
 	"dashboard.hosts.view-all": {
 		"defaultMessage": "View all →"
-	},
-	"dashboard.system-health": {
-		"defaultMessage": "System Health"
-	},
-	"dashboard.system-health.cpu": {
-		"defaultMessage": "CPU"
-	},
-	"dashboard.system-health.disk": {
-		"defaultMessage": "Disk"
-	},
-	"dashboard.system-health.memory": {
-		"defaultMessage": "Memory"
-	},
-	"dashboard.system-health.uptime": {
-		"defaultMessage": "Uptime {days} d"
 	},
 	"footer.documentation": {
 		"defaultMessage": "Documentation"

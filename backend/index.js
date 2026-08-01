@@ -8,6 +8,7 @@ import internalAccessLog from "./internal/access-log.js";
 import internalHostMonitor from "./internal/host-monitor.js";
 import internalIpRanges from "./internal/ip_ranges.js";
 import { syncJwtKeys } from "./internal/jwt-sync.js";
+import internalTraffic from "./internal/traffic.js";
 import { loadLicense, startLicenseRefresh } from "./lib/license.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
@@ -40,6 +41,9 @@ async function appStart() {
 			internalAccessLog.initTimer();
 			internalHaUpdate.startHoldReaper();
 			startLicenseRefresh();
+			// Samples nginx status once a second so every dashboard sees the same
+			// numbers instead of each tab computing its own delta.
+			internalTraffic.start();
 
 			const server = app.listen(3000, () => {
 				logger.info(`Backend PID ${process.pid} listening on port 3000 ...`);
