@@ -44,7 +44,7 @@
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-parser": "^12.1.0",
-		"@biomejs/biome": "^2.4.15",
+		"@biomejs/biome": "^2.5.7",
 		"nodemon": "^3.1.14"
 	},
 	"signale": {
