@@ -81,9 +81,9 @@
     "@babel/helper-validator-identifier" "^7.29.7"
 
 "@cypress/grep@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@cypress/grep/-/grep-6.0.0.tgz#fcc5f42d0086464e2752c4d84ac563c3cd21eb77"
-  integrity sha512-n3PCeqt8OwmLFz310igbRUm3qDE5WJgM9LW+2ejdULfMu2Sudqg3UX8koC8/JU/+ZcJ5UbaQAap1Nbi0QvzXwA==
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@cypress/grep/-/grep-6.0.3.tgz#c8023bbf996e406fe932e5861674ded0499e8fda"
+  integrity sha512-9pm3HVlbXHp9K9XU3hrnY7OBXsCGKGeCZ49n7yOrXbBlPv6FdSq3ub1KDJQ0AvtIi6A/3zCzwU0uZzq9skG6Ag==
   dependencies:
     debug "^4.3.4"
     find-test-names "^1.28.18"
@@ -896,9 +896,9 @@ eslint-plugin-align-assignments@^1.1.2:
   integrity sha512-I1ZJgk9EjHfGVU9M2Ex8UkVkkjLL5Y9BS6VNnQHq79eHj2H4/Cgxf36lQSUTLgm2ntB03A2NtF+zg9fyi5vChg==
 
 eslint-plugin-chai-friendly@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-chai-friendly/-/eslint-plugin-chai-friendly-1.2.0.tgz#2a54b481bcbc26ab5a581b2b7e7c304465837c15"
-  integrity sha512-um2pBb4ZXNCoTRPRAWiUaXeIaw1dRaPOEZ+G/qcZqfyTdkCXXwOBctnfnbIRbZiQf4AXl3ImV1grt423SlK+mg==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-chai-friendly/-/eslint-plugin-chai-friendly-1.2.1.tgz#141392762aa8626ac3d25780a502e625ce74922b"
+  integrity sha512-mV3EOJLDr8+L+LS8uCkP711fnNHz+4PsmPyz18xwkvjJwfLRlnx0Eu6CFnb5B+dW5ahoav2jVer2KFYsmIuv3A==
 
 eslint-plugin-cypress@^6.4.1:
   version "6.4.1"
@@ -1175,15 +1175,15 @@ forever-agent@~0.6.1:
   integrity sha512-j0KLYPhm6zeac4lz3oJ3o65qvgQCcPubiyotZrXqEaG4hNagNYO8qdlUrX5vwqv9ohqeT/Z3j6+yW067yWWdUw==
 
 form-data@^4.0.5, form-data@~4.0.4:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.5.tgz#b49e48858045ff4cbf6b03e1805cebcad3679053"
-  integrity sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.6.tgz#28e864e1b786dbebb68db1f452f9635278665827"
+  integrity sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
     es-set-tostringtag "^2.1.0"
-    hasown "^2.0.2"
-    mime-types "^2.1.12"
+    hasown "^2.0.4"
+    mime-types "^2.1.35"
 
 formdata-polyfill@^4.0.10:
   version "4.0.10"
@@ -1340,10 +1340,10 @@ hasha@5.2.2:
     is-stream "^2.0.0"
     type-fest "^0.8.0"
 
-hasown@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/hasown/-/hasown-2.0.2.tgz#003eaf91be7adc372e84ec59dc37252cedb80003"
-  integrity sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==
+hasown@^2.0.2, hasown@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/hasown/-/hasown-2.0.4.tgz#8c62d8cb90beb2aad5d0a5b67581ad9854c3f003"
+  integrity sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==
   dependencies:
     function-bind "^1.1.2"
 
@@ -1663,7 +1663,7 @@ mime-db@1.52.0:
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
   integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
 
-mime-types@^2.1.12, mime-types@~2.1.19:
+mime-types@^2.1.35, mime-types@~2.1.19:
   version "2.1.35"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
   integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
