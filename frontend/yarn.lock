@@ -895,38 +895,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/core@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@tabler/core@npm:1.4.0"
+"@tabler/core@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@tabler/core@npm:1.5.0"
   dependencies:
     "@popperjs/core": "npm:^2.11.8"
-    bootstrap: "npm:5.3.7"
-  checksum: 10c0/1b679ee17c4560ac08b5fe453d2a499ada742aad499a2aebaf07b1347a7085f7e7e5eb1dcc1578bf0babf0237e6d23931c31039719dce9925661354b393d089a
+  checksum: 10c0/b5a9aa4d4ec453177b97c70f53533395478217e4b8c54b4b51a836991144cdb62768fcbe29ec43ea64841ab8945773ecd77f58df0c356825eca8a06698446409
   languageName: node
   linkType: hard
 
-"@tabler/icons-react@npm:^3.44.0":
-  version: 3.44.0
-  resolution: "@tabler/icons-react@npm:3.44.0"
+"@tabler/icons-react@npm:^3.46.0":
+  version: 3.46.0
+  resolution: "@tabler/icons-react@npm:3.46.0"
   dependencies:
-    "@tabler/icons": "npm:3.44.0"
+    "@tabler/icons": "npm:3.46.0"
   peerDependencies:
     react: ">= 16"
-  checksum: 10c0/9a4bb6f1121d001049be8bb5757160ce4d5f2430671479ee94763f88ef43a69ab8d89b835d6c6451de22f3071793b779fefeed43db49d7993de1ea65c50145c9
+  checksum: 10c0/8fab7d3a9ec6b62724a1628b8bad68a7b503979e4418f97d057c442adc5257b227a08185a884d452d171983648e36fa92cd7bfe9457f693e9b67bbf4ecf8ec24
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:3.44.0":
-  version: 3.44.0
-  resolution: "@tabler/icons@npm:3.44.0"
-  checksum: 10c0/0d5c1f9d6e68aa04c4a661e96035190e0884e0bc0022d31922efad3cfba210a25b2f013c0b6c0ab6aeb3d5a402a9b85a168966bd11a30ba6087f614f8521ccf3
+"@tabler/icons@npm:3.46.0":
+  version: 3.46.0
+  resolution: "@tabler/icons@npm:3.46.0"
+  checksum: 10c0/c9671449c2f53fa7e329c487162f89a28417cdd5ce96cfa290fe21388724da303dd2297af3b39a88a74b02c36ce55598bc3cf6537dbddf548881da2c05f35f5e
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.100.14":
-  version: 5.100.14
-  resolution: "@tanstack/query-core@npm:5.100.14"
-  checksum: 10c0/947942b1499169b279faf4eddd570719db5d6863c89db4ec2d54e1eb3fb66a679cfa87a15c9f2e9d5de523e4bcc1782c020fba913ead461b73ecec4fdd986c59
+"@tanstack/query-core@npm:5.102.8":
+  version: 5.102.8
+  resolution: "@tanstack/query-core@npm:5.102.8"
+  checksum: 10c0/b8b8413c2372ff26605f63283f2bfe0edc17be1daad858a437d154ca38b30e8b6e47a5b8a0eb5c40b93fd66b8461f1cf2ac6cf5e1c9a03919d0079a0b4ae8bfa
   languageName: node
   linkType: hard
 
@@ -949,14 +948,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.100.14":
-  version: 5.100.14
-  resolution: "@tanstack/react-query@npm:5.100.14"
+"@tanstack/react-query@npm:^5.102.8":
+  version: 5.102.8
+  resolution: "@tanstack/react-query@npm:5.102.8"
   dependencies:
-    "@tanstack/query-core": "npm:5.100.14"
+    "@tanstack/query-core": "npm:5.102.8"
   peerDependencies:
     react: ^18 || ^19
-  checksum: 10c0/f124e7671f5731a88241a71a6ce7da54f0bafb960ec4107d1eb24d0fc25136d10cd02ebd68956eb0605a29e60d925e82bfb52386b25cbe2e1cb4c166017cbf2a
+  checksum: 10c0/cae0b1c9eb4b6cce8679ebe58d0391cd247bc26c39105aaa4d2c624db14deb8c051f747f714aaa0dbe6bb3ac94c70e30af6423090e9014aa5c7c6ef6cf5b4af4
   languageName: node
   linkType: hard
 
@@ -1440,15 +1439,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap@npm:5.3.7":
-  version: 5.3.7
-  resolution: "bootstrap@npm:5.3.7"
-  peerDependencies:
-    "@popperjs/core": ^2.11.8
-  checksum: 10c0/019f0d683aec843b9fc0592ae78560cfe286bc8e31e706d40d8c15d390dcca7ab2ffa193a489a74f65ed5596800b9b79da867545ce3bbafca945b630fe0055af
-  languageName: node
-  linkType: hard
-
 "buffer@npm:^6.0.3":
   version: 6.0.3
   resolution: "buffer@npm:6.0.3"
@@ -1600,10 +1590,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "date-fns@npm:4.3.0"
-  checksum: 10c0/f1e8ec36270dd4c9e32d93195fb02a109ff46b397690a68f4a0c3bea0a1882e38a67969004db0a28f890b15bcdd6b323faa2f07cde3b67a2edfacc3fe078f95e
+"date-fns@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "date-fns@npm:4.4.0"
+  checksum: 10c0/988f0a13db183f5dfc85c36bbb6847a9c135a9225888bbea4005876ec15539a8613c21a07370a4e7ea543918d5a1cafb423c528b42cdbbde5fdfddb178126b21
   languageName: node
   linkType: hard
 
@@ -1628,10 +1618,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decode-uri-component@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "decode-uri-component@npm:0.4.1"
-  checksum: 10c0/a180bbdb5398ec8270d236a3ac07cb988bbf6097428481780b85840f088951dc0318a8d8f9d56796e1a322b55b29859cea29982f22f9b03af0bc60974c54e591
+"decode-uri-component@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "decode-uri-component@npm:0.5.0"
+  checksum: 10c0/b913bb2ec3a83b4c96d961dcd7808c538f2f69f9a8581ab1bfbbb3d48c90e36779cc4580334198315d4c17f9c32d88ae4467c96582419a70b5f35df2c5a05cb1
   languageName: node
   linkType: hard
 
@@ -2813,15 +2803,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nginx-proxy-manager@workspace:.":
+"nexproxy@workspace:.":
   version: 0.0.0-use.local
-  resolution: "nginx-proxy-manager@workspace:."
+  resolution: "nexproxy@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.4.15"
     "@formatjs/cli": "npm:^6.16.3"
-    "@tabler/core": "npm:^1.4.0"
-    "@tabler/icons-react": "npm:^3.44.0"
-    "@tanstack/react-query": "npm:^5.100.14"
+    "@tabler/core": "npm:^1.5.0"
+    "@tabler/icons-react": "npm:^3.46.0"
+    "@tanstack/react-query": "npm:^5.102.8"
     "@tanstack/react-query-devtools": "npm:^5.100.14"
     "@tanstack/react-table": "npm:^8.21.3"
     "@testing-library/dom": "npm:^10.4.1"
@@ -2837,7 +2827,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^6.0.2"
     classnames: "npm:^2.5.1"
     country-flag-icons: "npm:^1.6.17"
-    date-fns: "npm:^4.3.0"
+    date-fns: "npm:^4.4.0"
     ez-modal-react: "npm:^1.0.5"
     formik: "npm:^2.4.9"
     generate-password-browser: "npm:^1.1.0"
@@ -2845,16 +2835,16 @@ __metadata:
     humps: "npm:^2.0.1"
     postcss: "npm:^8.5.15"
     postcss-simple-vars: "npm:^7.0.1"
-    query-string: "npm:^9.3.1"
+    query-string: "npm:^9.5.1"
     react: "npm:^19.2.6"
     react-bootstrap: "npm:^2.10.10"
     react-dom: "npm:^19.2.6"
     react-intl: "npm:^10.1.9"
     react-markdown: "npm:^10.1.0"
-    react-router-dom: "npm:^7.15.1"
+    react-router-dom: "npm:^7.18.3"
     react-select: "npm:^5.10.2"
     react-toastify: "npm:^11.1.0"
-    rooks: "npm:^9.8.0"
+    rooks: "npm:^9.9.0"
     sass: "npm:^1.100.0"
     tmp: "npm:^0.2.6"
     typescript: "npm:6.0.3"
@@ -3115,14 +3105,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"query-string@npm:^9.3.1":
-  version: 9.3.1
-  resolution: "query-string@npm:9.3.1"
+"query-string@npm:^9.5.1":
+  version: 9.5.1
+  resolution: "query-string@npm:9.5.1"
   dependencies:
-    decode-uri-component: "npm:^0.4.1"
+    decode-uri-component: "npm:^0.5.0"
     filter-obj: "npm:^5.1.0"
     split-on-first: "npm:^3.0.0"
-  checksum: 10c0/47f62350be7ace6d2e03d12becf5d1985731d97577963a4d8b684e166f6708cb42f63f09aa4c92931f2ee1ff57c0800a25807b95f28fd98f7064b1d06b02b07e
+  checksum: 10c0/3f10428fa3d966e096d89b2794c4ee34b59de6b6281d5c367edeb25b105b61484389bee9b3fc5e037ce91a61c105dadea33e8f1123770e7f77a10c87d29b4e6c
   languageName: node
   linkType: hard
 
@@ -3247,21 +3237,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^7.15.1":
-  version: 7.15.1
-  resolution: "react-router-dom@npm:7.15.1"
+"react-router-dom@npm:^7.18.3":
+  version: 7.18.3
+  resolution: "react-router-dom@npm:7.18.3"
   dependencies:
-    react-router: "npm:7.15.1"
+    react-router: "npm:7.18.3"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
-  checksum: 10c0/d8421566cfa75a53ff85e172a9485be6681f917160de15be6582eb9ca382d187688529c84453e3fb845514e8f784638f5099784859be3740235aa030afb38b5b
+  checksum: 10c0/1d04bb38f64e9c429d4f162ca6c5ffc163a02c0a5c08748440a58fc0e9b1e8c8edc2bc4509e9966dcd0873e57fc6a090fd356244d581567737aac1ae6236e799
   languageName: node
   linkType: hard
 
-"react-router@npm:7.15.1":
-  version: 7.15.1
-  resolution: "react-router@npm:7.15.1"
+"react-router@npm:7.18.3":
+  version: 7.18.3
+  resolution: "react-router@npm:7.18.3"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -3271,7 +3261,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10c0/3daff5404c7de1429447e735f1ee7e070d4f11632f589cec70c5171f2357be9cada2162f780bc9061eb153646109ad6e80c2d10a6b27256593f28a66945f4c76
+  checksum: 10c0/77686cad916f8928e6c4aeafe5f8dc26384e84897849ff7d771ddee67af02b788c103503d029ffa442f7bf42aa47b3779440e70fc1aeae90532120fae4036b0f
   languageName: node
   linkType: hard
 
@@ -3529,9 +3519,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rooks@npm:^9.8.0":
-  version: 9.8.0
-  resolution: "rooks@npm:9.8.0"
+"rooks@npm:^9.9.0":
+  version: 9.9.0
+  resolution: "rooks@npm:9.9.0"
   dependencies:
     "@js-temporal/polyfill": "npm:^0.5.1"
     fast-deep-equal: "npm:^3.1.3"
@@ -3544,7 +3534,7 @@ __metadata:
   dependenciesMeta:
     "@js-temporal/polyfill":
       optional: true
-  checksum: 10c0/24857309a5b3f980af249d2a9bd9cfe86e919abc15c814c93e8dca8a7a03cad3df814931092aae2469fe9d66ea74e59df848c9367b4689ae07074091dec336c7
+  checksum: 10c0/1c756e0c34aaf1b4048818807399a551f5d20ad0522a36106074da8eba8b37c994f48176e755c8106ef7ace7a58ec8abeb636abcf8b9b44cff5b1156b0b25caf
   languageName: node
   linkType: hard
 
