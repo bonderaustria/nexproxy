@@ -1579,10 +1579,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"country-flag-icons@npm:^1.6.17":
-  version: 1.6.17
-  resolution: "country-flag-icons@npm:1.6.17"
-  checksum: 10c0/1b9e8dc62380a08dbce50250b62c2f7807bf5ca2b72f29c14b26d30e4f9257f0536641d0d3e8276ae4fcf863e3e4b5729b1cb3c99d607ccd51e48568dfb3d0e4
+"country-flag-icons@npm:^1.6.20":
+  version: 1.6.20
+  resolution: "country-flag-icons@npm:1.6.20"
+  checksum: 10c0/e270cbf3f31d8f57a7f6da56c15733897f4dcc9c7fd50f88c7d295d16cb9fd97dcae96c054b2d840916bec3f27472335201938dc569961d935da4c4d341f9d32
   languageName: node
   linkType: hard
 
@@ -2813,9 +2813,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nginx-proxy-manager@workspace:.":
+"nexproxy@workspace:.":
   version: 0.0.0-use.local
-  resolution: "nginx-proxy-manager@workspace:."
+  resolution: "nexproxy@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.4.15"
     "@formatjs/cli": "npm:^6.16.3"
@@ -2836,7 +2836,7 @@ __metadata:
     "@uiw/react-textarea-code-editor": "npm:^3.1.1"
     "@vitejs/plugin-react": "npm:^6.0.2"
     classnames: "npm:^2.5.1"
-    country-flag-icons: "npm:^1.6.17"
+    country-flag-icons: "npm:^1.6.20"
     date-fns: "npm:^4.3.0"
     ez-modal-react: "npm:^1.0.5"
     formik: "npm:^2.4.9"
