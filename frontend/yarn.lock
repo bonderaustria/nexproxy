@@ -383,53 +383,73 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-darwin-arm64@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@formatjs/cli-native-darwin-arm64@npm:1.1.0"
+"@formatjs/cli-native-darwin-arm64@npm:1.1.23":
+  version: 1.1.23
+  resolution: "@formatjs/cli-native-darwin-arm64@npm:1.1.23"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-linux-arm64@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@formatjs/cli-native-linux-arm64@npm:1.2.0"
+"@formatjs/cli-native-linux-arm64-musl@npm:1.0.21":
+  version: 1.0.21
+  resolution: "@formatjs/cli-native-linux-arm64-musl@npm:1.0.21"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@formatjs/cli-native-linux-arm64@npm:1.2.23":
+  version: 1.2.23
+  resolution: "@formatjs/cli-native-linux-arm64@npm:1.2.23"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-linux-x64@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@formatjs/cli-native-linux-x64@npm:1.1.0"
+"@formatjs/cli-native-linux-x64-musl@npm:1.0.21":
+  version: 1.0.21
+  resolution: "@formatjs/cli-native-linux-x64-musl@npm:1.0.21"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@formatjs/cli-native-linux-x64@npm:1.1.23":
+  version: 1.1.23
+  resolution: "@formatjs/cli-native-linux-x64@npm:1.1.23"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@formatjs/cli-native-win32-x64@npm:1.1.1":
-  version: 1.1.1
-  resolution: "@formatjs/cli-native-win32-x64@npm:1.1.1"
+"@formatjs/cli-native-win32-x64@npm:1.1.24":
+  version: 1.1.24
+  resolution: "@formatjs/cli-native-win32-x64@npm:1.1.24"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@formatjs/cli@npm:^6.16.3":
-  version: 6.16.3
-  resolution: "@formatjs/cli@npm:6.16.3"
+"@formatjs/cli@npm:^6.16.29":
+  version: 6.16.29
+  resolution: "@formatjs/cli@npm:6.16.29"
   dependencies:
-    "@formatjs/cli-native-darwin-arm64": "npm:1.1.0"
-    "@formatjs/cli-native-linux-arm64": "npm:1.2.0"
-    "@formatjs/cli-native-linux-x64": "npm:1.1.0"
-    "@formatjs/cli-native-win32-x64": "npm:1.1.1"
+    "@formatjs/cli-native-darwin-arm64": "npm:1.1.23"
+    "@formatjs/cli-native-linux-arm64": "npm:1.2.23"
+    "@formatjs/cli-native-linux-arm64-musl": "npm:1.0.21"
+    "@formatjs/cli-native-linux-x64": "npm:1.1.23"
+    "@formatjs/cli-native-linux-x64-musl": "npm:1.0.21"
+    "@formatjs/cli-native-win32-x64": "npm:1.1.24"
   peerDependencies:
     "@glimmer/syntax": ^0.84.3 || ^0.95.0
-    "@vue/compiler-core": ^3.5.0
-    content-tag: ^4.1.0
-    vue: ^3.5.0
+    "@vue/compiler-core": 3
+    content-tag: 4
+    vue: 3
   dependenciesMeta:
     "@formatjs/cli-native-darwin-arm64":
       optional: true
     "@formatjs/cli-native-linux-arm64":
       optional: true
+    "@formatjs/cli-native-linux-arm64-musl":
+      optional: true
     "@formatjs/cli-native-linux-x64":
+      optional: true
+    "@formatjs/cli-native-linux-x64-musl":
       optional: true
     "@formatjs/cli-native-win32-x64":
       optional: true
@@ -450,7 +470,7 @@ __metadata:
       optional: true
   bin:
     formatjs: bin/formatjs
-  checksum: 10c0/741177700215c0f5f7c02bd775e5413f91a00c7b930777eec1a7a1e782225e364b7f6aaca270677d9ae4d7c099dc76f55a57ad3324e1446861fa4fde16207496
+  checksum: 10c0/9d5ffbdfaa690af4efdc2546d087d9fb8bfc79e33fb2ecf70d8e8cd8e635a07277f8b99b8db53fe8adc1aafc7537d7d1756ffa6861ae2e7ecd4b2a8f999fc621
   languageName: node
   linkType: hard
 
@@ -979,9 +999,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^10.4.1":
-  version: 10.4.1
-  resolution: "@testing-library/dom@npm:10.4.1"
+"@testing-library/dom@npm:^10.4.2":
+  version: 10.4.2
+  resolution: "@testing-library/dom@npm:10.4.2"
   dependencies:
     "@babel/code-frame": "npm:^7.10.4"
     "@babel/runtime": "npm:^7.12.5"
@@ -991,7 +1011,7 @@ __metadata:
     lz-string: "npm:^1.5.0"
     picocolors: "npm:1.1.1"
     pretty-format: "npm:^27.0.2"
-  checksum: 10c0/19ce048012d395ad0468b0dbcc4d0911f6f9e39464d7a8464a587b29707eed5482000dad728f5acc4ed314d2f4d54f34982999a114d2404f36d048278db815b1
+  checksum: 10c0/22c3aded3a54fc4f1a0c54aa75a881bb65e45f0128f3c5c881f9e571e593c6364c036f71b733dd0856ff2ba0debd59106e206f6764ee771dd8ed7cf82ceaa618
   languageName: node
   linkType: hard
 
@@ -1009,9 +1029,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^16.3.2":
-  version: 16.3.2
-  resolution: "@testing-library/react@npm:16.3.2"
+"@testing-library/react@npm:^16.3.3":
+  version: 16.3.3
+  resolution: "@testing-library/react@npm:16.3.3"
   dependencies:
     "@babel/runtime": "npm:^7.12.5"
   peerDependencies:
@@ -1025,7 +1045,7 @@ __metadata:
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: 10c0/f9c7f0915e1b5f7b750e6c7d8b51f091b8ae7ea99bacb761d7b8505ba25de9cfcb749a0f779f1650fb268b499dd79165dc7e1ee0b8b4cb63430d3ddc81ffe044
+  checksum: 10c0/87d65cca71a39c93fffa23746a751a7037a4b4e939ea6b234af5188e4bdec96a7568b05000db109b5b76c686899e93a329a594d7e690674e30b35594c87c9e1d
   languageName: node
   linkType: hard
 
@@ -2813,20 +2833,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nginx-proxy-manager@workspace:.":
+"nanoid@npm:^3.3.18":
+  version: 3.3.19
+  resolution: "nanoid@npm:3.3.19"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: 10c0/ce7afa6258bfaa00bdc8de291cfe9913280eaa403b7d9cff3db4e4200c1913e7163577df74897958da144db473a96c67f74f57db0f542fbfe409df677bae3255
+  languageName: node
+  linkType: hard
+
+"nexproxy@workspace:.":
   version: 0.0.0-use.local
-  resolution: "nginx-proxy-manager@workspace:."
+  resolution: "nexproxy@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.4.15"
-    "@formatjs/cli": "npm:^6.16.3"
+    "@formatjs/cli": "npm:^6.16.29"
     "@tabler/core": "npm:^1.4.0"
     "@tabler/icons-react": "npm:^3.44.0"
     "@tanstack/react-query": "npm:^5.100.14"
     "@tanstack/react-query-devtools": "npm:^5.100.14"
     "@tanstack/react-table": "npm:^8.21.3"
-    "@testing-library/dom": "npm:^10.4.1"
+    "@testing-library/dom": "npm:^10.4.2"
     "@testing-library/jest-dom": "npm:^6.9.1"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@types/country-flag-icons": "npm:^1.2.2"
     "@types/humps": "npm:^2.0.6"
     "@types/node": "npm:^25.9.1"
@@ -2843,7 +2872,7 @@ __metadata:
     generate-password-browser: "npm:^1.1.0"
     happy-dom: "npm:^20.9.0"
     humps: "npm:^2.0.1"
-    postcss: "npm:^8.5.15"
+    postcss: "npm:^8.5.28"
     postcss-simple-vars: "npm:^7.0.1"
     query-string: "npm:^9.3.1"
     react: "npm:^19.2.6"
@@ -2856,10 +2885,10 @@ __metadata:
     react-toastify: "npm:^11.1.0"
     rooks: "npm:^9.8.0"
     sass: "npm:^1.100.0"
-    tmp: "npm:^0.2.6"
+    tmp: "npm:^0.2.7"
     typescript: "npm:6.0.3"
     vite: "npm:^8.0.14"
-    vite-plugin-checker: "npm:^0.14.1"
+    vite-plugin-checker: "npm:^0.14.5"
     vitest: "npm:^4.1.7"
   languageName: unknown
   linkType: soft
@@ -3046,6 +3075,17 @@ __metadata:
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
   checksum: 10c0/7f2e63ae22fbe43aace1bf652bd99da4e90737c64194d49e51ddc9cd0f9e51ff2861a7d734379b494deffa03a880a5c65eec70bc29ee9ebaa7136dde3eee8f31
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.5.28":
+  version: 8.5.28
+  resolution: "postcss@npm:8.5.28"
+  dependencies:
+    nanoid: "npm:^3.3.18"
+    picocolors: "npm:^1.1.1"
+    source-map-js: "npm:^1.2.1"
+  checksum: 10c0/9fe44215a6628d89c8a75184b92f5b2f77e16f9e5b13b39b9009bb7e8e6eccddf82c8854bae922db1f17ace6ef3445073fe38abff513caeb03e5285b1b55620a
   languageName: node
   linkType: hard
 
@@ -3770,10 +3810,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.2.6":
-  version: 0.2.6
-  resolution: "tmp@npm:0.2.6"
-  checksum: 10c0/fa5b9bfbe60f70904aba5c96b4970e9158d99867891302d10320fe35eee1e45f42946fded4cf5c8514baa087bebee44419029b7deb227da05a68b5205a12d8ab
+"tmp@npm:^0.2.7":
+  version: 0.2.7
+  resolution: "tmp@npm:0.2.7"
+  checksum: 10c0/59eb55584f2f07210d3231b6a1f6b5c2b9794d8a7b509c8ee867ed2acad6d2245ee2448b7937b676ffbff3155a70077edde8a69f9d7cf0f90c86a62e8910c357
   languageName: node
   linkType: hard
 
@@ -3987,9 +4027,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-checker@npm:^0.14.1":
-  version: 0.14.1
-  resolution: "vite-plugin-checker@npm:0.14.1"
+"vite-plugin-checker@npm:^0.14.5":
+  version: 0.14.5
+  resolution: "vite-plugin-checker@npm:0.14.5"
   dependencies:
     "@babel/code-frame": "npm:^7.29.0"
     chokidar: "npm:^5.0.0"
@@ -4025,7 +4065,7 @@ __metadata:
       optional: true
     vue-tsc:
       optional: true
-  checksum: 10c0/1be1cb1ac0a420b5124647a245332dca720cdb9d5fc0103f6df2d3bde579fb920517def8cf76a73518670c9f10f224f45cff850b06d800962ac36a94a2db10f4
+  checksum: 10c0/6f49c7dfe946a188d0965792d08c10ea0ec16f3d933558a7818427dab8deb5de6d6a27ca9b7c0e312d2e8857f493a24be0a2e52f4d6dcecad06d9b1c50cfadf0
   languageName: node
   linkType: hard
 
