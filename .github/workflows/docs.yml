@@ -29,7 +29,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Vollstaendige Historie, damit VitePress die Zeitstempel der letzten
           # Aenderung je Seite ermitteln kann.
